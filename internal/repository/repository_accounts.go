@@ -1,0 +1,74 @@
+package repository
+
+import (
+	"context"
+	"database/sql"
+
+	"openhealth/internal/domain"
+	"openhealth/internal/pkg/postgres"
+)
+
+// AddAccount - adds a new account to the database
+func (r *Repository) AddAccount(ctx context.Context, account domain.Account) error {
+	dx := postgres.GetTxOrDB(ctx, r.db)
+
+	_, err := dx.ExecContext(ctx, `
+		INSERT INTO accounts (id, first_name, last_name, age, email, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`, account.ID, account.FirstName, account.LastName, account.Age, account.Email, account.CreatedAt, account.UpdatedAt)
+
+	return err
+}
+
+// GetAccountByID - get an account by its ID
+func (r *Repository) GetAccountByID(ctx context.Context, id string) (*domain.Account, error) {
+	var account domain.Account
+
+	err := r.db.GetContext(ctx, &account, `
+		SELECT id, first_name, last_name, age, email, created_at, updated_at
+		FROM accounts
+		WHERE id = $1
+	`, id)
+
+	switch err {
+	case sql.ErrNoRows:
+		return nil, nil
+	case nil:
+		return &account, nil
+	default:
+		return nil, err
+	}
+}
+
+// GetAccounts - get accounts up to the provided limit
+func (r *Repository) GetAccounts(ctx context.Context, limit int) ([]domain.Account, error) {
+	var accounts []domain.Account
+
+	err := r.db.SelectContext(ctx, &accounts, `
+		SELECT id, first_name, last_name, age, email, created_at, updated_at
+		FROM accounts
+		LIMIT $1
+	`, limit)
+
+	return accounts, err
+}
+
+// UpdateAccount - updates an existing account
+func (r *Repository) UpdateAccount(ctx context.Context, account domain.Account) error {
+	_, err := r.db.ExecContext(ctx, `
+		UPDATE accounts
+		SET first_name = $1, last_name = $2, age = $3, email = $4, updated_at = $5
+		WHERE id = $6
+	`, account.FirstName, account.LastName, account.Age, account.Email, account.UpdatedAt, account.ID)
+
+	return err
+}
+
+// ResetAccounts - resets all accounts
+func (r *Repository) ResetAccounts(ctx context.Context) error {
+	_, err := r.db.ExecContext(ctx, `
+		TRUNCATE TABLE accounts CASCADE
+	`)
+
+	return err
+}

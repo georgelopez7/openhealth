@@ -1,0 +1,121 @@
+services:
+  openhealth-api:
+    build:
+      context: .
+      dockerfile: cmd/openhealth-api/Dockerfile
+    container_name: openhealth-api
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=dev
+      - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
+      - FGA_API_URL=http://openfga:8080
+      - FGA_STORE_ID=${FGA_STORE_ID}
+      - FGA_MODEL_ID=${FGA_MODEL_ID}
+    ports:
+      - "8000:8000"
+    depends_on:
+      openfga:
+        condition: service_healthy
+      openhealth-postgres:
+        condition: service_healthy
+      openhealth-migrate-db:
+        condition: service_completed_successfully
+
+  openhealth-migrate-db:
+    build:
+      context: .
+      dockerfile: scripts/migrate-db/Dockerfile
+    container_name: openhealth-migrate-db
+    environment:
+      - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
+    depends_on:
+      openhealth-postgres:
+        condition: service_healthy
+
+  # openhealth-seed-db:
+  #   profiles:
+  #     - seed
+  #   build:
+  #     context: .
+  #     dockerfile: scripts/seed-db/Dockerfile
+  #   container_name: openhealth-seed-db
+  #   environment:
+  #     - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
+  #   depends_on:
+  #     openhealth-api:
+  #       condition: service_started
+
+  openhealth-postgres:
+    image: postgres:18-alpine
+    container_name: openhealth-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres-user
+      - POSTGRES_PASSWORD=postgres-password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres-user" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5  
+    
+  openfga:
+    image: openfga/openfga:latest
+    container_name: openfga
+    command: run
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://openfga-postgres-user:openfga-postgres-password@openfga-postgres:5432/postgres?sslmode=disable
+      - OPENFGA_DATASTORE_MAX_OPEN_CONNS=100
+      - OPENFGA_PLAYGROUND_ENABLED=true
+    ports:
+      - "8080:8080" #http
+      - "8081:8081" #grpc
+      - "3000:3000" #playground
+      - "2112:2112" #prometheus metrics
+    depends_on:
+      openfga-migrate:
+        condition: service_completed_successfully
+    restart:
+      on-failure
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/grpc_health_probe",
+          "-addr=openfga:8081"
+        ]
+      interval: 5s
+      timeout: 30s
+      retries: 3
+
+  openfga-postgres:
+    image: postgres:17
+    container_name: openfga-postgres
+    command: postgres -c 'max_connections=100'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=openfga-postgres-user
+      - POSTGRES_PASSWORD=openfga-postgres-password
+    volumes:
+      - openfga-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U openfga-postgres-user" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  openfga-migrate:
+    image: openfga/openfga:latest
+    container_name: openfga-migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://openfga-postgres-user:openfga-postgres-password@openfga-postgres:5432/postgres?sslmode=disable
+    command: migrate
+    depends_on:
+      openfga-postgres:
+        condition: service_healthy
+
+volumes:
+  openfga-postgres-data:

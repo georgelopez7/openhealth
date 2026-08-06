@@ -1,0 +1,22 @@
+model
+  schema 1.1
+
+type user
+
+type hospital
+  relations
+    define nurse: [user]
+
+type patient
+  relations
+    define _self: [user]
+    define doctor: [user]
+    define guardian: [user]
+    define hospital: [hospital]
+    define nurse: nurse from hospital
+
+type record
+  relations
+    define owner: [patient]
+    define can_view: _self from owner or doctor from owner or guardian from owner or nurse from owner
+    define can_edit: _self from owner or doctor from owner

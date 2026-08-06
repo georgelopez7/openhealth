@@ -1,0 +1,98 @@
+info:
+  name: /api/v1/accounts - [POST]
+  type: http
+  seq: 2
+  tags:
+    - accounts
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/v1/accounts"
+  body:
+    type: json
+    data: |-
+      {
+        "$schema": "",
+        "age": 0,
+        "email": "",
+        "first_name": "",
+        "last_name": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{BASE_URL}}/api/v1/accounts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "age": 0,
+            "email": "",
+            "first_name": "",
+            "last_name": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "account": {
+              "age": 0,
+              "created_at": "",
+              "email": "",
+              "first_name": "",
+              "id": "",
+              "last_name": "",
+              "updated_at": ""
+            }
+          }
+  - name: default Response
+    description: Error
+    request:
+      url: "{{BASE_URL}}/api/v1/accounts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "age": 0,
+            "email": "",
+            "first_name": "",
+            "last_name": ""
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+
+docs: Creates a new account

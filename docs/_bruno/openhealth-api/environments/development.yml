@@ -1,0 +1,4 @@
+name: Environment 1
+variables:
+  - name: BASE_URL
+    value: http://localhost:8000
