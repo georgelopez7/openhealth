@@ -41,6 +41,20 @@ func (m *MockAccountSVC) EXPECT() *MockAccountSVCMockRecorder {
 	return m.recorder
 }
 
+// ArchiveAccount mocks base method.
+func (m *MockAccountSVC) ArchiveAccount(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ArchiveAccount", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ArchiveAccount indicates an expected call of ArchiveAccount.
+func (mr *MockAccountSVCMockRecorder) ArchiveAccount(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArchiveAccount", reflect.TypeOf((*MockAccountSVC)(nil).ArchiveAccount), ctx, id)
+}
+
 // CreateAccount mocks base method.
 func (m *MockAccountSVC) CreateAccount(ctx context.Context, account domain.Account) error {
 	m.ctrl.T.Helper()

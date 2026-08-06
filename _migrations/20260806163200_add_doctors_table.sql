@@ -1,18 +1,15 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE accounts (
+CREATE TABLE doctors (
     id TEXT PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    age INTEGER NOT NULL,
-    email TEXT NOT NULL,
+    account_id TEXT NOT NULL UNIQUE,
     status TEXT NOT NULL DEFAULT 'active',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    FOREIGN KEY (account_id) REFERENCES accounts(id)
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS doctors;
 -- +goose StatementEnd

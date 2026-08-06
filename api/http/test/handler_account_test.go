@@ -185,3 +185,26 @@ func TestServer_ListAccountsHandler(t *testing.T) {
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
 }
+
+func TestServer_ArchiveAccountHandler(t *testing.T) {
+	api, deps, teardown := newMockServer(t)
+	defer teardown()
+
+	endpoint := "/api/v1/accounts/mock-id-1"
+
+	t.Run("should archive account", func(t *testing.T) {
+		deps.MockAccountSvc.EXPECT().ArchiveAccount(gomock.Any(), "mock-id-1").Return(nil)
+
+		resp := api.Delete(endpoint)
+
+		require.Equal(t, http.StatusOK, resp.Code)
+	})
+
+	t.Run("should handle service error", func(t *testing.T) {
+		deps.MockAccountSvc.EXPECT().ArchiveAccount(gomock.Any(), "mock-id-1").Return(errors.New("mock-error"))
+
+		resp := api.Delete(endpoint)
+
+		require.Equal(t, http.StatusInternalServerError, resp.Code)
+	})
+}

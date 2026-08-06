@@ -66,3 +66,8 @@ func (s *Service) GetAccounts(ctx context.Context, limit int) ([]domain.Account,
 func (s *Service) UpdateAccount(ctx context.Context, account domain.Account) error {
 	return s.repository.UpdateAccount(ctx, account)
 }
+
+// ArchiveAccount - archives an existing account
+func (s *Service) ArchiveAccount(ctx context.Context, id string) error {
+	return s.repository.ArchiveAccount(ctx, id)
+}

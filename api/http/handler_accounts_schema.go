@@ -48,3 +48,9 @@ type ListAccountsResponse struct {
 		Accounts []domain.Account `json:"accounts"`
 	}
 }
+
+type ArchiveAccountInput struct {
+	ID string `path:"id"`
+}
+
+type ArchiveAccountResponse struct{}

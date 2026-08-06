@@ -159,3 +159,23 @@ func TestService_UpdateAccount(t *testing.T) {
 		require.Error(t, err)
 	})
 }
+
+func TestService_ArchiveAccount(t *testing.T) {
+	ctx := t.Context()
+
+	service, deps := newMockService(t)
+
+	t.Run("should successfully archive account", func(t *testing.T) {
+		deps.repository.EXPECT().ArchiveAccount(gomock.Any(), "account-id").Return(nil)
+
+		err := service.ArchiveAccount(ctx, "account-id")
+		require.NoError(t, err)
+	})
+
+	t.Run("should handle error when repository fails to archive account", func(t *testing.T) {
+		deps.repository.EXPECT().ArchiveAccount(gomock.Any(), "account-id").Return(errors.New("archive error"))
+
+		err := service.ArchiveAccount(ctx, "account-id")
+		require.Error(t, err)
+	})
+}

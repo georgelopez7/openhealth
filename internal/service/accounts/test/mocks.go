@@ -55,6 +55,20 @@ func (mr *MockRepositoryMockRecorder) AddAccount(ctx, account any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAccount", reflect.TypeOf((*MockRepository)(nil).AddAccount), ctx, account)
 }
 
+// ArchiveAccount mocks base method.
+func (m *MockRepository) ArchiveAccount(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ArchiveAccount", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ArchiveAccount indicates an expected call of ArchiveAccount.
+func (mr *MockRepositoryMockRecorder) ArchiveAccount(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArchiveAccount", reflect.TypeOf((*MockRepository)(nil).ArchiveAccount), ctx, id)
+}
+
 // GetAccountByID mocks base method.
 func (m *MockRepository) GetAccountByID(ctx context.Context, id string) (*domain.Account, error) {
 	m.ctrl.T.Helper()

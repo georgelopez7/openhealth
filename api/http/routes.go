@@ -56,4 +56,14 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
 	}, s.ListAccountsHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "archive-account",
+		Method:        http.MethodDelete,
+		Path:          "/api/v1/accounts/{id}",
+		Summary:       "/api/v1/accounts/{id} - [DELETE]",
+		Description:   "Archives an existing account",
+		Tags:          []string{"accounts"},
+		DefaultStatus: http.StatusOK,
+	}, s.ArchiveAccountHandler)
 }

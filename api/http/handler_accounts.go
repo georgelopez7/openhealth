@@ -70,3 +70,12 @@ func (s *Server) ListAccountsHandler(ctx context.Context, input *ListAccountsInp
 
 	return resp, nil
 }
+
+func (s *Server) ArchiveAccountHandler(ctx context.Context, input *ArchiveAccountInput) (*ArchiveAccountResponse, error) {
+	err := s.AccountSVC.ArchiveAccount(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ArchiveAccountResponse{}, nil
+}

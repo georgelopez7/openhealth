@@ -25,6 +25,7 @@ func TestRepository_AddAccount(t *testing.T) {
 	require.Equal(t, expected.LastName, account.LastName)
 	require.Equal(t, expected.Age, account.Age)
 	require.Equal(t, expected.Email, account.Email)
+	require.Equal(t, domain.AccountStatusActive, account.Status)
 }
 
 func TestRepository_GetAccountByID(t *testing.T) {
@@ -45,6 +46,7 @@ func TestRepository_GetAccountByID(t *testing.T) {
 		require.Equal(t, expected.LastName, account.LastName)
 		require.Equal(t, expected.Age, account.Age)
 		require.Equal(t, expected.Email, account.Email)
+		require.Equal(t, domain.AccountStatusActive, account.Status)
 	})
 
 	t.Run("should handle case when account is not found", func(t *testing.T) {
@@ -133,6 +135,31 @@ func TestRepository_UpdateAccount(t *testing.T) {
 		account.ID = "non-existent-id"
 
 		err := repo.UpdateAccount(ctx, *account)
+		require.NoError(t, err)
+	})
+}
+
+func TestRepository_ArchiveAccount(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should successfully archive account", func(t *testing.T) {
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+
+		err := repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
+
+		err = repo.ArchiveAccount(ctx, account.ID)
+		require.NoError(t, err)
+
+		archived, err := repo.GetAccountByID(ctx, account.ID)
+		require.NoError(t, err)
+		require.Equal(t, domain.AccountStatusArchived, archived.Status)
+	})
+
+	t.Run("should handle case when account is not found", func(t *testing.T) {
+		err := repo.ArchiveAccount(ctx, "non-existent-id")
 		require.NoError(t, err)
 	})
 }
