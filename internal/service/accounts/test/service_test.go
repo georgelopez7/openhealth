@@ -69,29 +69,34 @@ func TestService_GetAccountByID(t *testing.T) {
 
 	service, deps := newMockService(t)
 
-	t.Run("should successfully get account with assigned doctor", func(t *testing.T) {
+	t.Run("should successfully get account with assigned doctor and hospital", func(t *testing.T) {
 		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
 		account.DoctorID = "doctor-id-1"
+		account.HospitalID = "hospital-id-1"
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("doctor-id-1", nil)
+		deps.repository.EXPECT().GetHospitalIDByAccountID(gomock.Any(), "test-account-id").Return("hospital-id-1", nil)
 
 		result, err := service.GetAccountByID(ctx, "test-account-id")
 		require.NoError(t, err)
 		require.Equal(t, account, result)
 		require.Equal(t, "doctor-id-1", result.DoctorID)
+		require.Equal(t, "hospital-id-1", result.HospitalID)
 	})
 
-	t.Run("should successfully get account without assigned doctor", func(t *testing.T) {
+	t.Run("should successfully get account without assigned doctor or hospital", func(t *testing.T) {
 		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
+		deps.repository.EXPECT().GetHospitalIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
 
 		result, err := service.GetAccountByID(ctx, "test-account-id")
 		require.NoError(t, err)
 		require.Equal(t, account, result)
 		require.Empty(t, result.DoctorID)
+		require.Empty(t, result.HospitalID)
 	})
 
 	t.Run("should handle error when account is not found", func(t *testing.T) {
@@ -117,6 +122,19 @@ func TestService_GetAccountByID(t *testing.T) {
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", errors.New("doctor id error"))
+
+		result, err := service.GetAccountByID(ctx, "test-account-id")
+
+		require.Error(t, err)
+		require.Nil(t, result)
+	})
+
+	t.Run("should handle error when repository fails to get hospital id", func(t *testing.T) {
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+
+		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
+		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
+		deps.repository.EXPECT().GetHospitalIDByAccountID(gomock.Any(), "test-account-id").Return("", errors.New("hospital id error"))
 
 		result, err := service.GetAccountByID(ctx, "test-account-id")
 

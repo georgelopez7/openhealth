@@ -14,6 +14,7 @@ type Repository interface {
 	UpdateAccount(ctx context.Context, account domain.Account) error
 	ArchiveAccount(ctx context.Context, id string) error
 	GetDoctorIDByAccountID(ctx context.Context, accountID string) (string, error)
+	GetHospitalIDByAccountID(ctx context.Context, accountID string) (string, error)
 }
 
 type TxManager interface {

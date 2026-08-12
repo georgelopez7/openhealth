@@ -56,6 +56,13 @@ func (s *Service) GetAccountByID(ctx context.Context, id string) (*domain.Accoun
 
 	account.DoctorID = doctorID
 
+	hospitalID, err := s.repository.GetHospitalIDByAccountID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	account.HospitalID = hospitalID
+
 	return account, nil
 }
 

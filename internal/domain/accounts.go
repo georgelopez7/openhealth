@@ -17,9 +17,10 @@ type Account struct {
 	LastName  string    `json:"last_name" db:"last_name"`
 	Age       int       `json:"age" db:"age"`
 	Email     string    `json:"email" db:"email"`
-	Status    string    `json:"status" db:"status"`
-	DoctorID  string    `json:"doctor_id" db:"-"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	Status     string    `json:"status" db:"status"`
+	DoctorID   string    `json:"doctor_id" db:"-"`
+	HospitalID string    `json:"hospital_id" db:"-"`
+	CreatedAt  time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
