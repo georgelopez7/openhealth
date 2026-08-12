@@ -13,3 +13,16 @@ type CreateHospitalResponse struct {
 		Hospital domain.Hospital `json:"hospital"`
 	}
 }
+
+type CreateHospitalToAccountAssignmentInput struct {
+	Body struct {
+		AccountID  string `json:"account_id"`
+		HospitalID string `json:"hospital_id"`
+	}
+}
+
+type CreateHospitalToAccountAssignmentResponse struct {
+	Body struct {
+		Assignment domain.HospitalAssignment `json:"assignment"`
+	}
+}

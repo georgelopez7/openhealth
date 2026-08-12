@@ -171,6 +171,39 @@ components:
       required:
         - hospital
       type: object
+    CreateHospitalToAccountAssignmentInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateHospitalToAccountAssignmentInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        account_id:
+          type: string
+        hospital_id:
+          type: string
+      required:
+        - account_id
+        - hospital_id
+      type: object
+    CreateHospitalToAccountAssignmentResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateHospitalToAccountAssignmentResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        assignment:
+          $ref: "#/components/schemas/HospitalAssignment"
+      required:
+        - assignment
+      type: object
     CreateMedicalRecordInputBody:
       additionalProperties: false
       properties:
@@ -419,6 +452,30 @@ components:
         - name
         - status
         - created_at
+      type: object
+    HospitalAssignment:
+      additionalProperties: false
+      properties:
+        account_id:
+          type: string
+        hospital_id:
+          type: string
+        id:
+          type: string
+        valid_from:
+          format: date-time
+          type: string
+        valid_to:
+          format: date-time
+          type:
+            - string
+            - "null"
+      required:
+        - id
+        - account_id
+        - hospital_id
+        - valid_from
+        - valid_to
       type: object
     ListAccountsResponseBody:
       additionalProperties: false
@@ -762,6 +819,32 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: /api/v1/hospitals - [POST]
+      tags:
+        - hospitals
+  /api/v1/hospitals/assignments:
+    post:
+      description: Assigns a hospital to an account
+      operationId: create-hospital-to-account-assignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHospitalToAccountAssignmentInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateHospitalToAccountAssignmentResponseBody"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/hospitals/assignments - [POST]
       tags:
         - hospitals
   /api/v1/medical-records:

@@ -19,3 +19,15 @@ func (s *Server) CreateHospitalHandler(ctx context.Context, input *CreateHospita
 
 	return resp, nil
 }
+
+func (s *Server) CreateHospitalToAccountAssignmentHandler(ctx context.Context, input *CreateHospitalToAccountAssignmentInput) (*CreateHospitalToAccountAssignmentResponse, error) {
+	assignment, err := s.HospitalSVC.AddHospitalToAccountAssignment(ctx, input.Body.AccountID, input.Body.HospitalID)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &CreateHospitalToAccountAssignmentResponse{}
+	resp.Body.Assignment = *assignment
+
+	return resp, nil
+}

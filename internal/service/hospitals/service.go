@@ -57,10 +57,13 @@ func (s *Service) ArchiveHospital(ctx context.Context, id string) error {
 }
 
 // AddHospitalToAccountAssignment - assigns a hospital to an account
-func (s *Service) AddHospitalToAccountAssignment(ctx context.Context, accountID string, hospitalID string) error {
+func (s *Service) AddHospitalToAccountAssignment(ctx context.Context, accountID string, hospitalID string) (*domain.HospitalAssignment, error) {
 	assignment := domain.NewHospitalAssignment(accountID, hospitalID)
+	if err := s.repository.AddHospitalAssignment(ctx, *assignment); err != nil {
+		return nil, err
+	}
 
-	return s.repository.AddHospitalAssignment(ctx, *assignment)
+	return assignment, nil
 }
 
 // RemoveHospitalToAccountAssignment - removes a hospital to account assignment by ID

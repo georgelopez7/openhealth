@@ -118,6 +118,16 @@ func (s *Server) addRoutes(api huma.API) {
 	}, s.CreateHospitalHandler)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "create-hospital-to-account-assignment",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/hospitals/assignments",
+		Summary:       "/api/v1/hospitals/assignments - [POST]",
+		Description:   "Assigns a hospital to an account",
+		Tags:          []string{"hospitals"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateHospitalToAccountAssignmentHandler)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "create-medical-record",
 		Method:        http.MethodPost,
 		Path:          "/api/v1/medical-records",

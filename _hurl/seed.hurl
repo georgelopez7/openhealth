@@ -111,6 +111,18 @@ HTTP 201
 joy_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
 
 
+POST http://localhost:/api/v1/hospitals/assignments
+Content-Type: application/json
+{
+  "account_id": "{{ash_id}}",
+  "hospital_id": "{{hospital_id}}"
+}
+
+HTTP 201
+[Captures]
+ash_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
+
+
 POST http://localhost:/api/v1/medical-records
 Content-Type: application/json
 {

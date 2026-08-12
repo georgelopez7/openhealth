@@ -156,15 +156,19 @@ func TestService_AddHospitalToAccountAssignment(t *testing.T) {
 	t.Run("should successfully add hospital assignment", func(t *testing.T) {
 		deps.repository.EXPECT().AddHospitalAssignment(gomock.Any(), gomock.Any()).Return(nil)
 
-		err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
+		assignment, err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
 		require.NoError(t, err)
+		require.Equal(t, "account-id-1", assignment.AccountID)
+		require.Equal(t, "hospital-id-1", assignment.HospitalID)
+		require.NotEmpty(t, assignment.ID)
 	})
 
 	t.Run("should handle error when repository fails to add hospital assignment", func(t *testing.T) {
 		deps.repository.EXPECT().AddHospitalAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
 
-		err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
+		assignment, err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
 		require.Error(t, err)
+		require.Nil(t, assignment)
 	})
 }
 

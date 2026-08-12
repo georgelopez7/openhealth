@@ -243,6 +243,21 @@ func (m *MockHospitalSVC) EXPECT() *MockHospitalSVCMockRecorder {
 	return m.recorder
 }
 
+// AddHospitalToAccountAssignment mocks base method.
+func (m *MockHospitalSVC) AddHospitalToAccountAssignment(ctx context.Context, accountID, hospitalID string) (*domain.HospitalAssignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddHospitalToAccountAssignment", ctx, accountID, hospitalID)
+	ret0, _ := ret[0].(*domain.HospitalAssignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddHospitalToAccountAssignment indicates an expected call of AddHospitalToAccountAssignment.
+func (mr *MockHospitalSVCMockRecorder) AddHospitalToAccountAssignment(ctx, accountID, hospitalID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddHospitalToAccountAssignment", reflect.TypeOf((*MockHospitalSVC)(nil).AddHospitalToAccountAssignment), ctx, accountID, hospitalID)
+}
+
 // CreateHospital mocks base method.
 func (m *MockHospitalSVC) CreateHospital(ctx context.Context, hospital domain.Hospital) error {
 	m.ctrl.T.Helper()

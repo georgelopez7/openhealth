@@ -27,6 +27,7 @@ type NurseSVC interface {
 
 type HospitalSVC interface {
 	CreateHospital(ctx context.Context, hospital domain.Hospital) error
+	AddHospitalToAccountAssignment(ctx context.Context, accountID string, hospitalID string) (*domain.HospitalAssignment, error)
 }
 
 type MedicalRecordSVC interface {
