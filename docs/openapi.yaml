@@ -419,6 +419,85 @@ components:
       required:
         - account
       type: object
+    GetDoctorByIDResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/GetDoctorByIDResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+      required:
+        - doctor
+      type: object
+    GetHospitalByIDResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/GetHospitalByIDResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hospital:
+          $ref: "#/components/schemas/Hospital"
+      required:
+        - hospital
+      type: object
+    GetMedicalRecordByIDResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/GetMedicalRecordByIDResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        medical_record:
+          $ref: "#/components/schemas/MedicalRecord"
+      required:
+        - medical_record
+      type: object
+    GetMedicalRecordsByAccountIDResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/GetMedicalRecordsByAccountIDResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        medical_records:
+          items:
+            $ref: "#/components/schemas/MedicalRecord"
+          type:
+            - array
+            - "null"
+      required:
+        - medical_records
+      type: object
+    GetNurseByIDResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/GetNurseByIDResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        nurse:
+          $ref: "#/components/schemas/Nurse"
+      required:
+        - nurse
+      type: object
     HealthcheckBody:
       additionalProperties: false
       properties:
@@ -723,6 +802,32 @@ paths:
       summary: /api/v1/accounts/{accountID} - [PUT]
       tags:
         - accounts
+  /api/v1/accounts/{accountID}/medical-records:
+    get:
+      description: Lists medical records for an account
+      operationId: list-medical-records-by-account
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetMedicalRecordsByAccountIDResponseBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/accounts/{accountID}/medical-records - [GET]
+      tags:
+        - medical-records
   /api/v1/doctors:
     post:
       description: Creates a new doctor
@@ -773,6 +878,44 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: /api/v1/doctors/assignments - [POST]
+      tags:
+        - doctors
+  /api/v1/doctors/{doctorID}:
+    get:
+      description: Gets a doctor by its ID
+      operationId: get-doctor
+      parameters:
+        - in: path
+          name: doctorID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDoctorByIDResponseBody"
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+      summary: /api/v1/doctors/{doctorID} - [GET]
       tags:
         - doctors
   /api/v1/healthcheck:
@@ -847,6 +990,44 @@ paths:
       summary: /api/v1/hospitals/assignments - [POST]
       tags:
         - hospitals
+  /api/v1/hospitals/{hospitalID}:
+    get:
+      description: Gets a hospital by its ID
+      operationId: get-hospital
+      parameters:
+        - in: path
+          name: hospitalID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetHospitalByIDResponseBody"
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+      summary: /api/v1/hospitals/{hospitalID} - [GET]
+      tags:
+        - hospitals
   /api/v1/medical-records:
     post:
       description: Creates a new medical record
@@ -871,6 +1052,44 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: /api/v1/medical-records - [POST]
+      tags:
+        - medical-records
+  /api/v1/medical-records/{medicalRecordID}:
+    get:
+      description: Gets a medical record by its ID
+      operationId: get-medical-record
+      parameters:
+        - in: path
+          name: medicalRecordID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetMedicalRecordByIDResponseBody"
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+      summary: /api/v1/medical-records/{medicalRecordID} - [GET]
       tags:
         - medical-records
   /api/v1/nurses:
@@ -923,6 +1142,44 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: /api/v1/nurses/assignments - [POST]
+      tags:
+        - nurses
+  /api/v1/nurses/{nurseID}:
+    get:
+      description: Gets a nurse by its ID
+      operationId: get-nurse
+      parameters:
+        - in: path
+          name: nurseID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetNurseByIDResponseBody"
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+      summary: /api/v1/nurses/{nurseID} - [GET]
       tags:
         - nurses
 servers:

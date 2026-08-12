@@ -14,6 +14,16 @@ type CreateDoctorResponse struct {
 	}
 }
 
+type GetDoctorByIDInput struct {
+	DoctorID string `path:"doctorID"`
+}
+
+type GetDoctorByIDResponse struct {
+	Body struct {
+		Doctor domain.Doctor `json:"doctor"`
+	}
+}
+
 type CreateDoctorToAccountAssignmentInput struct {
 	Body struct {
 		AccountID string `json:"account_id"`

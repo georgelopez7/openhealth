@@ -47,3 +47,44 @@ func TestServer_CreateHospitalHandler(t *testing.T) {
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
 }
+
+func TestServer_GetHospitalByIDHandler(t *testing.T) {
+	api, deps, teardown := newMockServer(t)
+	defer teardown()
+
+	endpoint := "/api/v1/hospitals/mock-hospital-id-1"
+
+	t.Run("should return hospital", func(t *testing.T) {
+		hospital := domain.NewHospital("mock-hospital-name-1")
+
+		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(hospital, nil)
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusOK, resp.Code)
+
+		var response struct {
+			Hospital domain.Hospital `json:"hospital"`
+		}
+
+		err := json.NewDecoder(resp.Body).Decode(&response)
+		require.NoError(t, err)
+		require.Equal(t, *hospital, response.Hospital)
+	})
+
+	t.Run("should return 404 when hospital not found", func(t *testing.T) {
+		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(nil, domain.HospitalNotFoundError)
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusNotFound, resp.Code)
+	})
+
+	t.Run("should handle service error", func(t *testing.T) {
+		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(nil, errors.New("mock-error"))
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusInternalServerError, resp.Code)
+	})
+}

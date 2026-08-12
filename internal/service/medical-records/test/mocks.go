@@ -84,6 +84,21 @@ func (mr *MockRepositoryMockRecorder) GetMedicalRecordByID(ctx, id any) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecordByID", reflect.TypeOf((*MockRepository)(nil).GetMedicalRecordByID), ctx, id)
 }
 
+// GetMedicalRecordsByAccountID mocks base method.
+func (m *MockRepository) GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedicalRecordsByAccountID", ctx, accountID)
+	ret0, _ := ret[0].([]domain.MedicalRecord)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedicalRecordsByAccountID indicates an expected call of GetMedicalRecordsByAccountID.
+func (mr *MockRepositoryMockRecorder) GetMedicalRecordsByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecordsByAccountID", reflect.TypeOf((*MockRepository)(nil).GetMedicalRecordsByAccountID), ctx, accountID)
+}
+
 // UpdateMedicalRecord mocks base method.
 func (m *MockRepository) UpdateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error {
 	m.ctrl.T.Helper()

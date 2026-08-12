@@ -10,6 +10,26 @@ type CreateMedicalRecordInput struct {
 	}
 }
 
+type GetMedicalRecordByIDInput struct {
+	MedicalRecordID string `path:"medicalRecordID"`
+}
+
+type GetMedicalRecordByIDResponse struct {
+	Body struct {
+		MedicalRecord domain.MedicalRecord `json:"medical_record"`
+	}
+}
+
+type GetMedicalRecordsByAccountIDInput struct {
+	AccountID string `path:"accountID"`
+}
+
+type GetMedicalRecordsByAccountIDResponse struct {
+	Body struct {
+		MedicalRecords []domain.MedicalRecord `json:"medical_records"`
+	}
+}
+
 type CreateMedicalRecordResponse struct {
 	Body struct {
 		MedicalRecord domain.MedicalRecord `json:"medical_record"`

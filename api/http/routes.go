@@ -78,6 +78,17 @@ func (s *Server) addRoutes(api huma.API) {
 	}, s.CreateDoctorHandler)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "get-doctor",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/doctors/{doctorID}",
+		Summary:       "/api/v1/doctors/{doctorID} - [GET]",
+		Description:   "Gets a doctor by its ID",
+		Tags:          []string{"doctors"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetDoctorByIDHandler)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "create-doctor-to-account-assignment",
 		Method:        http.MethodPost,
 		Path:          "/api/v1/doctors/assignments",
@@ -96,6 +107,17 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"nurses"},
 		DefaultStatus: http.StatusCreated,
 	}, s.CreateNurseHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "get-nurse",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/nurses/{nurseID}",
+		Summary:       "/api/v1/nurses/{nurseID} - [GET]",
+		Description:   "Gets a nurse by its ID",
+		Tags:          []string{"nurses"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetNurseByIDHandler)
 
 	huma.Register(api, huma.Operation{
 		OperationID:   "create-nurse-to-hospital-assignment",
@@ -118,6 +140,17 @@ func (s *Server) addRoutes(api huma.API) {
 	}, s.CreateHospitalHandler)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "get-hospital",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/hospitals/{hospitalID}",
+		Summary:       "/api/v1/hospitals/{hospitalID} - [GET]",
+		Description:   "Gets a hospital by its ID",
+		Tags:          []string{"hospitals"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetHospitalByIDHandler)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "create-hospital-to-account-assignment",
 		Method:        http.MethodPost,
 		Path:          "/api/v1/hospitals/assignments",
@@ -136,4 +169,25 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusCreated,
 	}, s.CreateMedicalRecordHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "get-medical-record",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/medical-records/{medicalRecordID}",
+		Summary:       "/api/v1/medical-records/{medicalRecordID} - [GET]",
+		Description:   "Gets a medical record by its ID",
+		Tags:          []string{"medical-records"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetMedicalRecordByIDHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "list-medical-records-by-account",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/accounts/{accountID}/medical-records",
+		Summary:       "/api/v1/accounts/{accountID}/medical-records - [GET]",
+		Description:   "Lists medical records for an account",
+		Tags:          []string{"medical-records"},
+		DefaultStatus: http.StatusOK,
+	}, s.GetMedicalRecordsByAccountIDHandler)
 }

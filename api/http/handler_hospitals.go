@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 
+	"github.com/danielgtaylor/huma/v2"
 	"openhealth/internal/domain"
 )
 
@@ -18,6 +19,20 @@ func (s *Server) CreateHospitalHandler(ctx context.Context, input *CreateHospita
 	resp.Body.Hospital = *hospital
 
 	return resp, nil
+}
+
+func (s *Server) GetHospitalByIDHandler(ctx context.Context, input *GetHospitalByIDInput) (*GetHospitalByIDResponse, error) {
+	hospital, err := s.HospitalSVC.GetHospitalByID(ctx, input.HospitalID)
+	switch err {
+	case nil:
+		resp := &GetHospitalByIDResponse{}
+		resp.Body.Hospital = *hospital
+		return resp, nil
+	case domain.HospitalNotFoundError:
+		return nil, huma.Error404NotFound("hospital not found")
+	default:
+		return nil, err
+	}
 }
 
 func (s *Server) CreateHospitalToAccountAssignmentHandler(ctx context.Context, input *CreateHospitalToAccountAssignmentInput) (*CreateHospitalToAccountAssignmentResponse, error) {

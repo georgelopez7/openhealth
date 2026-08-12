@@ -14,6 +14,16 @@ type CreateNurseResponse struct {
 	}
 }
 
+type GetNurseByIDInput struct {
+	NurseID string `path:"nurseID"`
+}
+
+type GetNurseByIDResponse struct {
+	Body struct {
+		Nurse domain.Nurse `json:"nurse"`
+	}
+}
+
 type CreateNurseToHospitalAssignmentInput struct {
 	Body struct {
 		NurseID    string `json:"nurse_id"`

@@ -166,6 +166,21 @@ func (mr *MockDoctorSVCMockRecorder) CreateDoctor(ctx, doctor any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDoctor", reflect.TypeOf((*MockDoctorSVC)(nil).CreateDoctor), ctx, doctor)
 }
 
+// GetDoctorByID mocks base method.
+func (m *MockDoctorSVC) GetDoctorByID(ctx context.Context, id string) (*domain.Doctor, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDoctorByID", ctx, id)
+	ret0, _ := ret[0].(*domain.Doctor)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDoctorByID indicates an expected call of GetDoctorByID.
+func (mr *MockDoctorSVCMockRecorder) GetDoctorByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorByID", reflect.TypeOf((*MockDoctorSVC)(nil).GetDoctorByID), ctx, id)
+}
+
 // MockNurseSVC is a mock of NurseSVC interface.
 type MockNurseSVC struct {
 	ctrl     *gomock.Controller
@@ -217,6 +232,21 @@ func (m *MockNurseSVC) CreateNurse(ctx context.Context, nurse domain.Nurse) erro
 func (mr *MockNurseSVCMockRecorder) CreateNurse(ctx, nurse any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNurse", reflect.TypeOf((*MockNurseSVC)(nil).CreateNurse), ctx, nurse)
+}
+
+// GetNurseByID mocks base method.
+func (m *MockNurseSVC) GetNurseByID(ctx context.Context, id string) (*domain.Nurse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNurseByID", ctx, id)
+	ret0, _ := ret[0].(*domain.Nurse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetNurseByID indicates an expected call of GetNurseByID.
+func (mr *MockNurseSVCMockRecorder) GetNurseByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNurseByID", reflect.TypeOf((*MockNurseSVC)(nil).GetNurseByID), ctx, id)
 }
 
 // MockHospitalSVC is a mock of HospitalSVC interface.
@@ -272,6 +302,21 @@ func (mr *MockHospitalSVCMockRecorder) CreateHospital(ctx, hospital any) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHospital", reflect.TypeOf((*MockHospitalSVC)(nil).CreateHospital), ctx, hospital)
 }
 
+// GetHospitalByID mocks base method.
+func (m *MockHospitalSVC) GetHospitalByID(ctx context.Context, id string) (*domain.Hospital, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHospitalByID", ctx, id)
+	ret0, _ := ret[0].(*domain.Hospital)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHospitalByID indicates an expected call of GetHospitalByID.
+func (mr *MockHospitalSVCMockRecorder) GetHospitalByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHospitalByID", reflect.TypeOf((*MockHospitalSVC)(nil).GetHospitalByID), ctx, id)
+}
+
 // MockMedicalRecordSVC is a mock of MedicalRecordSVC interface.
 type MockMedicalRecordSVC struct {
 	ctrl     *gomock.Controller
@@ -308,4 +353,34 @@ func (m *MockMedicalRecordSVC) CreateMedicalRecord(ctx context.Context, record d
 func (mr *MockMedicalRecordSVCMockRecorder) CreateMedicalRecord(ctx, record any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMedicalRecord", reflect.TypeOf((*MockMedicalRecordSVC)(nil).CreateMedicalRecord), ctx, record)
+}
+
+// GetMedicalRecordByID mocks base method.
+func (m *MockMedicalRecordSVC) GetMedicalRecordByID(ctx context.Context, id string) (*domain.MedicalRecord, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedicalRecordByID", ctx, id)
+	ret0, _ := ret[0].(*domain.MedicalRecord)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedicalRecordByID indicates an expected call of GetMedicalRecordByID.
+func (mr *MockMedicalRecordSVCMockRecorder) GetMedicalRecordByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecordByID", reflect.TypeOf((*MockMedicalRecordSVC)(nil).GetMedicalRecordByID), ctx, id)
+}
+
+// GetMedicalRecordsByAccountID mocks base method.
+func (m *MockMedicalRecordSVC) GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedicalRecordsByAccountID", ctx, accountID)
+	ret0, _ := ret[0].([]domain.MedicalRecord)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedicalRecordsByAccountID indicates an expected call of GetMedicalRecordsByAccountID.
+func (mr *MockMedicalRecordSVCMockRecorder) GetMedicalRecordsByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecordsByAccountID", reflect.TypeOf((*MockMedicalRecordSVC)(nil).GetMedicalRecordsByAccountID), ctx, accountID)
 }
