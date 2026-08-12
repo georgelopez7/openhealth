@@ -1,19 +1,19 @@
 services:
-  openhealth-app:
-    build:
-      context: ./_frontend
-      dockerfile: ./Dockerfile
-      args:
-        VITE_SITE_URL: https://localhost:3000
-    ports:
-      - "3000:3000"
-    environment:
-      - DOMAIN=https://localhost:3000
-      - API_URL=http://openhealth-api:8000
-    depends_on:
-      openhealth-api:
-        condition: service_healthy
-    restart: unless-stopped
+  # openhealth-app:
+  #   build:
+  #     context: ./_frontend
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       VITE_SITE_URL: https://localhost:3000
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DOMAIN=https://localhost:3000
+  #     - API_URL=http://openhealth-api:8000
+  #   depends_on:
+  #     openhealth-api:
+  #       condition: service_healthy
+  #   restart: unless-stopped
 
   openhealth-api:
     build:
@@ -53,19 +53,6 @@ services:
     depends_on:
       openhealth-postgres:
         condition: service_healthy
-
-  # openhealth-seed-db:
-  #   profiles:
-  #     - seed
-  #   build:
-  #     context: .
-  #     dockerfile: scripts/seed-db/Dockerfile
-  #   container_name: openhealth-seed-db
-  #   environment:
-  #     - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
-  #   depends_on:
-  #     openhealth-api:
-  #       condition: service_started
 
   openhealth-postgres:
     image: postgres:18-alpine
