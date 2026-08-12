@@ -5,18 +5,25 @@ import (
 	"openhealth/internal/repository"
 	"os"
 	"testing"
+
+	"github.com/jmoiron/sqlx"
 )
 
-var repo *repository.Repository
+var (
+	repo *repository.Repository
+	db   *sqlx.DB
+)
 
 func TestMain(m *testing.M) {
 	uri, teardown := postgres.SetupMockPostgres()
 
-	db := postgres.NewPostgresDB(uri)
+	postgresDB := postgres.NewPostgresDB(uri)
 
-	db.Migrate("../../../_migrations")
+	postgresDB.Migrate("../../../_migrations")
 
-	repo = repository.NewRepository(db.DB)
+	db = postgresDB.DB
+
+	repo = repository.NewRepository(db)
 
 	code := m.Run()
 
