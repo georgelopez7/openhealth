@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/google/uuid"
 	"openhealth/internal/domain"
 	"openhealth/internal/pkg/postgres"
 )
@@ -67,28 +66,89 @@ func (r *Repository) UpdateDoctorStatusByID(ctx context.Context, id string, stat
 	return err
 }
 
-// AssignDoctorToAccount - assigns a doctor to an account
-func (r *Repository) AssignDoctorToAccount(ctx context.Context, accountID string, doctorID string) error {
+// AddDoctorAssignment - adds a doctor assignment to the database
+func (r *Repository) AddDoctorAssignment(ctx context.Context, assignment domain.DoctorAssignment) error {
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		INSERT INTO doctor_assignments (id, account_id, doctor_id)
-		VALUES ($1, $2, $3)
-	`, uuid.NewString(), accountID, doctorID)
+		INSERT INTO doctor_assignments (id, account_id, doctor_id, valid_from, valid_to)
+		VALUES ($1, $2, $3, $4, $5)
+	`, assignment.ID, assignment.AccountID, assignment.DoctorID, assignment.ValidFrom, assignment.ValidTo)
 
 	return err
 }
 
-// ExpireDoctorAssignments - expires all open assignments for a doctor
-func (r *Repository) ExpireDoctorAssignments(ctx context.Context, doctorID string) error {
+// RemoveDoctorAssignment - removes a doctor assignment by setting valid_to to now
+func (r *Repository) RemoveDoctorAssignment(ctx context.Context, id string) error {
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
 		UPDATE doctor_assignments
-		SET valid_to = NOW()
+		SET valid_to = GREATEST(NOW(), valid_from + '1 microsecond'::interval)
+		WHERE id = $1
+	`, id)
+
+	return err
+}
+
+// RemoveAllDoctorAssignments - removes all open doctor assignments for a doctor
+func (r *Repository) RemoveAllDoctorAssignments(ctx context.Context, doctorID string) error {
+	dx := postgres.GetTxOrDB(ctx, r.db)
+
+	_, err := dx.ExecContext(ctx, `
+		UPDATE doctor_assignments
+		SET valid_to = GREATEST(NOW(), valid_from + '1 microsecond'::interval)
 		WHERE doctor_id = $1
 		AND valid_to IS NULL
 	`, doctorID)
 
 	return err
 }
+
+// GetDoctorAssignmentByID - get a doctor assignment by its ID
+func (r *Repository) GetDoctorAssignmentByID(ctx context.Context, id string) (*domain.DoctorAssignment, error) {
+	var assignment domain.DoctorAssignment
+
+	err := r.db.GetContext(ctx, &assignment, `
+		SELECT id, account_id, doctor_id, valid_from, valid_to
+		FROM doctor_assignments
+		WHERE id = $1
+	`, id)
+
+	switch err {
+	case sql.ErrNoRows:
+		return nil, nil
+	case nil:
+		return &assignment, nil
+	default:
+		return nil, err
+	}
+}
+
+// GetDoctorAssignments - get doctor assignments up to the provided limit
+func (r *Repository) GetDoctorAssignments(ctx context.Context, limit int) ([]domain.DoctorAssignment, error) {
+	var assignments []domain.DoctorAssignment
+
+	err := r.db.SelectContext(ctx, &assignments, `
+		SELECT id, account_id, doctor_id, valid_from, valid_to
+		FROM doctor_assignments
+		LIMIT $1
+	`, limit)
+
+	return assignments, err
+}
+
+// GetDoctorAssignmentsByDoctorID - get open doctor assignments for a doctor
+func (r *Repository) GetDoctorAssignmentsByDoctorID(ctx context.Context, doctorID string) ([]domain.DoctorAssignment, error) {
+	var assignments []domain.DoctorAssignment
+
+	err := r.db.SelectContext(ctx, &assignments, `
+		SELECT id, account_id, doctor_id, valid_from, valid_to
+		FROM doctor_assignments
+		WHERE doctor_id = $1
+		AND valid_to IS NULL
+	`, doctorID)
+
+	return assignments, err
+}
+

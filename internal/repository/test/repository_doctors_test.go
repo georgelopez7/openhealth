@@ -1,7 +1,6 @@
 package test
 
 import (
-	"database/sql"
 	"openhealth/internal/domain"
 	"testing"
 	"time"
@@ -61,9 +60,14 @@ func TestRepository_GetDoctors(t *testing.T) {
 		drSmith := newTestDoctor(t)
 		drBrown := newTestDoctor(t)
 
-		require.NoError(t, repo.AddDoctor(ctx, *drJones))
-		require.NoError(t, repo.AddDoctor(ctx, *drSmith))
-		require.NoError(t, repo.AddDoctor(ctx, *drBrown))
+		err := repo.AddDoctor(ctx, *drJones)
+		require.NoError(t, err)
+
+		err = repo.AddDoctor(ctx, *drSmith)
+		require.NoError(t, err)
+
+		err = repo.AddDoctor(ctx, *drBrown)
+		require.NoError(t, err)
 
 		doctors, err := repo.GetDoctors(ctx, 2)
 		require.NoError(t, err)
@@ -79,7 +83,9 @@ func TestRepository_GetDoctors(t *testing.T) {
 		repo.ResetAccounts(ctx)
 
 		expected := newTestDoctor(t)
-		require.NoError(t, repo.AddDoctor(ctx, *expected))
+
+		err := repo.AddDoctor(ctx, *expected)
+		require.NoError(t, err)
 
 		doctors, err := repo.GetDoctors(ctx, 10)
 		require.NoError(t, err)
@@ -121,85 +127,251 @@ func TestRepository_UpdateDoctorStatusByID(t *testing.T) {
 	})
 }
 
-func TestRepository_AssignDoctorToAccount(t *testing.T) {
+func TestRepository_AddDoctorAssignment(t *testing.T) {
 	ctx := t.Context()
 
 	repo.ResetAccounts(ctx)
 
-	t.Run("should successfully assign a doctor to an account", func(t *testing.T) {
+	t.Run("should successfully add a doctor assignment", func(t *testing.T) {
 		doctor := newTestDoctor(t)
-		require.NoError(t, repo.AddDoctor(ctx, *doctor))
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
 
 		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		require.NoError(t, repo.AddAccount(ctx, *account))
-
-		err := repo.AssignDoctorToAccount(ctx, account.ID, doctor.ID)
+		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		var count int
-		err = db.QueryRowContext(ctx, `
-			SELECT COUNT(*) FROM doctor_assignments
-			WHERE account_id = $1 AND doctor_id = $2 AND valid_to IS NULL
-		`, account.ID, doctor.ID).Scan(&count)
+		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignment)
 		require.NoError(t, err)
-		require.Equal(t, 1, count)
+
+		stored, err := repo.GetDoctorAssignmentByID(ctx, assignment.ID)
+		require.NoError(t, err)
+		require.Equal(t, assignment.ID, stored.ID)
+		require.Equal(t, account.ID, stored.AccountID)
+		require.Equal(t, doctor.ID, stored.DoctorID)
+		require.Nil(t, stored.ValidTo)
 	})
 }
 
-func TestRepository_ExpireDoctorAssignments(t *testing.T) {
+func TestRepository_RemoveDoctorAssignment(t *testing.T) {
 	ctx := t.Context()
 
 	repo.ResetAccounts(ctx)
 
-	t.Run("should expire all open assignments for a doctor", func(t *testing.T) {
+	t.Run("should successfully remove a doctor assignment", func(t *testing.T) {
 		doctor := newTestDoctor(t)
-		require.NoError(t, repo.AddDoctor(ctx, *doctor))
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
 
 		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		require.NoError(t, repo.AddAccount(ctx, *account))
-
-		_, err := db.ExecContext(ctx, `
-			INSERT INTO doctor_assignments (id, account_id, doctor_id)
-			VALUES ($1, $2, $3)
-		`, "assignment-id-1", account.ID, doctor.ID)
+		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		err = repo.ExpireDoctorAssignments(ctx, doctor.ID)
+		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
-		var validTo sql.NullTime
-		err = db.QueryRowContext(ctx, `
-			SELECT valid_to FROM doctor_assignments
-			WHERE id = $1
-		`, "assignment-id-1").Scan(&validTo)
+		err = repo.RemoveDoctorAssignment(ctx, assignment.ID)
 		require.NoError(t, err)
-		require.True(t, validTo.Valid)
+
+		stored, err := repo.GetDoctorAssignmentByID(ctx, assignment.ID)
+		require.NoError(t, err)
+		require.NotNil(t, stored.ValidTo)
 	})
 
-	t.Run("should only expire open assignments", func(t *testing.T) {
+	t.Run("should handle case when assignment is not found", func(t *testing.T) {
+		err := repo.RemoveDoctorAssignment(ctx, "non-existent-id")
+		require.NoError(t, err)
+	})
+}
+
+func TestRepository_RemoveAllDoctorAssignments(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should remove all open assignments for a doctor", func(t *testing.T) {
 		doctor := newTestDoctor(t)
-		require.NoError(t, repo.AddDoctor(ctx, *doctor))
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		err = repo.AddAccount(ctx, *accountOne)
+		require.NoError(t, err)
+		err = repo.AddAccount(ctx, *accountTwo)
+		require.NoError(t, err)
+
+		assignmentOne := domain.NewDoctorAssignment(accountOne.ID, doctor.ID)
+		assignmentTwo := domain.NewDoctorAssignment(accountTwo.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignmentOne)
+		require.NoError(t, err)
+		err = repo.AddDoctorAssignment(ctx, *assignmentTwo)
+		require.NoError(t, err)
+
+		err = repo.RemoveAllDoctorAssignments(ctx, doctor.ID)
+		require.NoError(t, err)
+
+		assignments, err := repo.GetDoctorAssignmentsByDoctorID(ctx, doctor.ID)
+		require.NoError(t, err)
+		require.Empty(t, assignments)
+	})
+
+	t.Run("should only remove open assignments", func(t *testing.T) {
+		repo.ResetAccounts(ctx)
+
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
 
 		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		require.NoError(t, repo.AddAccount(ctx, *account))
+		err = repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
 
 		now := time.Now().UTC()
-		_, err := db.ExecContext(ctx, `
-			INSERT INTO doctor_assignments (id, account_id, doctor_id, valid_to)
-			VALUES ($1, $2, $3, $4)
-		`, "assignment-id-2", account.ID, doctor.ID, now)
+		assignment := domain.DoctorAssignment{
+			ID:        "assignment-id-1",
+			AccountID: account.ID,
+			DoctorID:  doctor.ID,
+			ValidFrom: now.Add(-time.Hour),
+			ValidTo:   &now,
+		}
+		err = repo.AddDoctorAssignment(ctx, assignment)
 		require.NoError(t, err)
 
-		err = repo.ExpireDoctorAssignments(ctx, doctor.ID)
+		err = repo.RemoveAllDoctorAssignments(ctx, doctor.ID)
 		require.NoError(t, err)
 
-		var validTo time.Time
-		err = db.QueryRowContext(ctx, `
-			SELECT valid_to FROM doctor_assignments
-			WHERE id = $1
-		`, "assignment-id-2").Scan(&validTo)
+		stored, err := repo.GetDoctorAssignmentByID(ctx, assignment.ID)
 		require.NoError(t, err)
-		require.Equal(t, now, validTo)
+		require.Equal(t, now, *stored.ValidTo)
+	})
+}
+
+func TestRepository_GetDoctorAssignmentByID(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should successfully return assignment", func(t *testing.T) {
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		err = repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
+
+		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignment)
+		require.NoError(t, err)
+
+		stored, err := repo.GetDoctorAssignmentByID(ctx, assignment.ID)
+		require.NoError(t, err)
+		require.Equal(t, assignment.ID, stored.ID)
+		require.Equal(t, account.ID, stored.AccountID)
+		require.Equal(t, doctor.ID, stored.DoctorID)
+	})
+
+	t.Run("should handle case when assignment is not found", func(t *testing.T) {
+		stored, err := repo.GetDoctorAssignmentByID(ctx, "non-existent-id")
+		require.NoError(t, err)
+		require.Nil(t, stored)
+	})
+}
+
+func TestRepository_GetDoctorAssignments(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should return assignments up to the limit", func(t *testing.T) {
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		err = repo.AddAccount(ctx, *accountOne)
+		require.NoError(t, err)
+		err = repo.AddAccount(ctx, *accountTwo)
+		require.NoError(t, err)
+
+		assignmentOne := domain.NewDoctorAssignment(accountOne.ID, doctor.ID)
+		assignmentTwo := domain.NewDoctorAssignment(accountTwo.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignmentOne)
+		require.NoError(t, err)
+		err = repo.AddDoctorAssignment(ctx, *assignmentTwo)
+		require.NoError(t, err)
+
+		assignments, err := repo.GetDoctorAssignments(ctx, 1)
+		require.NoError(t, err)
+		require.Len(t, assignments, 1)
+	})
+
+	t.Run("should return empty slice when no assignments exist", func(t *testing.T) {
+		repo.ResetAccounts(ctx)
+
+		assignments, err := repo.GetDoctorAssignments(ctx, 5)
+		require.NoError(t, err)
+		require.Empty(t, assignments)
+	})
+}
+
+func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should return open assignments for a doctor", func(t *testing.T) {
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		err = repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
+
+		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignment)
+		require.NoError(t, err)
+
+		assignments, err := repo.GetDoctorAssignmentsByDoctorID(ctx, doctor.ID)
+		require.NoError(t, err)
+		require.Len(t, assignments, 1)
+		require.Equal(t, assignment.ID, assignments[0].ID)
+	})
+
+	t.Run("should not return removed assignments", func(t *testing.T) {
+		repo.ResetAccounts(ctx)
+
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		err = repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
+
+		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		err = repo.AddDoctorAssignment(ctx, *assignment)
+		require.NoError(t, err)
+
+		err = repo.RemoveDoctorAssignment(ctx, assignment.ID)
+		require.NoError(t, err)
+
+		assignments, err := repo.GetDoctorAssignmentsByDoctorID(ctx, doctor.ID)
+		require.NoError(t, err)
+		require.Empty(t, assignments)
 	})
 }
 
@@ -208,7 +380,8 @@ func newTestDoctor(t *testing.T) *domain.Doctor {
 	t.Helper()
 
 	account := domain.NewAccount("Dr", "Jones", 45, "dr.jones@example.com")
-	require.NoError(t, repo.AddAccount(t.Context(), *account))
+	err := repo.AddAccount(t.Context(), *account)
+	require.NoError(t, err)
 
 	return domain.NewDoctor(account.ID)
 }

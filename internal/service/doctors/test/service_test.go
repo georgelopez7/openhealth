@@ -18,12 +18,6 @@ func TestService_CreateDoctor(t *testing.T) {
 	t.Run("should successfully create doctor", func(t *testing.T) {
 		doctor := domain.NewDoctor("account-id-1")
 
-		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
-			func(ctx context.Context, fn func(context.Context) error) error {
-				return fn(ctx)
-			},
-		)
-
 		deps.repository.EXPECT().AddDoctor(gomock.Any(), *doctor).Return(nil)
 
 		err := service.CreateDoctor(ctx, *doctor)
@@ -32,12 +26,6 @@ func TestService_CreateDoctor(t *testing.T) {
 
 	t.Run("should handle error when repository fails to add doctor", func(t *testing.T) {
 		doctor := domain.NewDoctor("account-id-1")
-
-		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
-			func(ctx context.Context, fn func(context.Context) error) error {
-				return fn(ctx)
-			},
-		)
 
 		deps.repository.EXPECT().AddDoctor(gomock.Any(), *doctor).Return(errors.New("add error"))
 
@@ -129,7 +117,7 @@ func TestService_UpdateDoctorStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateDoctorStatusByID(gomock.Any(), "doctor-id-1", domain.DoctorStatusArchived).Return(nil)
-		deps.repository.EXPECT().ExpireDoctorAssignments(gomock.Any(), "doctor-id-1").Return(nil)
+		deps.repository.EXPECT().RemoveAllDoctorAssignments(gomock.Any(), "doctor-id-1").Return(nil)
 
 		err := service.UpdateDoctorStatusByID(ctx, "doctor-id-1", domain.DoctorStatusArchived)
 		require.NoError(t, err)
@@ -169,41 +157,29 @@ func TestService_UpdateDoctorStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateDoctorStatusByID(gomock.Any(), "doctor-id-1", domain.DoctorStatusArchived).Return(nil)
-		deps.repository.EXPECT().ExpireDoctorAssignments(gomock.Any(), "doctor-id-1").Return(errors.New("expire error"))
+		deps.repository.EXPECT().RemoveAllDoctorAssignments(gomock.Any(), "doctor-id-1").Return(errors.New("remove error"))
 
 		err := service.UpdateDoctorStatusByID(ctx, "doctor-id-1", domain.DoctorStatusArchived)
 		require.Error(t, err)
 	})
 }
 
-func TestService_AssignDoctorToAccount(t *testing.T) {
+func TestService_AddDoctorAssignment(t *testing.T) {
 	ctx := t.Context()
 
 	service, deps := newMockService(t)
 
-	t.Run("should successfully assign doctor to account", func(t *testing.T) {
-		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
-			func(ctx context.Context, fn func(context.Context) error) error {
-				return fn(ctx)
-			},
-		)
+	t.Run("should successfully add doctor assignment", func(t *testing.T) {
+		deps.repository.EXPECT().AddDoctorAssignment(gomock.Any(), gomock.Any()).Return(nil)
 
-		deps.repository.EXPECT().AssignDoctorToAccount(gomock.Any(), "account-id-1", "doctor-id-1").Return(nil)
-
-		err := service.AssignDoctorToAccount(ctx, "account-id-1", "doctor-id-1")
+		err := service.AddDoctorAssignment(ctx, "account-id-1", "doctor-id-1")
 		require.NoError(t, err)
 	})
 
-	t.Run("should handle error when repository fails to assign doctor", func(t *testing.T) {
-		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
-			func(ctx context.Context, fn func(context.Context) error) error {
-				return fn(ctx)
-			},
-		)
+	t.Run("should handle error when repository fails to add doctor assignment", func(t *testing.T) {
+		deps.repository.EXPECT().AddDoctorAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
 
-		deps.repository.EXPECT().AssignDoctorToAccount(gomock.Any(), "account-id-1", "doctor-id-1").Return(errors.New("assign error"))
-
-		err := service.AssignDoctorToAccount(ctx, "account-id-1", "doctor-id-1")
+		err := service.AddDoctorAssignment(ctx, "account-id-1", "doctor-id-1")
 		require.Error(t, err)
 	})
 }
