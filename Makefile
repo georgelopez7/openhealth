@@ -3,8 +3,10 @@
 dev: # [ make dev ]
 	@printf "\033[0;34m💨 Spinning up Dev Environment...\033[0m\n"
 	@make init-openfga PRINT_ENV=false
+	@echo
 	@printf "\033[0;34m🪓 Building OpenHealth Services...\033[0m\n"
 	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
+	@echo
 	@printf "\033[0;32m🚀 Dev environment started!\033[0m\n"
 
 # Seed the database with sample data
@@ -54,6 +56,7 @@ init-openfga: # [ make init-openfga ]
 	STORE=$$(fga store create --name openhealth) && \
 	STORE_ID=$$(echo $$STORE | jq -r '.store.id') && \
 	export FGA_STORE_ID=$$STORE_ID && \
+	echo "" && \
 	printf "\033[0;32m✓ OpenFGA Store Created\033[0m\n" && \
 	MODEL=$$(fga model write --file $(OPENFGA_MODEL)) && \
 	MODEL_ID=$$(echo $$MODEL | jq -r '.authorization_model_id') && \
