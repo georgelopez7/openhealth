@@ -37,7 +37,7 @@ type DoctorAssignment struct {
 	ValidTo   *time.Time `json:"valid_to" db:"valid_to"`
 }
 
-func NewDoctorAssignment(accountID string, doctorID string) *DoctorAssignment {
+func NewDoctorToAccountAssignment(accountID string, doctorID string) *DoctorAssignment {
 	return &DoctorAssignment{
 		ID:        uuid.NewString(),
 		AccountID: accountID,

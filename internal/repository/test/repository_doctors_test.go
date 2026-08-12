@@ -142,7 +142,7 @@ func TestRepository_AddDoctorToAccountAssignment(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
@@ -170,7 +170,7 @@ func TestRepository_RemoveDoctorAssignment(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
@@ -188,7 +188,7 @@ func TestRepository_RemoveDoctorAssignment(t *testing.T) {
 	})
 }
 
-func TestRepository_RemoveAllDoctorAssignments(t *testing.T) {
+func TestRepository_RemoveAllDoctorToAccountAssignments(t *testing.T) {
 	ctx := t.Context()
 
 	repo.ResetAccounts(ctx)
@@ -206,14 +206,14 @@ func TestRepository_RemoveAllDoctorAssignments(t *testing.T) {
 		err = repo.AddAccount(ctx, *accountTwo)
 		require.NoError(t, err)
 
-		assignmentOne := domain.NewDoctorAssignment(accountOne.ID, doctor.ID)
-		assignmentTwo := domain.NewDoctorAssignment(accountTwo.ID, doctor.ID)
+		assignmentOne := domain.NewDoctorToAccountAssignment(accountOne.ID, doctor.ID)
+		assignmentTwo := domain.NewDoctorToAccountAssignment(accountTwo.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignmentOne)
 		require.NoError(t, err)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignmentTwo)
 		require.NoError(t, err)
 
-		err = repo.RemoveAllDoctorAssignments(ctx, doctor.ID)
+		err = repo.RemoveAllDoctorToAccountAssignments(ctx, doctor.ID)
 		require.NoError(t, err)
 
 		assignments, err := repo.GetDoctorAssignmentsByDoctorID(ctx, doctor.ID)
@@ -244,7 +244,7 @@ func TestRepository_RemoveAllDoctorAssignments(t *testing.T) {
 		err = repo.AddDoctorToAccountAssignment(ctx, assignment)
 		require.NoError(t, err)
 
-		err = repo.RemoveAllDoctorAssignments(ctx, doctor.ID)
+		err = repo.RemoveAllDoctorToAccountAssignments(ctx, doctor.ID)
 		require.NoError(t, err)
 
 		stored, err := repo.GetDoctorAssignmentByID(ctx, assignment.ID)
@@ -268,7 +268,7 @@ func TestRepository_GetDoctorAssignmentByID(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
@@ -304,8 +304,8 @@ func TestRepository_GetDoctorAssignments(t *testing.T) {
 		err = repo.AddAccount(ctx, *accountTwo)
 		require.NoError(t, err)
 
-		assignmentOne := domain.NewDoctorAssignment(accountOne.ID, doctor.ID)
-		assignmentTwo := domain.NewDoctorAssignment(accountTwo.ID, doctor.ID)
+		assignmentOne := domain.NewDoctorToAccountAssignment(accountOne.ID, doctor.ID)
+		assignmentTwo := domain.NewDoctorToAccountAssignment(accountTwo.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignmentOne)
 		require.NoError(t, err)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignmentTwo)
@@ -340,7 +340,7 @@ func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
@@ -362,7 +362,7 @@ func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 

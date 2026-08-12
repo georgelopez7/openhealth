@@ -100,8 +100,8 @@ func (r *Repository) AddHospitalAssignment(ctx context.Context, assignment domai
 	return err
 }
 
-// RemoveHospitalAssignment - removes a hospital assignment by setting valid_to to now
-func (r *Repository) RemoveHospitalAssignment(ctx context.Context, id string) error {
+// RemoveHospitalToAccountAssignment - removes a hospital to account assignment by setting valid_to to now
+func (r *Repository) RemoveHospitalToAccountAssignment(ctx context.Context, id string) error {
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `

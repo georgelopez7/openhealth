@@ -186,12 +186,12 @@ func TestRepository_AddHospitalAssignment(t *testing.T) {
 	})
 }
 
-func TestRepository_RemoveHospitalAssignment(t *testing.T) {
+func TestRepository_RemoveHospitalToAccountAssignment(t *testing.T) {
 	ctx := t.Context()
 
 	repo.ResetAccounts(ctx)
 
-	t.Run("should successfully remove a hospital assignment", func(t *testing.T) {
+	t.Run("should successfully remove a hospital to account assignment", func(t *testing.T) {
 		hospital := domain.NewHospital("St. Test Hospital")
 
 		err := repo.AddHospital(ctx, *hospital)
@@ -207,7 +207,7 @@ func TestRepository_RemoveHospitalAssignment(t *testing.T) {
 		err = repo.AddHospitalAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
-		err = repo.RemoveHospitalAssignment(ctx, assignment.ID)
+		err = repo.RemoveHospitalToAccountAssignment(ctx, assignment.ID)
 		require.NoError(t, err)
 
 		stored, err := repo.GetHospitalAssignmentByID(ctx, assignment.ID)
@@ -216,7 +216,7 @@ func TestRepository_RemoveHospitalAssignment(t *testing.T) {
 	})
 
 	t.Run("should handle case when assignment is not found", func(t *testing.T) {
-		err := repo.RemoveHospitalAssignment(ctx, "non-existent-id")
+		err := repo.RemoveHospitalToAccountAssignment(ctx, "non-existent-id")
 		require.NoError(t, err)
 	})
 }

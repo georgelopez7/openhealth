@@ -159,18 +159,18 @@ func (mr *MockRepositoryMockRecorder) GetDoctors(ctx, limit any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctors", reflect.TypeOf((*MockRepository)(nil).GetDoctors), ctx, limit)
 }
 
-// RemoveAllDoctorAssignments mocks base method.
-func (m *MockRepository) RemoveAllDoctorAssignments(ctx context.Context, doctorID string) error {
+// RemoveAllDoctorToAccountAssignments mocks base method.
+func (m *MockRepository) RemoveAllDoctorToAccountAssignments(ctx context.Context, doctorID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveAllDoctorAssignments", ctx, doctorID)
+	ret := m.ctrl.Call(m, "RemoveAllDoctorToAccountAssignments", ctx, doctorID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// RemoveAllDoctorAssignments indicates an expected call of RemoveAllDoctorAssignments.
-func (mr *MockRepositoryMockRecorder) RemoveAllDoctorAssignments(ctx, doctorID any) *gomock.Call {
+// RemoveAllDoctorToAccountAssignments indicates an expected call of RemoveAllDoctorToAccountAssignments.
+func (mr *MockRepositoryMockRecorder) RemoveAllDoctorToAccountAssignments(ctx, doctorID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAllDoctorAssignments", reflect.TypeOf((*MockRepository)(nil).RemoveAllDoctorAssignments), ctx, doctorID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAllDoctorToAccountAssignments", reflect.TypeOf((*MockRepository)(nil).RemoveAllDoctorToAccountAssignments), ctx, doctorID)
 }
 
 // RemoveDoctorAssignment mocks base method.

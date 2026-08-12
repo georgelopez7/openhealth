@@ -91,8 +91,8 @@ func (r *Repository) RemoveDoctorAssignment(ctx context.Context, id string) erro
 	return err
 }
 
-// RemoveAllDoctorAssignments - removes all open doctor assignments for a doctor
-func (r *Repository) RemoveAllDoctorAssignments(ctx context.Context, doctorID string) error {
+// RemoveAllDoctorToAccountAssignments - removes all open doctor to account assignments for a doctor
+func (r *Repository) RemoveAllDoctorToAccountAssignments(ctx context.Context, doctorID string) error {
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `

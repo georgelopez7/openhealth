@@ -157,7 +157,7 @@ func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 
@@ -187,7 +187,7 @@ func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		assignment := domain.NewDoctorAssignment(account.ID, doctor.ID)
+		assignment := domain.NewDoctorToAccountAssignment(account.ID, doctor.ID)
 		err = repo.AddDoctorToAccountAssignment(ctx, *assignment)
 		require.NoError(t, err)
 

@@ -117,7 +117,7 @@ func TestService_UpdateDoctorStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateDoctorStatusByID(gomock.Any(), "doctor-id-1", domain.DoctorStatusArchived).Return(nil)
-		deps.repository.EXPECT().RemoveAllDoctorAssignments(gomock.Any(), "doctor-id-1").Return(nil)
+		deps.repository.EXPECT().RemoveAllDoctorToAccountAssignments(gomock.Any(), "doctor-id-1").Return(nil)
 
 		err := service.UpdateDoctorStatusByID(ctx, "doctor-id-1", domain.DoctorStatusArchived)
 		require.NoError(t, err)
@@ -157,7 +157,7 @@ func TestService_UpdateDoctorStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateDoctorStatusByID(gomock.Any(), "doctor-id-1", domain.DoctorStatusArchived).Return(nil)
-		deps.repository.EXPECT().RemoveAllDoctorAssignments(gomock.Any(), "doctor-id-1").Return(errors.New("remove error"))
+		deps.repository.EXPECT().RemoveAllDoctorToAccountAssignments(gomock.Any(), "doctor-id-1").Return(errors.New("remove error"))
 
 		err := service.UpdateDoctorStatusByID(ctx, "doctor-id-1", domain.DoctorStatusArchived)
 		require.Error(t, err)
