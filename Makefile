@@ -2,14 +2,13 @@
 
 dev: # [ make dev ]
 	@printf "\033[0;34m💨 Spinning up Dev Environment...\033[0m\n"
-	@echo
 	@make init-openfga PRINT_ENV=false
+	@printf "\033[0;34m🪓 Building OpenHealth Services...\033[0m\n"
 	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
-	@printf "\033[1;32m🚀 Dev environment started!\033[0m\n"
+	@printf "\033[0;32m🚀 Dev environment started!\033[0m\n"
 
 # Seed the database with sample data
-seed-db: # [ make seed-db ]
-	@make dev
+seed-db: # [ make seed-db ]xw
 	@hurl --no-output _hurl/seed.hurl
 	@printf "\033[0;34m🌼 Database seeded successfully\033[0m\n"
 
@@ -24,7 +23,7 @@ test: # [ make test ]
 	@echo ""
 	@echo "\033[0;35m[ OpenFGA Tests ]\033[0m"
 	@fga model test --tests ${OPENFGA_TESTS}
-	@echo "\033[1;32m✨ Success\033[0m"
+	@echo "\033[0;32m✨ Success\033[0m"
 
 # Generate Mocks
 gen-mocks: # [ make gen-mocks ]
