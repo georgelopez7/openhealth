@@ -1,9 +1,17 @@
-.PHONY: test gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models
+.PHONY: test gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
 
-dev: # [ make dev ] 
-	make init-openfga
-	docker compose -f dev.docker-compose.yaml up --build -d
+dev: # [ make dev ]
+	@printf "\033[0;34m💨 Spinning up Dev Environment...\033[0m\n"
+	@echo
+	@make init-openfga PRINT_ENV=false
+	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
 	@printf "\033[1;32m🚀 Dev environment started!\033[0m\n"
+
+# Seed the database with sample data
+seed-db: # [ make seed-db ]
+	@make dev
+	@hurl --no-output _hurl/seed.hurl
+	@printf "\033[0;34m🌼 Database seeded successfully\033[0m\n"
 
 # Teardown dev containers and remove volumes
 dev-down: # [ make dev-down ]
@@ -36,8 +44,11 @@ OPENFGA_TESTS=_openfga/openhealth.fga.yaml
 OPENFGA_STORE_NAME ?= openhealth-openfga-store
 OPENFGA_MODEL=_openfga/openhealth.fga
 
+PRINT_ENV ?= true
+
 # Init OpenFGA Store & Model & Update Environment Variables
-init-openfga: run-openfga # [ make init-openfga ]
+init-openfga: # [ make init-openfga ]
+	@make run-openfga
 	@touch .env && \
 	set -a && source .env && set +a && \
 	unset FGA_STORE_ID && \
@@ -48,11 +59,13 @@ init-openfga: run-openfga # [ make init-openfga ]
 	MODEL=$$(fga model write --file $(OPENFGA_MODEL)) && \
 	MODEL_ID=$$(echo $$MODEL | jq -r '.authorization_model_id') && \
 	printf "\033[0;32m✓ OpenFGA Model Created & Added To Store\033[0m\n" && \
-	echo "---" && \
-	echo "FGA_API_URL=http://localhost:8080" && \
-	echo "FGA_STORE_ID=$$STORE_ID" && \
-	echo "FGA_MODEL_ID=$$MODEL_ID" && \
-	echo "---" && \
+	if [ "$(PRINT_ENV)" != "false" ]; then \
+		echo "---" && \
+		echo "FGA_API_URL=http://localhost:8080" && \
+		echo "FGA_STORE_ID=$$STORE_ID" && \
+		echo "FGA_MODEL_ID=$$MODEL_ID" && \
+		echo "---"; \
+	fi && \
 	for pair in \
 		"FGA_API_URL=http://localhost:8080" \
 		"FGA_STORE_ID=$$STORE_ID" \
@@ -66,7 +79,7 @@ init-openfga: run-openfga # [ make init-openfga ]
 
 # Run OpenFGA Container
 run-openfga: # [ make run-openfga ]
-	docker compose -f dev.docker-compose.yaml up -d openfga
+	@docker compose -f dev.docker-compose.yaml up -d openfga > /dev/null
 
 # Generate a new OpenFGA store
 gen-openfga-store: # [ make gen-openfga-store NAME=store-name ]

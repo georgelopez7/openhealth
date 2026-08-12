@@ -1,4 +1,4 @@
-POST http://localhost:/api/v1/accounts
+POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
 {
   "first_name": "Ash",
@@ -12,7 +12,7 @@ HTTP 201
 ash_id: jsonpath "$.account.id"
 
 
-POST http://localhost:/api/v1/accounts
+POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
 {
   "first_name": "Misty",
@@ -26,7 +26,7 @@ HTTP 201
 misty_id: jsonpath "$.account.id"
 
 
-POST http://localhost:/api/v1/accounts
+POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
 {
   "first_name": "Professor",
@@ -40,7 +40,7 @@ HTTP 201
 oak_id: jsonpath "$.account.id"
 
 
-POST http://localhost:/api/v1/accounts
+POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
 {
   "first_name": "Nurse",
@@ -54,7 +54,7 @@ HTTP 201
 joy_id: jsonpath "$.account.id"
 
 
-POST http://localhost:/api/v1/doctors
+POST http://localhost:8000/api/v1/doctors
 Content-Type: application/json
 {
   "account_id": "{{oak_id}}"
@@ -65,7 +65,7 @@ HTTP 201
 doctor_id: jsonpath "$.doctor.id"
 
 
-POST http://localhost:/api/v1/doctors/assignments
+POST http://localhost:8000/api/v1/doctors/assignments
 Content-Type: application/json
 {
   "account_id": "{{ash_id}}",
@@ -77,7 +77,7 @@ HTTP 201
 oak_to_ash_assignment_id: jsonpath "$.assignment.id"
 
 
-POST http://localhost:/api/v1/nurses
+POST http://localhost:8000/api/v1/nurses
 Content-Type: application/json
 {
   "account_id": "{{joy_id}}"
@@ -88,7 +88,7 @@ HTTP 201
 nurse_id: jsonpath "$.nurse.id"
 
 
-POST http://localhost:/api/v1/hospitals
+POST http://localhost:8000/api/v1/hospitals
 Content-Type: application/json
 {
   "name": "Pokemon Center"
@@ -99,7 +99,7 @@ HTTP 201
 hospital_id: jsonpath "$.hospital.id"
 
 
-POST http://localhost:/api/v1/nurses/assignments
+POST http://localhost:8000/api/v1/nurses/assignments
 Content-Type: application/json
 {
   "nurse_id": "{{nurse_id}}",
@@ -111,7 +111,7 @@ HTTP 201
 joy_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
 
 
-POST http://localhost:/api/v1/hospitals/assignments
+POST http://localhost:8000/api/v1/hospitals/assignments
 Content-Type: application/json
 {
   "account_id": "{{ash_id}}",
@@ -123,7 +123,7 @@ HTTP 201
 ash_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
 
 
-POST http://localhost:/api/v1/medical-records
+POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{ash_id}}",
@@ -136,7 +136,7 @@ HTTP 201
 ash_medical_record_id: jsonpath "$.medical_record.id"
 
 
-POST http://localhost:/api/v1/medical-records
+POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{misty_id}}",
@@ -149,7 +149,7 @@ HTTP 201
 misty_medical_record_1_id: jsonpath "$.medical_record.id"
 
 
-POST http://localhost:/api/v1/medical-records
+POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{misty_id}}",
