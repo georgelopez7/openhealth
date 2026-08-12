@@ -30,8 +30,8 @@ func (s *Server) addRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "update-account",
 		Method:        http.MethodPut,
-		Path:          "/api/v1/accounts/{id}",
-		Summary:       "/api/v1/accounts/{id} - [PUT]",
+		Path:          "/api/v1/accounts/{accountID}",
+		Summary:       "/api/v1/accounts/{accountID} - [PUT]",
 		Description:   "Updates an existing account",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
@@ -40,8 +40,8 @@ func (s *Server) addRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "get-account",
 		Method:        http.MethodGet,
-		Path:          "/api/v1/accounts/{id}",
-		Summary:       "/api/v1/accounts/{id} - [GET]",
+		Path:          "/api/v1/accounts/{accountID}",
+		Summary:       "/api/v1/accounts/{accountID} - [GET]",
 		Description:   "Gets an account by its ID",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
@@ -60,10 +60,30 @@ func (s *Server) addRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "archive-account",
 		Method:        http.MethodDelete,
-		Path:          "/api/v1/accounts/{id}",
-		Summary:       "/api/v1/accounts/{id} - [DELETE]",
+		Path:          "/api/v1/accounts/{accountID}",
+		Summary:       "/api/v1/accounts/{accountID} - [DELETE]",
 		Description:   "Archives an existing account",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
 	}, s.ArchiveAccountHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "create-doctor",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/doctors",
+		Summary:       "/api/v1/doctors - [POST]",
+		Description:   "Creates a new doctor",
+		Tags:          []string{"doctors"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateDoctorHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "create-doctor-to-account-assignment",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/doctors/assignments",
+		Summary:       "/api/v1/doctors/assignments - [POST]",
+		Description:   "Assigns a doctor to an account",
+		Tags:          []string{"doctors"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateDoctorToAccountAssignmentHandler)
 }

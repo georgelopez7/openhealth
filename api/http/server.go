@@ -17,9 +17,10 @@ type Server struct {
 	Router     *http.ServeMux
 	API        huma.API
 	AccountSVC AccountSVC
+	DoctorSVC  DoctorSVC
 }
 
-func NewServer(name string, version string, port string, accountSVC AccountSVC) *Server {
+func NewServer(name string, version string, port string, accountSVC AccountSVC, doctorSVC DoctorSVC) *Server {
 	router := http.NewServeMux()
 	config := huma.DefaultConfig(name, version)
 
@@ -35,6 +36,7 @@ func NewServer(name string, version string, port string, accountSVC AccountSVC) 
 		Router:     router,
 		API:        api,
 		AccountSVC: accountSVC,
+		DoctorSVC:  doctorSVC,
 	}
 }
 

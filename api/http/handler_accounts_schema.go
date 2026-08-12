@@ -18,7 +18,7 @@ type CreateAccountResponse struct {
 }
 
 type UpdateAccountInput struct {
-	ID string `path:"id"`
+	AccountID string `path:"accountID"`
 	Body struct {
 		FirstName string `json:"first_name"`
 		LastName  string `json:"last_name"`
@@ -30,7 +30,7 @@ type UpdateAccountInput struct {
 type UpdateAccountResponse struct{}
 
 type GetAccountByIDInput struct {
-	ID string `path:"id"`
+	AccountID string `path:"accountID"`
 }
 
 type GetAccountByIDResponse struct {
@@ -50,7 +50,7 @@ type ListAccountsResponse struct {
 }
 
 type ArchiveAccountInput struct {
-	ID string `path:"id"`
+	AccountID string `path:"accountID"`
 }
 
 type ArchiveAccountResponse struct{}

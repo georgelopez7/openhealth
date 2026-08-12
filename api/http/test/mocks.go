@@ -112,3 +112,56 @@ func (mr *MockAccountSVCMockRecorder) UpdateAccount(ctx, account any) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccount", reflect.TypeOf((*MockAccountSVC)(nil).UpdateAccount), ctx, account)
 }
+
+// MockDoctorSVC is a mock of DoctorSVC interface.
+type MockDoctorSVC struct {
+	ctrl     *gomock.Controller
+	recorder *MockDoctorSVCMockRecorder
+	isgomock struct{}
+}
+
+// MockDoctorSVCMockRecorder is the mock recorder for MockDoctorSVC.
+type MockDoctorSVCMockRecorder struct {
+	mock *MockDoctorSVC
+}
+
+// NewMockDoctorSVC creates a new mock instance.
+func NewMockDoctorSVC(ctrl *gomock.Controller) *MockDoctorSVC {
+	mock := &MockDoctorSVC{ctrl: ctrl}
+	mock.recorder = &MockDoctorSVCMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDoctorSVC) EXPECT() *MockDoctorSVCMockRecorder {
+	return m.recorder
+}
+
+// AddDoctorToAccountAssignment mocks base method.
+func (m *MockDoctorSVC) AddDoctorToAccountAssignment(ctx context.Context, accountID, doctorID string) (*domain.DoctorAssignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddDoctorToAccountAssignment", ctx, accountID, doctorID)
+	ret0, _ := ret[0].(*domain.DoctorAssignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddDoctorToAccountAssignment indicates an expected call of AddDoctorToAccountAssignment.
+func (mr *MockDoctorSVCMockRecorder) AddDoctorToAccountAssignment(ctx, accountID, doctorID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDoctorToAccountAssignment", reflect.TypeOf((*MockDoctorSVC)(nil).AddDoctorToAccountAssignment), ctx, accountID, doctorID)
+}
+
+// CreateDoctor mocks base method.
+func (m *MockDoctorSVC) CreateDoctor(ctx context.Context, doctor domain.Doctor) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateDoctor", ctx, doctor)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateDoctor indicates an expected call of CreateDoctor.
+func (mr *MockDoctorSVCMockRecorder) CreateDoctor(ctx, doctor any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDoctor", reflect.TypeOf((*MockDoctorSVC)(nil).CreateDoctor), ctx, doctor)
+}

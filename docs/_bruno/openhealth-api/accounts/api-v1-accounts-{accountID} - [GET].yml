@@ -1,23 +1,17 @@
 info:
-  name: /api/v1/accounts - [POST]
+  name: /api/v1/accounts/{accountID} - [GET]
   type: http
-  seq: 2
+  seq: 4
   tags:
     - accounts
 
 http:
-  method: POST
-  url: "{{BASE_URL}}/api/v1/accounts"
-  body:
-    type: json
-    data: |-
-      {
-        "$schema": "",
-        "age": 0,
-        "email": "",
-        "first_name": "",
-        "last_name": ""
-      }
+  method: GET
+  url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+  params:
+    - name: accountID
+      value: ""
+      type: path
   auth: inherit
 
 settings:
@@ -27,24 +21,18 @@ settings:
   maxRedirects: 5
 
 examples:
-  - name: 201 Response
-    description: Created
+  - name: 200 Response
+    description: OK
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
-      method: POST
-      body:
-        type: json
-        data: |-
-          {
-            "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
-          }
+      url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+      method: GET
+      params:
+        - name: accountID
+          value: ""
+          type: path
     response:
-      status: 201
-      statusText: Created
+      status: 200
+      statusText: OK
       headers:
         - name: Content-Type
           value: application/json
@@ -69,18 +57,12 @@ examples:
   - name: default Response
     description: Error
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
-      method: POST
-      body:
-        type: json
-        data: |-
-          {
-            "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
-          }
+      url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+      method: GET
+      params:
+        - name: accountID
+          value: ""
+          type: path
     response:
       headers:
         - name: Content-Type
@@ -98,4 +80,4 @@ examples:
             "type": ""
           }
 
-docs: Creates a new account
+docs: Gets an account by its ID

@@ -1,22 +1,20 @@
 info:
-  name: /api/v1/accounts - [POST]
+  name: /api/v1/doctors/assignments - [POST]
   type: http
   seq: 2
   tags:
-    - accounts
+    - doctors
 
 http:
   method: POST
-  url: "{{BASE_URL}}/api/v1/accounts"
+  url: "{{BASE_URL}}/api/v1/doctors/assignments"
   body:
     type: json
     data: |-
       {
         "$schema": "",
-        "age": 0,
-        "email": "",
-        "first_name": "",
-        "last_name": ""
+        "account_id": "",
+        "doctor_id": ""
       }
   auth: inherit
 
@@ -30,17 +28,15 @@ examples:
   - name: 201 Response
     description: Created
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
+      url: "{{BASE_URL}}/api/v1/doctors/assignments"
       method: POST
       body:
         type: json
         data: |-
           {
             "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
+            "account_id": "",
+            "doctor_id": ""
           }
     response:
       status: 201
@@ -53,33 +49,26 @@ examples:
         data: |-
           {
             "$schema": "",
-            "account": {
-              "age": 0,
-              "created_at": "",
+            "assignment": {
+              "account_id": "",
               "doctor_id": "",
-              "email": "",
-              "first_name": "",
-              "hospital_id": "",
               "id": "",
-              "last_name": "",
-              "status": "",
-              "updated_at": ""
+              "valid_from": "",
+              "valid_to": ""
             }
           }
   - name: default Response
     description: Error
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
+      url: "{{BASE_URL}}/api/v1/doctors/assignments"
       method: POST
       body:
         type: json
         data: |-
           {
             "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
+            "account_id": "",
+            "doctor_id": ""
           }
     response:
       headers:
@@ -98,4 +87,4 @@ examples:
             "type": ""
           }
 
-docs: Creates a new account
+docs: Assigns a doctor to an account

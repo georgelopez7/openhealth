@@ -14,3 +14,8 @@ type AccountSVC interface {
 	UpdateAccount(ctx context.Context, account domain.Account) error
 	ArchiveAccount(ctx context.Context, id string) error
 }
+
+type DoctorSVC interface {
+	CreateDoctor(ctx context.Context, doctor domain.Doctor) error
+	AddDoctorToAccountAssignment(ctx context.Context, accountID string, doctorID string) (*domain.DoctorAssignment, error)
+}

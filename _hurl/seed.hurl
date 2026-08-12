@@ -52,3 +52,26 @@ Content-Type: application/json
 HTTP 201
 [Captures]
 joy_id: jsonpath "$.account.id"
+
+
+POST http://localhost:/api/v1/doctors
+Content-Type: application/json
+{
+  "account_id": "{{oak_id}}"
+}
+
+HTTP 201
+[Captures]
+doctor_id: jsonpath "$.doctor.id"
+
+
+POST http://localhost:/api/v1/doctors/assignments
+Content-Type: application/json
+{
+  "account_id": "{{ash_id}}",
+  "doctor_id": "{{doctor_id}}"
+}
+
+HTTP 201
+[Captures]
+oak_to_ash_assignment_id: jsonpath "$.assignment.id"

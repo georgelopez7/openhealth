@@ -6,6 +6,7 @@ import (
 	"openhealth/internal/pkg/postgres"
 	"openhealth/internal/repository"
 	"openhealth/internal/service/accounts"
+	"openhealth/internal/service/doctors"
 	"os"
 )
 
@@ -19,8 +20,9 @@ func main() {
 
 	// SERVICES
 	accountSVC := accounts.NewService(tx, repository)
+	doctorSVC := doctors.NewService(tx, repository)
 
 	// SERVER
-	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC)
+	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC)
 	server.Start()
 }

@@ -29,7 +29,7 @@ func (s *Server) CreateAccountHandler(ctx context.Context, input *CreateAccountI
 
 func (s *Server) UpdateAccountHandler(ctx context.Context, input *UpdateAccountInput) (*UpdateAccountResponse, error) {
 	account := domain.Account{
-		ID:        input.ID,
+		ID:        input.AccountID,
 		FirstName: input.Body.FirstName,
 		LastName:  input.Body.LastName,
 		Age:       input.Body.Age,
@@ -46,7 +46,7 @@ func (s *Server) UpdateAccountHandler(ctx context.Context, input *UpdateAccountI
 }
 
 func (s *Server) GetAccountByIDHandler(ctx context.Context, input *GetAccountByIDInput) (*GetAccountByIDResponse, error) {
-	account, err := s.AccountSVC.GetAccountByID(ctx, input.ID)
+	account, err := s.AccountSVC.GetAccountByID(ctx, input.AccountID)
 	switch err {
 	case nil:
 		resp := &GetAccountByIDResponse{}
@@ -72,7 +72,7 @@ func (s *Server) ListAccountsHandler(ctx context.Context, input *ListAccountsInp
 }
 
 func (s *Server) ArchiveAccountHandler(ctx context.Context, input *ArchiveAccountInput) (*ArchiveAccountResponse, error) {
-	err := s.AccountSVC.ArchiveAccount(ctx, input.ID)
+	err := s.AccountSVC.ArchiveAccount(ctx, input.AccountID)
 	if err != nil {
 		return nil, err
 	}

@@ -1,22 +1,19 @@
 info:
-  name: /api/v1/accounts - [POST]
+  name: /api/v1/doctors - [POST]
   type: http
-  seq: 2
+  seq: 1
   tags:
-    - accounts
+    - doctors
 
 http:
   method: POST
-  url: "{{BASE_URL}}/api/v1/accounts"
+  url: "{{BASE_URL}}/api/v1/doctors"
   body:
     type: json
     data: |-
       {
         "$schema": "",
-        "age": 0,
-        "email": "",
-        "first_name": "",
-        "last_name": ""
+        "account_id": ""
       }
   auth: inherit
 
@@ -30,17 +27,14 @@ examples:
   - name: 201 Response
     description: Created
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
+      url: "{{BASE_URL}}/api/v1/doctors"
       method: POST
       body:
         type: json
         data: |-
           {
             "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
+            "account_id": ""
           }
     response:
       status: 201
@@ -53,33 +47,24 @@ examples:
         data: |-
           {
             "$schema": "",
-            "account": {
-              "age": 0,
+            "doctor": {
+              "account_id": "",
               "created_at": "",
-              "doctor_id": "",
-              "email": "",
-              "first_name": "",
-              "hospital_id": "",
               "id": "",
-              "last_name": "",
-              "status": "",
-              "updated_at": ""
+              "status": ""
             }
           }
   - name: default Response
     description: Error
     request:
-      url: "{{BASE_URL}}/api/v1/accounts"
+      url: "{{BASE_URL}}/api/v1/doctors"
       method: POST
       body:
         type: json
         data: |-
           {
             "$schema": "",
-            "age": 0,
-            "email": "",
-            "first_name": "",
-            "last_name": ""
+            "account_id": ""
           }
     response:
       headers:
@@ -98,4 +83,4 @@ examples:
             "type": ""
           }
 
-docs: Creates a new account
+docs: Creates a new doctor
