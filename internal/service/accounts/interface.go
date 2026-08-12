@@ -13,6 +13,7 @@ type Repository interface {
 	GetAccounts(ctx context.Context, limit int) ([]domain.Account, error)
 	UpdateAccount(ctx context.Context, account domain.Account) error
 	ArchiveAccount(ctx context.Context, id string) error
+	GetDoctorIDByAccountID(ctx context.Context, accountID string) (string, error)
 }
 
 type TxManager interface {

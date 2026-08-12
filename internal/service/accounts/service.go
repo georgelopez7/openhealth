@@ -49,6 +49,13 @@ func (s *Service) GetAccountByID(ctx context.Context, id string) (*domain.Accoun
 		return nil, domain.AccountNotFoundError
 	}
 
+	doctorID, err := s.repository.GetDoctorIDByAccountID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	account.DoctorID = doctorID
+
 	return account, nil
 }
 

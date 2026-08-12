@@ -139,6 +139,58 @@ func TestRepository_UpdateAccount(t *testing.T) {
 	})
 }
 
+func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should return assigned doctor id", func(t *testing.T) {
+		doctor := newTestDoctor(t)
+		require.NoError(t, repo.AddDoctor(ctx, *doctor))
+
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		require.NoError(t, repo.AddAccount(ctx, *account))
+
+		err := repo.AssignDoctorToAccount(ctx, account.ID, doctor.ID)
+		require.NoError(t, err)
+
+		doctorID, err := repo.GetDoctorIDByAccountID(ctx, account.ID)
+		require.NoError(t, err)
+		require.Equal(t, doctor.ID, doctorID)
+	})
+
+	t.Run("should return empty string when no doctor is assigned", func(t *testing.T) {
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		require.NoError(t, repo.AddAccount(ctx, *account))
+
+		doctorID, err := repo.GetDoctorIDByAccountID(ctx, account.ID)
+		require.NoError(t, err)
+		require.Empty(t, doctorID)
+	})
+
+	t.Run("should return empty string when assignment is expired", func(t *testing.T) {
+		doctor := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *doctor)
+		require.NoError(t, err)
+
+		account := domain.NewAccount("Bob", "Brown", 40, "bob.brown@example.com")
+
+		err = repo.AddAccount(ctx, *account)
+		require.NoError(t, err)
+
+		err = repo.AssignDoctorToAccount(ctx, account.ID, doctor.ID)
+		require.NoError(t, err)
+
+		err = repo.ExpireDoctorAssignments(ctx, doctor.ID)
+		require.NoError(t, err)
+
+		doctorID, err := repo.GetDoctorIDByAccountID(ctx, account.ID)
+		require.NoError(t, err)
+		require.Empty(t, doctorID)
+	})
+}
+
 func TestRepository_ArchiveAccount(t *testing.T) {
 	ctx := t.Context()
 

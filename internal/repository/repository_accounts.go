@@ -75,6 +75,29 @@ func (r *Repository) ArchiveAccount(ctx context.Context, id string) error {
 	return err
 }
 
+// GetDoctorIDByAccountID - get the currently assigned doctor ID for an account
+func (r *Repository) GetDoctorIDByAccountID(ctx context.Context, accountID string) (string, error) {
+	var doctorID string
+
+	err := r.db.GetContext(ctx, &doctorID, `
+		SELECT doctor_id
+		FROM doctor_assignments
+		WHERE account_id = $1
+		AND valid_to IS NULL
+		ORDER BY valid_from DESC
+		LIMIT 1
+	`, accountID)
+
+	switch err {
+	case sql.ErrNoRows:
+		return "", nil
+	case nil:
+		return doctorID, nil
+	default:
+		return "", err
+	}
+}
+
 // ResetAccounts - resets all accounts
 func (r *Repository) ResetAccounts(ctx context.Context) error {
 	_, err := r.db.ExecContext(ctx, `

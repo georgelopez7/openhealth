@@ -69,14 +69,29 @@ func TestService_GetAccountByID(t *testing.T) {
 
 	service, deps := newMockService(t)
 
-	t.Run("should successfully get account", func(t *testing.T) {
+	t.Run("should successfully get account with assigned doctor", func(t *testing.T) {
 		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account.DoctorID = "doctor-id-1"
 
-		deps.repository.EXPECT().GetAccountByID(gomock.Any(), gomock.Any()).Return(account, nil)
+		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
+		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("doctor-id-1", nil)
 
 		result, err := service.GetAccountByID(ctx, "test-account-id")
 		require.NoError(t, err)
 		require.Equal(t, account, result)
+		require.Equal(t, "doctor-id-1", result.DoctorID)
+	})
+
+	t.Run("should successfully get account without assigned doctor", func(t *testing.T) {
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+
+		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
+		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
+
+		result, err := service.GetAccountByID(ctx, "test-account-id")
+		require.NoError(t, err)
+		require.Equal(t, account, result)
+		require.Empty(t, result.DoctorID)
 	})
 
 	t.Run("should handle error when account is not found", func(t *testing.T) {
@@ -95,6 +110,18 @@ func TestService_GetAccountByID(t *testing.T) {
 
 		require.Error(t, err)
 		require.Nil(t, account)
+	})
+
+	t.Run("should handle error when repository fails to get doctor id", func(t *testing.T) {
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+
+		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
+		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", errors.New("doctor id error"))
+
+		result, err := service.GetAccountByID(ctx, "test-account-id")
+
+		require.Error(t, err)
+		require.Nil(t, result)
 	})
 }
 
