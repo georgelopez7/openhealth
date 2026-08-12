@@ -256,3 +256,41 @@ func (mr *MockHospitalSVCMockRecorder) CreateHospital(ctx, hospital any) *gomock
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHospital", reflect.TypeOf((*MockHospitalSVC)(nil).CreateHospital), ctx, hospital)
 }
+
+// MockMedicalRecordSVC is a mock of MedicalRecordSVC interface.
+type MockMedicalRecordSVC struct {
+	ctrl     *gomock.Controller
+	recorder *MockMedicalRecordSVCMockRecorder
+	isgomock struct{}
+}
+
+// MockMedicalRecordSVCMockRecorder is the mock recorder for MockMedicalRecordSVC.
+type MockMedicalRecordSVCMockRecorder struct {
+	mock *MockMedicalRecordSVC
+}
+
+// NewMockMedicalRecordSVC creates a new mock instance.
+func NewMockMedicalRecordSVC(ctrl *gomock.Controller) *MockMedicalRecordSVC {
+	mock := &MockMedicalRecordSVC{ctrl: ctrl}
+	mock.recorder = &MockMedicalRecordSVCMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMedicalRecordSVC) EXPECT() *MockMedicalRecordSVCMockRecorder {
+	return m.recorder
+}
+
+// CreateMedicalRecord mocks base method.
+func (m *MockMedicalRecordSVC) CreateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateMedicalRecord", ctx, record)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateMedicalRecord indicates an expected call of CreateMedicalRecord.
+func (mr *MockMedicalRecordSVCMockRecorder) CreateMedicalRecord(ctx, record any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMedicalRecord", reflect.TypeOf((*MockMedicalRecordSVC)(nil).CreateMedicalRecord), ctx, record)
+}

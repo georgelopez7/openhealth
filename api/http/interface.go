@@ -28,3 +28,7 @@ type NurseSVC interface {
 type HospitalSVC interface {
 	CreateHospital(ctx context.Context, hospital domain.Hospital) error
 }
+
+type MedicalRecordSVC interface {
+	CreateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error
+}

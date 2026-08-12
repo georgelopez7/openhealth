@@ -1,0 +1,95 @@
+info:
+  name: /api/v1/medical-records - [POST]
+  type: http
+  seq: 1
+  tags:
+    - medical-records
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/v1/medical-records"
+  body:
+    type: json
+    data: |-
+      {
+        "$schema": "",
+        "account_id": "",
+        "description": "",
+        "title": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{BASE_URL}}/api/v1/medical-records"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "account_id": "",
+            "description": "",
+            "title": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "medical_record": {
+              "account_id": "",
+              "created_at": "",
+              "description": "",
+              "id": "",
+              "status": "",
+              "title": "",
+              "updated_at": ""
+            }
+          }
+  - name: default Response
+    description: Error
+    request:
+      url: "{{BASE_URL}}/api/v1/medical-records"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "account_id": "",
+            "description": "",
+            "title": ""
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+
+docs: Creates a new medical record

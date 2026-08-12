@@ -171,6 +171,42 @@ components:
       required:
         - hospital
       type: object
+    CreateMedicalRecordInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateMedicalRecordInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        account_id:
+          type: string
+        description:
+          type: string
+        title:
+          type: string
+      required:
+        - account_id
+        - title
+        - description
+      type: object
+    CreateMedicalRecordResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateMedicalRecordResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        medical_record:
+          $ref: "#/components/schemas/MedicalRecord"
+      required:
+        - medical_record
+      type: object
     CreateNurseInputBody:
       additionalProperties: false
       properties:
@@ -402,6 +438,34 @@ components:
             - "null"
       required:
         - accounts
+      type: object
+    MedicalRecord:
+      additionalProperties: false
+      properties:
+        account_id:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        status:
+          type: string
+        title:
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - account_id
+        - title
+        - description
+        - status
+        - created_at
+        - updated_at
       type: object
     Nurse:
       additionalProperties: false
@@ -700,6 +764,32 @@ paths:
       summary: /api/v1/hospitals - [POST]
       tags:
         - hospitals
+  /api/v1/medical-records:
+    post:
+      description: Creates a new medical record
+      operationId: create-medical-record
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMedicalRecordInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateMedicalRecordResponseBody"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/medical-records - [POST]
+      tags:
+        - medical-records
   /api/v1/nurses:
     post:
       description: Creates a new nurse

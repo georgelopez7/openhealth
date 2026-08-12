@@ -109,3 +109,42 @@ Content-Type: application/json
 HTTP 201
 [Captures]
 joy_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
+
+
+POST http://localhost:/api/v1/medical-records
+Content-Type: application/json
+{
+  "account_id": "{{ash_id}}",
+  "title": "Ash Annual Checkup",
+  "description": "Routine annual physical examination for Ash Ketchum."
+}
+
+HTTP 201
+[Captures]
+ash_medical_record_id: jsonpath "$.medical_record.id"
+
+
+POST http://localhost:/api/v1/medical-records
+Content-Type: application/json
+{
+  "account_id": "{{misty_id}}",
+  "title": "Misty Water Exposure Assessment",
+  "description": "Assessment following extended exposure to Water-type Pokemon."
+}
+
+HTTP 201
+[Captures]
+misty_medical_record_1_id: jsonpath "$.medical_record.id"
+
+
+POST http://localhost:/api/v1/medical-records
+Content-Type: application/json
+{
+  "account_id": "{{misty_id}}",
+  "title": "Misty Starmie Incident",
+  "description": "Follow-up visit after Starmie Psybeam-related dizziness."
+}
+
+HTTP 201
+[Captures]
+misty_medical_record_2_id: jsonpath "$.medical_record.id"

@@ -10,10 +10,11 @@ import (
 )
 
 type Dependencies struct {
-	MockAccountSvc  *MockAccountSVC
-	MockDoctorSvc   *MockDoctorSVC
-	MockNurseSvc    *MockNurseSVC
-	MockHospitalSvc *MockHospitalSVC
+	MockAccountSvc       *MockAccountSVC
+	MockDoctorSvc        *MockDoctorSVC
+	MockNurseSvc         *MockNurseSVC
+	MockHospitalSvc      *MockHospitalSVC
+	MockMedicalRecordSvc *MockMedicalRecordSVC
 }
 
 // newMockServer - creates a mock server.
@@ -30,15 +31,17 @@ func newMockServer(t *testing.T) (humatest.TestAPI, Dependencies, func()) {
 	mockDoctorSvc := NewMockDoctorSVC(ctrl)
 	mockNurseSvc := NewMockNurseSVC(ctrl)
 	mockHospitalSvc := NewMockHospitalSVC(ctrl)
+	mockMedicalRecordSvc := NewMockMedicalRecordSVC(ctrl)
 
 	deps := Dependencies{
-		MockAccountSvc:  mockAccountSvc,
-		MockDoctorSvc:   mockDoctorSvc,
-		MockNurseSvc:    mockNurseSvc,
-		MockHospitalSvc: mockHospitalSvc,
+		MockAccountSvc:       mockAccountSvc,
+		MockDoctorSvc:        mockDoctorSvc,
+		MockNurseSvc:         mockNurseSvc,
+		MockHospitalSvc:      mockHospitalSvc,
+		MockMedicalRecordSvc: mockMedicalRecordSvc,
 	}
 
-	server := xhttp.NewServer(name, version, port, mockAccountSvc, mockDoctorSvc, mockNurseSvc, mockHospitalSvc).Mock(t)
+	server := xhttp.NewServer(name, version, port, mockAccountSvc, mockDoctorSvc, mockNurseSvc, mockHospitalSvc, mockMedicalRecordSvc).Mock(t)
 	api := server.API.(humatest.TestAPI)
 
 	return api, deps, ctrl.Finish

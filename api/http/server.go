@@ -12,17 +12,18 @@ import (
 )
 
 type Server struct {
-	Port        string
-	BaseURL     string
-	Router      *http.ServeMux
-	API         huma.API
-	AccountSVC  AccountSVC
-	DoctorSVC   DoctorSVC
-	NurseSVC    NurseSVC
-	HospitalSVC HospitalSVC
+	Port             string
+	BaseURL          string
+	Router           *http.ServeMux
+	API              huma.API
+	AccountSVC       AccountSVC
+	DoctorSVC        DoctorSVC
+	NurseSVC         NurseSVC
+	HospitalSVC      HospitalSVC
+	MedicalRecordSVC MedicalRecordSVC
 }
 
-func NewServer(name string, version string, port string, accountSVC AccountSVC, doctorSVC DoctorSVC, nurseSVC NurseSVC, hospitalSVC HospitalSVC) *Server {
+func NewServer(name string, version string, port string, accountSVC AccountSVC, doctorSVC DoctorSVC, nurseSVC NurseSVC, hospitalSVC HospitalSVC, medicalRecordSVC MedicalRecordSVC) *Server {
 	router := http.NewServeMux()
 	config := huma.DefaultConfig(name, version)
 
@@ -34,13 +35,14 @@ func NewServer(name string, version string, port string, accountSVC AccountSVC, 
 	api := humago.New(router, config)
 
 	return &Server{
-		Port:        port,
-		Router:      router,
-		API:         api,
-		AccountSVC:  accountSVC,
-		DoctorSVC:   doctorSVC,
-		NurseSVC:    nurseSVC,
-		HospitalSVC: hospitalSVC,
+		Port:             port,
+		Router:           router,
+		API:              api,
+		AccountSVC:       accountSVC,
+		DoctorSVC:        doctorSVC,
+		NurseSVC:         nurseSVC,
+		HospitalSVC:      hospitalSVC,
+		MedicalRecordSVC: medicalRecordSVC,
 	}
 }
 
