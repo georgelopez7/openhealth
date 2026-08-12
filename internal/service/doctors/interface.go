@@ -12,7 +12,7 @@ type Repository interface {
 	GetDoctorByID(ctx context.Context, id string) (*domain.Doctor, error)
 	GetDoctors(ctx context.Context, limit int) ([]domain.Doctor, error)
 	UpdateDoctorStatusByID(ctx context.Context, id string, status domain.DoctorStatus) error
-	AddDoctorAssignment(ctx context.Context, assignment domain.DoctorAssignment) error
+	AddDoctorToAccountAssignment(ctx context.Context, assignment domain.DoctorAssignment) error
 	RemoveDoctorAssignment(ctx context.Context, id string) error
 	RemoveAllDoctorAssignments(ctx context.Context, doctorID string) error
 	GetDoctorAssignmentByID(ctx context.Context, id string) (*domain.DoctorAssignment, error)

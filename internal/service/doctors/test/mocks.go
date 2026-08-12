@@ -55,18 +55,18 @@ func (mr *MockRepositoryMockRecorder) AddDoctor(ctx, doctor any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDoctor", reflect.TypeOf((*MockRepository)(nil).AddDoctor), ctx, doctor)
 }
 
-// AddDoctorAssignment mocks base method.
-func (m *MockRepository) AddDoctorAssignment(ctx context.Context, assignment domain.DoctorAssignment) error {
+// AddDoctorToAccountAssignment mocks base method.
+func (m *MockRepository) AddDoctorToAccountAssignment(ctx context.Context, assignment domain.DoctorAssignment) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddDoctorAssignment", ctx, assignment)
+	ret := m.ctrl.Call(m, "AddDoctorToAccountAssignment", ctx, assignment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// AddDoctorAssignment indicates an expected call of AddDoctorAssignment.
-func (mr *MockRepositoryMockRecorder) AddDoctorAssignment(ctx, assignment any) *gomock.Call {
+// AddDoctorToAccountAssignment indicates an expected call of AddDoctorToAccountAssignment.
+func (mr *MockRepositoryMockRecorder) AddDoctorToAccountAssignment(ctx, assignment any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDoctorAssignment", reflect.TypeOf((*MockRepository)(nil).AddDoctorAssignment), ctx, assignment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDoctorToAccountAssignment", reflect.TypeOf((*MockRepository)(nil).AddDoctorToAccountAssignment), ctx, assignment)
 }
 
 // GetDoctorAssignmentByID mocks base method.

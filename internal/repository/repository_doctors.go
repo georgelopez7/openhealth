@@ -66,8 +66,8 @@ func (r *Repository) UpdateDoctorStatusByID(ctx context.Context, id string, stat
 	return err
 }
 
-// AddDoctorAssignment - adds a doctor assignment to the database
-func (r *Repository) AddDoctorAssignment(ctx context.Context, assignment domain.DoctorAssignment) error {
+// AddDoctorToAccountAssignment - assigns a doctor to an account
+func (r *Repository) AddDoctorToAccountAssignment(ctx context.Context, assignment domain.DoctorAssignment) error {
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
@@ -151,4 +151,3 @@ func (r *Repository) GetDoctorAssignmentsByDoctorID(ctx context.Context, doctorI
 
 	return assignments, err
 }
-

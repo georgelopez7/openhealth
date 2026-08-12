@@ -164,22 +164,22 @@ func TestService_UpdateDoctorStatusByID(t *testing.T) {
 	})
 }
 
-func TestService_AddDoctorAssignment(t *testing.T) {
+func TestService_AddDoctorToAccountAssignment(t *testing.T) {
 	ctx := t.Context()
 
 	service, deps := newMockService(t)
 
 	t.Run("should successfully add doctor assignment", func(t *testing.T) {
-		deps.repository.EXPECT().AddDoctorAssignment(gomock.Any(), gomock.Any()).Return(nil)
+		deps.repository.EXPECT().AddDoctorToAccountAssignment(gomock.Any(), gomock.Any()).Return(nil)
 
-		err := service.AddDoctorAssignment(ctx, "account-id-1", "doctor-id-1")
+		err := service.AddDoctorToAccountAssignment(ctx, "account-id-1", "doctor-id-1")
 		require.NoError(t, err)
 	})
 
 	t.Run("should handle error when repository fails to add doctor assignment", func(t *testing.T) {
-		deps.repository.EXPECT().AddDoctorAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
+		deps.repository.EXPECT().AddDoctorToAccountAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
 
-		err := service.AddDoctorAssignment(ctx, "account-id-1", "doctor-id-1")
+		err := service.AddDoctorToAccountAssignment(ctx, "account-id-1", "doctor-id-1")
 		require.Error(t, err)
 	})
 }

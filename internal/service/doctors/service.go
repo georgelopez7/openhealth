@@ -61,9 +61,9 @@ func (s *Service) UpdateDoctorStatusByID(ctx context.Context, id string, status 
 	})
 }
 
-// AddDoctorAssignment - adds a doctor assignment
-func (s *Service) AddDoctorAssignment(ctx context.Context, accountID string, doctorID string) error {
+// AddDoctorToAccountAssignment - assigns a doctor to an account
+func (s *Service) AddDoctorToAccountAssignment(ctx context.Context, accountID string, doctorID string) error {
 	assignment := domain.NewDoctorAssignment(accountID, doctorID)
 
-	return s.repository.AddDoctorAssignment(ctx, *assignment)
+	return s.repository.AddDoctorToAccountAssignment(ctx, *assignment)
 }

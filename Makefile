@@ -13,6 +13,7 @@ dev-down: # [ make dev-down ]
 test: # [ make test ]
 	@echo "\033[0;34m[ Go Tests ]\033[0m"
 	go test ./...
+	@echo ""
 	@echo "\033[0;35m[ OpenFGA Tests ]\033[0m"
 	@fga model test --tests ${OPENFGA_TESTS}
 	@echo "\033[1;32m✨ Success\033[0m"
