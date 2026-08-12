@@ -86,4 +86,34 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"doctors"},
 		DefaultStatus: http.StatusCreated,
 	}, s.CreateDoctorToAccountAssignmentHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "create-nurse",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/nurses",
+		Summary:       "/api/v1/nurses - [POST]",
+		Description:   "Creates a new nurse",
+		Tags:          []string{"nurses"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateNurseHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "create-nurse-to-hospital-assignment",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/nurses/assignments",
+		Summary:       "/api/v1/nurses/assignments - [POST]",
+		Description:   "Assigns a nurse to a hospital",
+		Tags:          []string{"nurses"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateNurseToHospitalAssignmentHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "create-hospital",
+		Method:        http.MethodPost,
+		Path:          "/api/v1/hospitals",
+		Summary:       "/api/v1/hospitals - [POST]",
+		Description:   "Creates a new hospital",
+		Tags:          []string{"hospitals"},
+		DefaultStatus: http.StatusCreated,
+	}, s.CreateHospitalHandler)
 }

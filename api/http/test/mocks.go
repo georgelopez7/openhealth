@@ -165,3 +165,94 @@ func (mr *MockDoctorSVCMockRecorder) CreateDoctor(ctx, doctor any) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDoctor", reflect.TypeOf((*MockDoctorSVC)(nil).CreateDoctor), ctx, doctor)
 }
+
+// MockNurseSVC is a mock of NurseSVC interface.
+type MockNurseSVC struct {
+	ctrl     *gomock.Controller
+	recorder *MockNurseSVCMockRecorder
+	isgomock struct{}
+}
+
+// MockNurseSVCMockRecorder is the mock recorder for MockNurseSVC.
+type MockNurseSVCMockRecorder struct {
+	mock *MockNurseSVC
+}
+
+// NewMockNurseSVC creates a new mock instance.
+func NewMockNurseSVC(ctrl *gomock.Controller) *MockNurseSVC {
+	mock := &MockNurseSVC{ctrl: ctrl}
+	mock.recorder = &MockNurseSVCMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockNurseSVC) EXPECT() *MockNurseSVCMockRecorder {
+	return m.recorder
+}
+
+// AddNurseToHospitalAssignment mocks base method.
+func (m *MockNurseSVC) AddNurseToHospitalAssignment(ctx context.Context, nurseID, hospitalID string) (*domain.NurseToHospitalAssignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddNurseToHospitalAssignment", ctx, nurseID, hospitalID)
+	ret0, _ := ret[0].(*domain.NurseToHospitalAssignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddNurseToHospitalAssignment indicates an expected call of AddNurseToHospitalAssignment.
+func (mr *MockNurseSVCMockRecorder) AddNurseToHospitalAssignment(ctx, nurseID, hospitalID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNurseToHospitalAssignment", reflect.TypeOf((*MockNurseSVC)(nil).AddNurseToHospitalAssignment), ctx, nurseID, hospitalID)
+}
+
+// CreateNurse mocks base method.
+func (m *MockNurseSVC) CreateNurse(ctx context.Context, nurse domain.Nurse) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNurse", ctx, nurse)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateNurse indicates an expected call of CreateNurse.
+func (mr *MockNurseSVCMockRecorder) CreateNurse(ctx, nurse any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNurse", reflect.TypeOf((*MockNurseSVC)(nil).CreateNurse), ctx, nurse)
+}
+
+// MockHospitalSVC is a mock of HospitalSVC interface.
+type MockHospitalSVC struct {
+	ctrl     *gomock.Controller
+	recorder *MockHospitalSVCMockRecorder
+	isgomock struct{}
+}
+
+// MockHospitalSVCMockRecorder is the mock recorder for MockHospitalSVC.
+type MockHospitalSVCMockRecorder struct {
+	mock *MockHospitalSVC
+}
+
+// NewMockHospitalSVC creates a new mock instance.
+func NewMockHospitalSVC(ctrl *gomock.Controller) *MockHospitalSVC {
+	mock := &MockHospitalSVC{ctrl: ctrl}
+	mock.recorder = &MockHospitalSVCMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockHospitalSVC) EXPECT() *MockHospitalSVCMockRecorder {
+	return m.recorder
+}
+
+// CreateHospital mocks base method.
+func (m *MockHospitalSVC) CreateHospital(ctx context.Context, hospital domain.Hospital) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateHospital", ctx, hospital)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateHospital indicates an expected call of CreateHospital.
+func (mr *MockHospitalSVCMockRecorder) CreateHospital(ctx, hospital any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateHospital", reflect.TypeOf((*MockHospitalSVC)(nil).CreateHospital), ctx, hospital)
+}

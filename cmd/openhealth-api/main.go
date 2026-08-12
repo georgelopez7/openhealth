@@ -7,6 +7,8 @@ import (
 	"openhealth/internal/repository"
 	"openhealth/internal/service/accounts"
 	"openhealth/internal/service/doctors"
+	"openhealth/internal/service/hospitals"
+	"openhealth/internal/service/nurses"
 	"os"
 )
 
@@ -21,8 +23,10 @@ func main() {
 	// SERVICES
 	accountSVC := accounts.NewService(tx, repository)
 	doctorSVC := doctors.NewService(tx, repository)
+	nurseSVC := nurses.NewService(tx, repository)
+	hospitalSVC := hospitals.NewService(tx, repository)
 
 	// SERVER
-	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC)
+	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC, nurseSVC, hospitalSVC)
 	server.Start()
 }

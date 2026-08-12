@@ -75,3 +75,37 @@ Content-Type: application/json
 HTTP 201
 [Captures]
 oak_to_ash_assignment_id: jsonpath "$.assignment.id"
+
+
+POST http://localhost:/api/v1/nurses
+Content-Type: application/json
+{
+  "account_id": "{{joy_id}}"
+}
+
+HTTP 201
+[Captures]
+nurse_id: jsonpath "$.nurse.id"
+
+
+POST http://localhost:/api/v1/hospitals
+Content-Type: application/json
+{
+  "name": "Pokemon Center"
+}
+
+HTTP 201
+[Captures]
+hospital_id: jsonpath "$.hospital.id"
+
+
+POST http://localhost:/api/v1/nurses/assignments
+Content-Type: application/json
+{
+  "nurse_id": "{{nurse_id}}",
+  "hospital_id": "{{hospital_id}}"
+}
+
+HTTP 201
+[Captures]
+joy_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"

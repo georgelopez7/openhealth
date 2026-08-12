@@ -141,6 +141,99 @@ components:
       required:
         - assignment
       type: object
+    CreateHospitalInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateHospitalInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        name:
+          type: string
+      required:
+        - name
+      type: object
+    CreateHospitalResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateHospitalResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hospital:
+          $ref: "#/components/schemas/Hospital"
+      required:
+        - hospital
+      type: object
+    CreateNurseInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateNurseInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        account_id:
+          type: string
+      required:
+        - account_id
+      type: object
+    CreateNurseResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateNurseResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        nurse:
+          $ref: "#/components/schemas/Nurse"
+      required:
+        - nurse
+      type: object
+    CreateNurseToHospitalAssignmentInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateNurseToHospitalAssignmentInputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        hospital_id:
+          type: string
+        nurse_id:
+          type: string
+      required:
+        - nurse_id
+        - hospital_id
+      type: object
+    CreateNurseToHospitalAssignmentResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:/schemas/CreateNurseToHospitalAssignmentResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        assignment:
+          $ref: "#/components/schemas/NurseToHospitalAssignment"
+      required:
+        - assignment
+      type: object
     Doctor:
       additionalProperties: false
       properties:
@@ -273,6 +366,24 @@ components:
       required:
         - status
       type: object
+    Hospital:
+      additionalProperties: false
+      properties:
+        created_at:
+          format: date-time
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+      required:
+        - id
+        - name
+        - status
+        - created_at
+      type: object
     ListAccountsResponseBody:
       additionalProperties: false
       properties:
@@ -291,6 +402,48 @@ components:
             - "null"
       required:
         - accounts
+      type: object
+    Nurse:
+      additionalProperties: false
+      properties:
+        account_id:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        id:
+          type: string
+        status:
+          type: string
+      required:
+        - id
+        - account_id
+        - status
+        - created_at
+      type: object
+    NurseToHospitalAssignment:
+      additionalProperties: false
+      properties:
+        hospital_id:
+          type: string
+        id:
+          type: string
+        nurse_id:
+          type: string
+        valid_from:
+          format: date-time
+          type: string
+        valid_to:
+          format: date-time
+          type:
+            - string
+            - "null"
+      required:
+        - id
+        - nurse_id
+        - hospital_id
+        - valid_from
+        - valid_to
       type: object
     UpdateAccountInputBody:
       additionalProperties: false
@@ -521,6 +674,84 @@ paths:
       summary: /api/v1/healthcheck - [GET]
       tags:
         - system
+  /api/v1/hospitals:
+    post:
+      description: Creates a new hospital
+      operationId: create-hospital
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHospitalInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateHospitalResponseBody"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/hospitals - [POST]
+      tags:
+        - hospitals
+  /api/v1/nurses:
+    post:
+      description: Creates a new nurse
+      operationId: create-nurse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNurseInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateNurseResponseBody"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/nurses - [POST]
+      tags:
+        - nurses
+  /api/v1/nurses/assignments:
+    post:
+      description: Assigns a nurse to a hospital
+      operationId: create-nurse-to-hospital-assignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNurseToHospitalAssignmentInputBody"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateNurseToHospitalAssignmentResponseBody"
+          description: Created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /api/v1/nurses/assignments - [POST]
+      tags:
+        - nurses
 servers:
   - url: "http://localhost:"
 

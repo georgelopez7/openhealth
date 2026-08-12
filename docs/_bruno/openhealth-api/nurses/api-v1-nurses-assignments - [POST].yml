@@ -1,0 +1,90 @@
+info:
+  name: /api/v1/nurses/assignments - [POST]
+  type: http
+  seq: 2
+  tags:
+    - nurses
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/v1/nurses/assignments"
+  body:
+    type: json
+    data: |-
+      {
+        "$schema": "",
+        "hospital_id": "",
+        "nurse_id": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{BASE_URL}}/api/v1/nurses/assignments"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "hospital_id": "",
+            "nurse_id": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "assignment": {
+              "hospital_id": "",
+              "id": "",
+              "nurse_id": "",
+              "valid_from": "",
+              "valid_to": ""
+            }
+          }
+  - name: default Response
+    description: Error
+    request:
+      url: "{{BASE_URL}}/api/v1/nurses/assignments"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "hospital_id": "",
+            "nurse_id": ""
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+
+docs: Assigns a nurse to a hospital

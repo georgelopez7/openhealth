@@ -62,7 +62,11 @@ func (s *Service) UpdateNurseStatusByID(ctx context.Context, id string, status d
 }
 
 // AddNurseToHospitalAssignment - assigns a nurse to a hospital
-func (s *Service) AddNurseToHospitalAssignment(ctx context.Context, nurseID string, hospitalID string) error {
+func (s *Service) AddNurseToHospitalAssignment(ctx context.Context, nurseID string, hospitalID string) (*domain.NurseToHospitalAssignment, error) {
 	assignment := domain.NewNurseToHospitalAssignment(nurseID, hospitalID)
-	return s.repository.AddNurseToHospitalAssignment(ctx, *assignment)
+	if err := s.repository.AddNurseToHospitalAssignment(ctx, *assignment); err != nil {
+		return nil, err
+	}
+
+	return assignment, nil
 }
