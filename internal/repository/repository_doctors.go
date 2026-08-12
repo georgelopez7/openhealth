@@ -71,7 +71,7 @@ func (r *Repository) AddDoctorAssignment(ctx context.Context, assignment domain.
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		INSERT INTO doctor_assignments (id, account_id, doctor_id, valid_from, valid_to)
+		INSERT INTO doctor_to_account_assignments (id, account_id, doctor_id, valid_from, valid_to)
 		VALUES ($1, $2, $3, $4, $5)
 	`, assignment.ID, assignment.AccountID, assignment.DoctorID, assignment.ValidFrom, assignment.ValidTo)
 
@@ -83,7 +83,7 @@ func (r *Repository) RemoveDoctorAssignment(ctx context.Context, id string) erro
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		UPDATE doctor_assignments
+		UPDATE doctor_to_account_assignments
 		SET valid_to = GREATEST(NOW(), valid_from + '1 microsecond'::interval)
 		WHERE id = $1
 	`, id)
@@ -96,7 +96,7 @@ func (r *Repository) RemoveAllDoctorAssignments(ctx context.Context, doctorID st
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		UPDATE doctor_assignments
+		UPDATE doctor_to_account_assignments
 		SET valid_to = GREATEST(NOW(), valid_from + '1 microsecond'::interval)
 		WHERE doctor_id = $1
 		AND valid_to IS NULL
@@ -111,7 +111,7 @@ func (r *Repository) GetDoctorAssignmentByID(ctx context.Context, id string) (*d
 
 	err := r.db.GetContext(ctx, &assignment, `
 		SELECT id, account_id, doctor_id, valid_from, valid_to
-		FROM doctor_assignments
+		FROM doctor_to_account_assignments
 		WHERE id = $1
 	`, id)
 
@@ -131,7 +131,7 @@ func (r *Repository) GetDoctorAssignments(ctx context.Context, limit int) ([]dom
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, doctor_id, valid_from, valid_to
-		FROM doctor_assignments
+		FROM doctor_to_account_assignments
 		LIMIT $1
 	`, limit)
 
@@ -144,7 +144,7 @@ func (r *Repository) GetDoctorAssignmentsByDoctorID(ctx context.Context, doctorI
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, doctor_id, valid_from, valid_to
-		FROM doctor_assignments
+		FROM doctor_to_account_assignments
 		WHERE doctor_id = $1
 		AND valid_to IS NULL
 	`, doctorID)

@@ -93,7 +93,7 @@ func (r *Repository) AddHospitalAssignment(ctx context.Context, assignment domai
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		INSERT INTO hospital_assignments (id, account_id, hospital_id, valid_from, valid_to)
+		INSERT INTO hospital_to_account_assignments (id, account_id, hospital_id, valid_from, valid_to)
 		VALUES ($1, $2, $3, $4, $5)
 	`, assignment.ID, assignment.AccountID, assignment.HospitalID, assignment.ValidFrom, assignment.ValidTo)
 
@@ -105,7 +105,7 @@ func (r *Repository) RemoveHospitalAssignment(ctx context.Context, id string) er
 	dx := postgres.GetTxOrDB(ctx, r.db)
 
 	_, err := dx.ExecContext(ctx, `
-		UPDATE hospital_assignments
+		UPDATE hospital_to_account_assignments
 		SET valid_to = GREATEST(NOW(), valid_from + '1 microsecond'::interval)
 		WHERE id = $1
 	`, id)
@@ -119,7 +119,7 @@ func (r *Repository) GetHospitalAssignmentByID(ctx context.Context, id string) (
 
 	err := r.db.GetContext(ctx, &assignment, `
 		SELECT id, account_id, hospital_id, valid_from, valid_to
-		FROM hospital_assignments
+		FROM hospital_to_account_assignments
 		WHERE id = $1
 	`, id)
 
@@ -139,7 +139,7 @@ func (r *Repository) GetHospitalAssignments(ctx context.Context, limit int) ([]d
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, hospital_id, valid_from, valid_to
-		FROM hospital_assignments
+		FROM hospital_to_account_assignments
 		LIMIT $1
 	`, limit)
 
@@ -152,7 +152,7 @@ func (r *Repository) GetHospitalIDByAccountID(ctx context.Context, accountID str
 
 	err := r.db.GetContext(ctx, &hospitalID, `
 		SELECT hospital_id
-		FROM hospital_assignments
+		FROM hospital_to_account_assignments
 		WHERE account_id = $1
 		AND valid_to IS NULL
 		ORDER BY valid_from DESC

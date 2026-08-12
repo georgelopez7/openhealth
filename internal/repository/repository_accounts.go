@@ -81,7 +81,7 @@ func (r *Repository) GetDoctorIDByAccountID(ctx context.Context, accountID strin
 
 	err := r.db.GetContext(ctx, &doctorID, `
 		SELECT doctor_id
-		FROM doctor_assignments
+		FROM doctor_to_account_assignments
 		WHERE account_id = $1
 		AND valid_to IS NULL
 		ORDER BY valid_from DESC
