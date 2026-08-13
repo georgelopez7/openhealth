@@ -36,6 +36,20 @@ func (s *Service) GetDoctorByID(ctx context.Context, id string) (*domain.Doctor,
 	return doctor, nil
 }
 
+// GetDoctorByAccountID - get a doctor by its associated account ID
+func (s *Service) GetDoctorByAccountID(ctx context.Context, accountID string) (*domain.Doctor, error) {
+	doctor, err := s.repository.GetDoctorByAccountID(ctx, accountID)
+	if err != nil {
+		return nil, err
+	}
+
+	if doctor == nil {
+		return nil, domain.DoctorNotFoundError
+	}
+
+	return doctor, nil
+}
+
 // GetDoctors - get doctors up to the provided limit
 func (s *Service) GetDoctors(ctx context.Context, limit int) ([]domain.Doctor, error) {
 	doctors, err := s.repository.GetDoctors(ctx, limit)

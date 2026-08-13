@@ -58,6 +58,28 @@ func TestRepository_GetMedicalRecordByID(t *testing.T) {
 	})
 }
 
+func TestRepository_GetMedicalRecords(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetMedicalRecords(ctx)
+	repo.ResetAccounts(ctx)
+
+	t.Run("should return all medical records", func(t *testing.T) {
+		account := newTestAccount(t)
+		expected := domain.NewMedicalRecord(account.ID, "Lab Results", "Blood work results")
+
+		err := repo.AddMedicalRecord(ctx, *expected)
+		require.NoError(t, err)
+
+		records, err := repo.GetMedicalRecords(ctx)
+		require.NoError(t, err)
+		require.Len(t, records, 1)
+		require.Equal(t, expected.ID, records[0].ID)
+		require.Equal(t, expected.AccountID, records[0].AccountID)
+		require.Equal(t, expected.Title, records[0].Title)
+	})
+}
+
 func TestRepository_UpdateMedicalRecord(t *testing.T) {
 	ctx := t.Context()
 

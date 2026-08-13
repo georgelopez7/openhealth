@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	AddDoctor(ctx context.Context, doctor domain.Doctor) error
 	GetDoctorByID(ctx context.Context, id string) (*domain.Doctor, error)
+	GetDoctorByAccountID(ctx context.Context, accountID string) (*domain.Doctor, error)
 	GetDoctors(ctx context.Context, limit int) ([]domain.Doctor, error)
 	UpdateDoctorStatusByID(ctx context.Context, id string, status domain.DoctorStatus) error
 	AddDoctorToAccountAssignment(ctx context.Context, assignment domain.DoctorAssignment) error

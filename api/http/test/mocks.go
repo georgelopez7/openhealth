@@ -166,6 +166,21 @@ func (mr *MockDoctorSVCMockRecorder) CreateDoctor(ctx, doctor any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDoctor", reflect.TypeOf((*MockDoctorSVC)(nil).CreateDoctor), ctx, doctor)
 }
 
+// GetDoctorByAccountID mocks base method.
+func (m *MockDoctorSVC) GetDoctorByAccountID(ctx context.Context, accountID string) (*domain.Doctor, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDoctorByAccountID", ctx, accountID)
+	ret0, _ := ret[0].(*domain.Doctor)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDoctorByAccountID indicates an expected call of GetDoctorByAccountID.
+func (mr *MockDoctorSVCMockRecorder) GetDoctorByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorByAccountID", reflect.TypeOf((*MockDoctorSVC)(nil).GetDoctorByAccountID), ctx, accountID)
+}
+
 // GetDoctorByID mocks base method.
 func (m *MockDoctorSVC) GetDoctorByID(ctx context.Context, id string) (*domain.Doctor, error) {
 	m.ctrl.T.Helper()
@@ -232,6 +247,21 @@ func (m *MockNurseSVC) CreateNurse(ctx context.Context, nurse domain.Nurse) erro
 func (mr *MockNurseSVCMockRecorder) CreateNurse(ctx, nurse any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNurse", reflect.TypeOf((*MockNurseSVC)(nil).CreateNurse), ctx, nurse)
+}
+
+// GetNurseByAccountID mocks base method.
+func (m *MockNurseSVC) GetNurseByAccountID(ctx context.Context, accountID string) (*domain.Nurse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNurseByAccountID", ctx, accountID)
+	ret0, _ := ret[0].(*domain.Nurse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetNurseByAccountID indicates an expected call of GetNurseByAccountID.
+func (mr *MockNurseSVCMockRecorder) GetNurseByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNurseByAccountID", reflect.TypeOf((*MockNurseSVC)(nil).GetNurseByAccountID), ctx, accountID)
 }
 
 // GetNurseByID mocks base method.
@@ -368,6 +398,21 @@ func (m *MockMedicalRecordSVC) GetMedicalRecordByID(ctx context.Context, id stri
 func (mr *MockMedicalRecordSVCMockRecorder) GetMedicalRecordByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecordByID", reflect.TypeOf((*MockMedicalRecordSVC)(nil).GetMedicalRecordByID), ctx, id)
+}
+
+// GetMedicalRecords mocks base method.
+func (m *MockMedicalRecordSVC) GetMedicalRecords(ctx context.Context) ([]domain.MedicalRecord, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedicalRecords", ctx)
+	ret0, _ := ret[0].([]domain.MedicalRecord)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedicalRecords indicates an expected call of GetMedicalRecords.
+func (mr *MockMedicalRecordSVCMockRecorder) GetMedicalRecords(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicalRecords", reflect.TypeOf((*MockMedicalRecordSVC)(nil).GetMedicalRecords), ctx)
 }
 
 // GetMedicalRecordsByAccountID mocks base method.

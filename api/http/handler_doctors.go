@@ -35,6 +35,20 @@ func (s *Server) GetDoctorByIDHandler(ctx context.Context, input *GetDoctorByIDI
 	}
 }
 
+func (s *Server) GetDoctorByAccountIDHandler(ctx context.Context, input *GetDoctorByAccountIDInput) (*GetDoctorByAccountIDResponse, error) {
+	doctor, err := s.DoctorSVC.GetDoctorByAccountID(ctx, input.AccountID)
+	switch err {
+	case nil:
+		resp := &GetDoctorByAccountIDResponse{}
+		resp.Body.Doctor = *doctor
+		return resp, nil
+	case domain.DoctorNotFoundError:
+		return nil, huma.Error404NotFound("doctor not found")
+	default:
+		return nil, err
+	}
+}
+
 func (s *Server) CreateDoctorToAccountAssignmentHandler(ctx context.Context, input *CreateDoctorToAccountAssignmentInput) (*CreateDoctorToAccountAssignmentResponse, error) {
 	assignment, err := s.DoctorSVC.AddDoctorToAccountAssignment(ctx, input.Body.AccountID, input.Body.DoctorID)
 	if err != nil {

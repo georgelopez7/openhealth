@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	AddNurse(ctx context.Context, nurse domain.Nurse) error
 	GetNurseByID(ctx context.Context, id string) (*domain.Nurse, error)
+	GetNurseByAccountID(ctx context.Context, accountID string) (*domain.Nurse, error)
 	GetNurses(ctx context.Context, limit int) ([]domain.Nurse, error)
 	UpdateNurseStatusByID(ctx context.Context, id string, status domain.NurseStatus) error
 	AddNurseToHospitalAssignment(ctx context.Context, assignment domain.NurseToHospitalAssignment) error

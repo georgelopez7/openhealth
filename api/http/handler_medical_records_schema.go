@@ -20,6 +20,14 @@ type GetMedicalRecordByIDResponse struct {
 	}
 }
 
+type GetMedicalRecordsInput struct{}
+
+type GetMedicalRecordsResponse struct {
+	Body struct {
+		MedicalRecords []domain.MedicalRecord `json:"medical_records"`
+	}
+}
+
 type GetMedicalRecordsByAccountIDInput struct {
 	AccountID string `path:"accountID"`
 }

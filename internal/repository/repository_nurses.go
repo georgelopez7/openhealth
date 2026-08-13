@@ -40,6 +40,26 @@ func (r *Repository) GetNurseByID(ctx context.Context, id string) (*domain.Nurse
 	}
 }
 
+// GetNurseByAccountID - get a nurse by its associated account ID
+func (r *Repository) GetNurseByAccountID(ctx context.Context, accountID string) (*domain.Nurse, error) {
+	var nurse domain.Nurse
+
+	err := r.db.GetContext(ctx, &nurse, `
+		SELECT id, account_id, status, created_at
+		FROM nurses
+		WHERE account_id = $1
+	`, accountID)
+
+	switch err {
+	case sql.ErrNoRows:
+		return nil, nil
+	case nil:
+		return &nurse, nil
+	default:
+		return nil, err
+	}
+}
+
 // GetNurses - get nurses up to the provided limit
 func (r *Repository) GetNurses(ctx context.Context, limit int) ([]domain.Nurse, error) {
 	var nurses []domain.Nurse

@@ -68,6 +68,38 @@ func TestService_GetNurseByID(t *testing.T) {
 	})
 }
 
+func TestService_GetNurseByAccountID(t *testing.T) {
+	ctx := t.Context()
+
+	service, deps := newMockService(t)
+
+	t.Run("should successfully get nurse by account ID", func(t *testing.T) {
+		nurse := domain.NewNurse("account-id-1")
+
+		deps.repository.EXPECT().GetNurseByAccountID(gomock.Any(), "account-id-1").Return(nurse, nil)
+
+		result, err := service.GetNurseByAccountID(ctx, "account-id-1")
+		require.NoError(t, err)
+		require.Equal(t, nurse, result)
+	})
+
+	t.Run("should handle error when nurse is not found", func(t *testing.T) {
+		deps.repository.EXPECT().GetNurseByAccountID(gomock.Any(), "account-id-1").Return(nil, nil)
+
+		nurse, err := service.GetNurseByAccountID(ctx, "account-id-1")
+		require.ErrorIs(t, err, domain.NurseNotFoundError)
+		require.Nil(t, nurse)
+	})
+
+	t.Run("should handle error when repository fails", func(t *testing.T) {
+		deps.repository.EXPECT().GetNurseByAccountID(gomock.Any(), "account-id-1").Return(nil, errors.New("repository error"))
+
+		nurse, err := service.GetNurseByAccountID(ctx, "account-id-1")
+		require.Error(t, err)
+		require.Nil(t, nurse)
+	})
+}
+
 func TestService_GetAllNurses(t *testing.T) {
 	ctx := t.Context()
 

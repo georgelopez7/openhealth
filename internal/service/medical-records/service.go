@@ -37,6 +37,16 @@ func (s *Service) GetMedicalRecordByID(ctx context.Context, id string) (*domain.
 	return record, nil
 }
 
+// GetMedicalRecords - get all medical records
+func (s *Service) GetMedicalRecords(ctx context.Context) ([]domain.MedicalRecord, error) {
+	records, err := s.repository.GetMedicalRecords(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return records, nil
+}
+
 // GetMedicalRecordsByAccountID - get medical records for an account
 func (s *Service) GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error) {
 	records, err := s.repository.GetMedicalRecordsByAccountID(ctx, accountID)

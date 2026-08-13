@@ -50,6 +50,31 @@ func TestRepository_GetNurseByID(t *testing.T) {
 	})
 }
 
+func TestRepository_GetNurseByAccountID(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should successfully return nurse by account ID", func(t *testing.T) {
+		expected := newTestNurse(t)
+
+		err := repo.AddNurse(ctx, *expected)
+		require.NoError(t, err)
+
+		nurse, err := repo.GetNurseByAccountID(ctx, expected.AccountID)
+		require.NoError(t, err)
+		require.Equal(t, expected.ID, nurse.ID)
+		require.Equal(t, expected.AccountID, nurse.AccountID)
+		require.Equal(t, domain.NurseStatusActive, nurse.Status)
+	})
+
+	t.Run("should handle case when nurse is not found", func(t *testing.T) {
+		nurse, err := repo.GetNurseByAccountID(ctx, "non-existent-account-id")
+		require.NoError(t, err)
+		require.Nil(t, nurse)
+	})
+}
+
 func TestRepository_GetNurses(t *testing.T) {
 	ctx := t.Context()
 

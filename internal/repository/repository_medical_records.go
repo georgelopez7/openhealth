@@ -66,6 +66,19 @@ func (r *Repository) ArchiveMedicalRecord(ctx context.Context, id string) error 
 	return err
 }
 
+// GetMedicalRecords - get all medical records
+func (r *Repository) GetMedicalRecords(ctx context.Context) ([]domain.MedicalRecord, error) {
+	var records []domain.MedicalRecord
+
+	err := r.db.SelectContext(ctx, &records, `
+		SELECT id, account_id, title, description, status, created_at, updated_at
+		FROM medical_records
+		ORDER BY created_at DESC
+	`)
+
+	return records, err
+}
+
 // GetMedicalRecordsByAccountID - get medical records for an account
 func (r *Repository) GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error) {
 	var records []domain.MedicalRecord

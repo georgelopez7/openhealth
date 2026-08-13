@@ -93,6 +93,42 @@ func TestServer_GetMedicalRecordByIDHandler(t *testing.T) {
 	})
 }
 
+func TestServer_GetMedicalRecordsHandler(t *testing.T) {
+	api, deps, teardown := newMockServer(t)
+	defer teardown()
+
+	endpoint := "/api/v1/medical-records"
+
+	t.Run("should return all medical records", func(t *testing.T) {
+		records := []domain.MedicalRecord{
+			*domain.NewMedicalRecord("mock-account-id-1", "Record 1", "First record"),
+			*domain.NewMedicalRecord("mock-account-id-2", "Record 2", "Second record"),
+		}
+
+		deps.MockMedicalRecordSvc.EXPECT().GetMedicalRecords(gomock.Any()).Return(records, nil)
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusOK, resp.Code)
+
+		var response struct {
+			MedicalRecords []domain.MedicalRecord `json:"medical_records"`
+		}
+
+		err := json.NewDecoder(resp.Body).Decode(&response)
+		require.NoError(t, err)
+		require.Equal(t, records, response.MedicalRecords)
+	})
+
+	t.Run("should handle service error", func(t *testing.T) {
+		deps.MockMedicalRecordSvc.EXPECT().GetMedicalRecords(gomock.Any()).Return(nil, errors.New("mock-error"))
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusInternalServerError, resp.Code)
+	})
+}
+
 func TestServer_GetMedicalRecordsByAccountIDHandler(t *testing.T) {
 	api, deps, teardown := newMockServer(t)
 	defer teardown()

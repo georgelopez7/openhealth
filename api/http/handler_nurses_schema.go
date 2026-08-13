@@ -24,6 +24,16 @@ type GetNurseByIDResponse struct {
 	}
 }
 
+type GetNurseByAccountIDInput struct {
+	AccountID string `path:"accountID"`
+}
+
+type GetNurseByAccountIDResponse struct {
+	Body struct {
+		Nurse domain.Nurse `json:"nurse"`
+	}
+}
+
 type CreateNurseToHospitalAssignmentInput struct {
 	Body struct {
 		NurseID    string `json:"nurse_id"`

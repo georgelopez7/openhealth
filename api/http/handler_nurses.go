@@ -35,6 +35,20 @@ func (s *Server) GetNurseByIDHandler(ctx context.Context, input *GetNurseByIDInp
 	}
 }
 
+func (s *Server) GetNurseByAccountIDHandler(ctx context.Context, input *GetNurseByAccountIDInput) (*GetNurseByAccountIDResponse, error) {
+	nurse, err := s.NurseSVC.GetNurseByAccountID(ctx, input.AccountID)
+	switch err {
+	case nil:
+		resp := &GetNurseByAccountIDResponse{}
+		resp.Body.Nurse = *nurse
+		return resp, nil
+	case domain.NurseNotFoundError:
+		return nil, huma.Error404NotFound("nurse not found")
+	default:
+		return nil, err
+	}
+}
+
 func (s *Server) CreateNurseToHospitalAssignmentHandler(ctx context.Context, input *CreateNurseToHospitalAssignmentInput) (*CreateNurseToHospitalAssignmentResponse, error) {
 	assignment, err := s.NurseSVC.AddNurseToHospitalAssignment(ctx, input.Body.NurseID, input.Body.HospitalID)
 	if err != nil {

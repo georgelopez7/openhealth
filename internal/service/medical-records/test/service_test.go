@@ -66,6 +66,41 @@ func TestService_GetMedicalRecordByID(t *testing.T) {
 	})
 }
 
+func TestService_GetMedicalRecords(t *testing.T) {
+	ctx := t.Context()
+
+	service, deps := newMockService(t)
+
+	t.Run("should successfully get all medical records", func(t *testing.T) {
+		expected := []domain.MedicalRecord{
+			*domain.NewMedicalRecord("account-id-1", "Checkup 1", "First checkup"),
+			*domain.NewMedicalRecord("account-id-2", "Checkup 2", "Second checkup"),
+		}
+
+		deps.repository.EXPECT().GetMedicalRecords(gomock.Any()).Return(expected, nil)
+
+		records, err := service.GetMedicalRecords(ctx)
+		require.NoError(t, err)
+		require.Equal(t, expected, records)
+	})
+
+	t.Run("should return empty slice when no medical records exist", func(t *testing.T) {
+		deps.repository.EXPECT().GetMedicalRecords(gomock.Any()).Return([]domain.MedicalRecord{}, nil)
+
+		records, err := service.GetMedicalRecords(ctx)
+		require.NoError(t, err)
+		require.Empty(t, records)
+	})
+
+	t.Run("should handle error when repository fails", func(t *testing.T) {
+		deps.repository.EXPECT().GetMedicalRecords(gomock.Any()).Return(nil, errors.New("repository error"))
+
+		records, err := service.GetMedicalRecords(ctx)
+		require.Error(t, err)
+		require.Nil(t, records)
+	})
+}
+
 func TestService_GetMedicalRecordsByAccountID(t *testing.T) {
 	ctx := t.Context()
 

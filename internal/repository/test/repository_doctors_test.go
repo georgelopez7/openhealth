@@ -50,6 +50,31 @@ func TestRepository_GetDoctorByID(t *testing.T) {
 	})
 }
 
+func TestRepository_GetDoctorByAccountID(t *testing.T) {
+	ctx := t.Context()
+
+	repo.ResetAccounts(ctx)
+
+	t.Run("should successfully return doctor by account ID", func(t *testing.T) {
+		expected := newTestDoctor(t)
+
+		err := repo.AddDoctor(ctx, *expected)
+		require.NoError(t, err)
+
+		doctor, err := repo.GetDoctorByAccountID(ctx, expected.AccountID)
+		require.NoError(t, err)
+		require.Equal(t, expected.ID, doctor.ID)
+		require.Equal(t, expected.AccountID, doctor.AccountID)
+		require.Equal(t, domain.DoctorStatusActive, doctor.Status)
+	})
+
+	t.Run("should handle case when doctor is not found", func(t *testing.T) {
+		doctor, err := repo.GetDoctorByAccountID(ctx, "non-existent-account-id")
+		require.NoError(t, err)
+		require.Nil(t, doctor)
+	})
+}
+
 func TestRepository_GetDoctors(t *testing.T) {
 	ctx := t.Context()
 

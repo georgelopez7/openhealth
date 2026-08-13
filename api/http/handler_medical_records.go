@@ -39,6 +39,18 @@ func (s *Server) GetMedicalRecordByIDHandler(ctx context.Context, input *GetMedi
 	}
 }
 
+func (s *Server) GetMedicalRecordsHandler(ctx context.Context, _ *GetMedicalRecordsInput) (*GetMedicalRecordsResponse, error) {
+	records, err := s.MedicalRecordSVC.GetMedicalRecords(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &GetMedicalRecordsResponse{}
+	resp.Body.MedicalRecords = records
+
+	return resp, nil
+}
+
 func (s *Server) GetMedicalRecordsByAccountIDHandler(ctx context.Context, input *GetMedicalRecordsByAccountIDInput) (*GetMedicalRecordsByAccountIDResponse, error) {
 	records, err := s.MedicalRecordSVC.GetMedicalRecordsByAccountID(ctx, input.AccountID)
 	if err != nil {

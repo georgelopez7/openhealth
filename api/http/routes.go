@@ -89,6 +89,17 @@ func (s *Server) addRoutes(api huma.API) {
 	}, s.GetDoctorByIDHandler)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "get-doctor-by-account",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/accounts/{accountID}/doctor",
+		Summary:       "/api/v1/accounts/{accountID}/doctor - [GET]",
+		Description:   "Gets the doctor associated with an account",
+		Tags:          []string{"doctors"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetDoctorByAccountIDHandler)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "create-doctor-to-account-assignment",
 		Method:        http.MethodPost,
 		Path:          "/api/v1/doctors/assignments",
@@ -118,6 +129,17 @@ func (s *Server) addRoutes(api huma.API) {
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
 	}, s.GetNurseByIDHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "get-nurse-by-account",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/accounts/{accountID}/nurse",
+		Summary:       "/api/v1/accounts/{accountID}/nurse - [GET]",
+		Description:   "Gets the nurse associated with an account",
+		Tags:          []string{"nurses"},
+		DefaultStatus: http.StatusOK,
+		Errors:        []int{http.StatusNotFound},
+	}, s.GetNurseByAccountIDHandler)
 
 	huma.Register(api, huma.Operation{
 		OperationID:   "create-nurse-to-hospital-assignment",
@@ -180,6 +202,16 @@ func (s *Server) addRoutes(api huma.API) {
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
 	}, s.GetMedicalRecordByIDHandler)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "list-medical-records",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/medical-records",
+		Summary:       "/api/v1/medical-records - [GET]",
+		Description:   "Lists all medical records",
+		Tags:          []string{"medical-records"},
+		DefaultStatus: http.StatusOK,
+	}, s.GetMedicalRecordsHandler)
 
 	huma.Register(api, huma.Operation{
 		OperationID:   "list-medical-records-by-account",
