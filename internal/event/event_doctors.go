@@ -53,3 +53,36 @@ func NewDoctorDeletedEvent(doctor domain.Doctor) Event {
 		Payload: DoctorDeletedEventPayload{Doctor: doctor},
 	}
 }
+
+const (
+	EventTypeDoctorToAccountAssignmentCreated EventType = "doctor_to_account_assignment.created"
+	EventTypeDoctorToAccountAssignmentRemoved EventType = "doctor_to_account_assignment.removed"
+)
+
+// doctor_to_account_assignment.created
+
+type DoctorToAccountAssignmentCreatedEventPayload struct {
+	Assignment domain.DoctorAssignment `json:"assignment"`
+}
+
+func NewDoctorToAccountAssignmentCreatedEvent(assignment domain.DoctorAssignment) Event {
+	return Event{
+		ID:      uuid.NewString(),
+		Type:    EventTypeDoctorToAccountAssignmentCreated,
+		Payload: DoctorToAccountAssignmentCreatedEventPayload{Assignment: assignment},
+	}
+}
+
+// doctor_to_account_assignment.removed
+
+type DoctorToAccountAssignmentRemovedEventPayload struct {
+	Assignment domain.DoctorAssignment `json:"assignment"`
+}
+
+func NewDoctorToAccountAssignmentRemovedEvent(assignment domain.DoctorAssignment) Event {
+	return Event{
+		ID:      uuid.NewString(),
+		Type:    EventTypeDoctorToAccountAssignmentRemoved,
+		Payload: DoctorToAccountAssignmentRemovedEventPayload{Assignment: assignment},
+	}
+}

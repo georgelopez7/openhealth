@@ -6,6 +6,7 @@ import (
 	"openhealth/api/http"
 	"openhealth/internal/domain"
 	"openhealth/internal/pkg/postgres"
+	"openhealth/internal/relay"
 	"openhealth/internal/repository"
 	"openhealth/internal/service/accounts"
 	"openhealth/internal/service/authorization"
@@ -16,6 +17,7 @@ import (
 	"openhealth/internal/service/outbox"
 	"openhealth/pkg/openfga"
 	"os"
+	"time"
 )
 
 func main() {
@@ -48,8 +50,8 @@ func main() {
 	outboxSVC := outbox.NewService(repository)
 
 	// RELAY
-	relay := NewRelay(outboxSVC, authorizationSVC)
-	go relay.Start(ctx)
+	r := relay.NewRelay(outboxSVC, authorizationSVC, 100, 2*time.Second)
+	go r.Start(ctx)
 
 	// SERVER
 	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)
