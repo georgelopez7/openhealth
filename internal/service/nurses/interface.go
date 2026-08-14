@@ -3,6 +3,7 @@ package nurses
 import (
 	"context"
 	"openhealth/internal/domain"
+	"openhealth/internal/event"
 )
 
 //go:generate mockgen -source=interface.go -destination=test/mocks.go -package=test
@@ -21,6 +22,7 @@ type Repository interface {
 	GetNurseToHospitalAssignmentsByNurseID(ctx context.Context, nurseID string) ([]domain.NurseToHospitalAssignment, error)
 	GetHospitalIDByNurseID(ctx context.Context, nurseID string) (string, error)
 	GetNursesByHospitalID(ctx context.Context, hospitalID string) ([]domain.NurseToHospitalAssignment, error)
+	AddOutboxEvent(ctx context.Context, outboxEvent event.OutboxEvent) error
 }
 
 type TxManager interface {

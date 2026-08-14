@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"errors"
 	"openhealth/internal/domain"
 	"testing"
@@ -18,7 +19,14 @@ func TestService_CreateMedicalRecord(t *testing.T) {
 	t.Run("should successfully create medical record", func(t *testing.T) {
 		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
 
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddMedicalRecord(gomock.Any(), *record).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.CreateMedicalRecord(ctx, *record)
 		require.NoError(t, err)
@@ -26,6 +34,12 @@ func TestService_CreateMedicalRecord(t *testing.T) {
 
 	t.Run("should handle error when repository fails to add medical record", func(t *testing.T) {
 		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
 
 		deps.repository.EXPECT().AddMedicalRecord(gomock.Any(), *record).Return(errors.New("add error"))
 
@@ -217,13 +231,45 @@ func TestService_ArchiveMedicalRecord(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully archive medical record", func(t *testing.T) {
+		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(record, nil)
 		deps.repository.EXPECT().ArchiveMedicalRecord(gomock.Any(), "record-id-1").Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.ArchiveMedicalRecord(ctx, "record-id-1")
 		require.NoError(t, err)
 	})
 
+	t.Run("should handle error when medical record is not found", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(nil, nil)
+
+		err := service.ArchiveMedicalRecord(ctx, "record-id-1")
+		require.ErrorIs(t, err, domain.MedicalRecordNotFoundError)
+	})
+
 	t.Run("should handle error when repository fails to archive medical record", func(t *testing.T) {
+		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(record, nil)
 		deps.repository.EXPECT().ArchiveMedicalRecord(gomock.Any(), "record-id-1").Return(errors.New("archive error"))
 
 		err := service.ArchiveMedicalRecord(ctx, "record-id-1")

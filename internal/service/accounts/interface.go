@@ -3,6 +3,7 @@ package accounts
 import (
 	"context"
 	"openhealth/internal/domain"
+	"openhealth/internal/event"
 )
 
 //go:generate mockgen -source=interface.go -destination=test/mocks.go -package=test
@@ -15,6 +16,7 @@ type Repository interface {
 	ArchiveAccount(ctx context.Context, id string) error
 	GetDoctorIDByAccountID(ctx context.Context, accountID string) (string, error)
 	GetHospitalIDByAccountID(ctx context.Context, accountID string) (string, error)
+	AddOutboxEvent(ctx context.Context, outboxEvent event.OutboxEvent) error
 }
 
 type TxManager interface {

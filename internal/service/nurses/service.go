@@ -2,7 +2,9 @@ package nurses
 
 import (
 	"context"
+
 	"openhealth/internal/domain"
+	"openhealth/internal/event"
 )
 
 type Service struct {
@@ -17,9 +19,24 @@ func NewService(tx TxManager, repository Repository) *Service {
 	}
 }
 
+func (s *Service) addOutboxEvent(ctx context.Context, evt event.Event) error {
+	outboxEvent, err := event.NewOutboxEvent(evt)
+	if err != nil {
+		return err
+	}
+
+	return s.repository.AddOutboxEvent(ctx, *outboxEvent)
+}
+
 // CreateNurse - creates a new nurse record
 func (s *Service) CreateNurse(ctx context.Context, nurse domain.Nurse) error {
-	return s.repository.AddNurse(ctx, nurse)
+	return s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		if err := s.repository.AddNurse(ctx, nurse); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewNurseCreatedEvent(nurse))
+	})
 }
 
 // GetNurseByID - get a nurse by its ID
@@ -68,17 +85,40 @@ func (s *Service) UpdateNurseStatusByID(ctx context.Context, id string, status d
 		}
 
 		if status != domain.NurseStatusArchived {
-			return nil
+			return s.addOutboxEvent(ctx, event.NewNurseUpdatedEvent(domain.Nurse{ID: id, Status: status}))
 		}
 
-		return s.repository.RemoveAllNurseToHospitalAssignments(ctx, id)
+		assignments, err := s.repository.GetNurseToHospitalAssignmentsByNurseID(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		if err := s.repository.RemoveAllNurseToHospitalAssignments(ctx, id); err != nil {
+			return err
+		}
+
+		for _, assignment := range assignments {
+			if err := s.addOutboxEvent(ctx, event.NewNurseToHospitalAssignmentRemovedEvent(assignment)); err != nil {
+				return err
+			}
+		}
+
+		return s.addOutboxEvent(ctx, event.NewNurseUpdatedEvent(domain.Nurse{ID: id, Status: status}))
 	})
 }
 
 // AddNurseToHospitalAssignment - assigns a nurse to a hospital
 func (s *Service) AddNurseToHospitalAssignment(ctx context.Context, nurseID string, hospitalID string) (*domain.NurseToHospitalAssignment, error) {
 	assignment := domain.NewNurseToHospitalAssignment(nurseID, hospitalID)
-	if err := s.repository.AddNurseToHospitalAssignment(ctx, *assignment); err != nil {
+
+	err := s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		if err := s.repository.AddNurseToHospitalAssignment(ctx, *assignment); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewNurseToHospitalAssignmentCreatedEvent(*assignment))
+	})
+	if err != nil {
 		return nil, err
 	}
 

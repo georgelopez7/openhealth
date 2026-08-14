@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"errors"
 	"openhealth/internal/domain"
 	"testing"
@@ -17,7 +18,14 @@ func TestService_CreateHospital(t *testing.T) {
 	t.Run("should successfully create hospital", func(t *testing.T) {
 		hospital := domain.NewHospital("St. Test Hospital")
 
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddHospital(gomock.Any(), *hospital).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.CreateHospital(ctx, *hospital)
 		require.NoError(t, err)
@@ -25,6 +33,12 @@ func TestService_CreateHospital(t *testing.T) {
 
 	t.Run("should handle error when repository fails to add hospital", func(t *testing.T) {
 		hospital := domain.NewHospital("St. Test Hospital")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
 
 		deps.repository.EXPECT().AddHospital(gomock.Any(), *hospital).Return(errors.New("add error"))
 
@@ -112,7 +126,14 @@ func TestService_UpdateHospital(t *testing.T) {
 		hospital := domain.NewHospital("St. Test Hospital")
 		hospital.Name = "Updated Hospital Name"
 
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().UpdateHospital(gomock.Any(), *hospital).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.UpdateHospital(ctx, *hospital)
 		require.NoError(t, err)
@@ -120,6 +141,12 @@ func TestService_UpdateHospital(t *testing.T) {
 
 	t.Run("should handle error when repository fails to update hospital", func(t *testing.T) {
 		hospital := domain.NewHospital("St. Test Hospital")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
 
 		deps.repository.EXPECT().UpdateHospital(gomock.Any(), *hospital).Return(errors.New("update error"))
 
@@ -134,13 +161,45 @@ func TestService_ArchiveHospital(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully archive hospital", func(t *testing.T) {
+		hospital := domain.NewHospital("St. Test Hospital")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetHospitalByID(gomock.Any(), "hospital-id-1").Return(hospital, nil)
 		deps.repository.EXPECT().ArchiveHospital(gomock.Any(), "hospital-id-1").Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.ArchiveHospital(ctx, "hospital-id-1")
 		require.NoError(t, err)
 	})
 
+	t.Run("should handle error when hospital is not found", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetHospitalByID(gomock.Any(), "hospital-id-1").Return(nil, nil)
+
+		err := service.ArchiveHospital(ctx, "hospital-id-1")
+		require.ErrorIs(t, err, domain.HospitalNotFoundError)
+	})
+
 	t.Run("should handle error when repository fails to archive hospital", func(t *testing.T) {
+		hospital := domain.NewHospital("St. Test Hospital")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetHospitalByID(gomock.Any(), "hospital-id-1").Return(hospital, nil)
 		deps.repository.EXPECT().ArchiveHospital(gomock.Any(), "hospital-id-1").Return(errors.New("archive error"))
 
 		err := service.ArchiveHospital(ctx, "hospital-id-1")
@@ -154,7 +213,14 @@ func TestService_AddHospitalToAccountAssignment(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully add hospital assignment", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddHospitalAssignment(gomock.Any(), gomock.Any()).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		assignment, err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
 		require.NoError(t, err)
@@ -164,6 +230,12 @@ func TestService_AddHospitalToAccountAssignment(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to add hospital assignment", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddHospitalAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
 
 		assignment, err := service.AddHospitalToAccountAssignment(ctx, "account-id-1", "hospital-id-1")
@@ -178,14 +250,30 @@ func TestService_RemoveHospitalToAccountAssignment(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully remove hospital to account assignment", func(t *testing.T) {
+		assignment := domain.NewHospitalAssignment("account-id-1", "hospital-id-1")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetHospitalAssignmentByID(gomock.Any(), "assignment-id-1").Return(assignment, nil)
 		deps.repository.EXPECT().RemoveHospitalToAccountAssignment(gomock.Any(), "assignment-id-1").Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.RemoveHospitalToAccountAssignment(ctx, "assignment-id-1")
 		require.NoError(t, err)
 	})
 
-	t.Run("should handle error when repository fails to remove hospital to account assignment", func(t *testing.T) {
-		deps.repository.EXPECT().RemoveHospitalToAccountAssignment(gomock.Any(), "assignment-id-1").Return(errors.New("remove error"))
+	t.Run("should handle error when repository fails to get assignment", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
+		deps.repository.EXPECT().GetHospitalAssignmentByID(gomock.Any(), "assignment-id-1").Return(nil, errors.New("fetch error"))
 
 		err := service.RemoveHospitalToAccountAssignment(ctx, "assignment-id-1")
 		require.Error(t, err)

@@ -10,6 +10,9 @@ const (
 	EventTypeHospitalCreated EventType = "hospital.created"
 	EventTypeHospitalUpdated EventType = "hospital.updated"
 	EventTypeHospitalDeleted EventType = "hospital.deleted"
+
+	EventTypeHospitalToAccountAssignmentCreated EventType = "hospital_to_account_assignment.created"
+	EventTypeHospitalToAccountAssignmentRemoved EventType = "hospital_to_account_assignment.removed"
 )
 
 // hospital.created
@@ -26,10 +29,33 @@ func NewHospitalCreatedEvent(hospital domain.Hospital) Event {
 	}
 }
 
-const (
-	EventTypeHospitalToAccountAssignmentCreated EventType = "hospital_to_account_assignment.created"
-	EventTypeHospitalToAccountAssignmentRemoved EventType = "hospital_to_account_assignment.removed"
-)
+// hospital.updated
+
+type HospitalUpdatedEventPayload struct {
+	Hospital domain.Hospital `json:"hospital"`
+}
+
+func NewHospitalUpdatedEvent(hospital domain.Hospital) Event {
+	return Event{
+		ID:      uuid.NewString(),
+		Type:    EventTypeHospitalUpdated,
+		Payload: HospitalUpdatedEventPayload{Hospital: hospital},
+	}
+}
+
+// hospital.deleted
+
+type HospitalDeletedEventPayload struct {
+	Hospital domain.Hospital `json:"hospital"`
+}
+
+func NewHospitalDeletedEvent(hospital domain.Hospital) Event {
+	return Event{
+		ID:      uuid.NewString(),
+		Type:    EventTypeHospitalDeleted,
+		Payload: HospitalDeletedEventPayload{Hospital: hospital},
+	}
+}
 
 // hospital_to_account_assignment.created
 

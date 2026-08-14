@@ -18,7 +18,14 @@ func TestService_CreateNurse(t *testing.T) {
 	t.Run("should successfully create nurse", func(t *testing.T) {
 		nurse := domain.NewNurse("account-id-1")
 
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddNurse(gomock.Any(), *nurse).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.CreateNurse(ctx, *nurse)
 		require.NoError(t, err)
@@ -26,6 +33,12 @@ func TestService_CreateNurse(t *testing.T) {
 
 	t.Run("should handle error when repository fails to add nurse", func(t *testing.T) {
 		nurse := domain.NewNurse("account-id-1")
+
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
 
 		deps.repository.EXPECT().AddNurse(gomock.Any(), *nurse).Return(errors.New("add error"))
 
@@ -149,7 +162,9 @@ func TestService_UpdateNurseStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateNurseStatusByID(gomock.Any(), "nurse-id-1", domain.NurseStatusArchived).Return(nil)
+		deps.repository.EXPECT().GetNurseToHospitalAssignmentsByNurseID(gomock.Any(), "nurse-id-1").Return(nil, nil)
 		deps.repository.EXPECT().RemoveAllNurseToHospitalAssignments(gomock.Any(), "nurse-id-1").Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.UpdateNurseStatusByID(ctx, "nurse-id-1", domain.NurseStatusArchived)
 		require.NoError(t, err)
@@ -163,6 +178,7 @@ func TestService_UpdateNurseStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateNurseStatusByID(gomock.Any(), "nurse-id-1", domain.NurseStatusActive).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		err := service.UpdateNurseStatusByID(ctx, "nurse-id-1", domain.NurseStatusActive)
 		require.NoError(t, err)
@@ -189,7 +205,7 @@ func TestService_UpdateNurseStatusByID(t *testing.T) {
 		)
 
 		deps.repository.EXPECT().UpdateNurseStatusByID(gomock.Any(), "nurse-id-1", domain.NurseStatusArchived).Return(nil)
-		deps.repository.EXPECT().RemoveAllNurseToHospitalAssignments(gomock.Any(), "nurse-id-1").Return(errors.New("remove error"))
+		deps.repository.EXPECT().GetNurseToHospitalAssignmentsByNurseID(gomock.Any(), "nurse-id-1").Return(nil, errors.New("fetch error"))
 
 		err := service.UpdateNurseStatusByID(ctx, "nurse-id-1", domain.NurseStatusArchived)
 		require.Error(t, err)
@@ -202,7 +218,14 @@ func TestService_AddNurseToHospitalAssignment(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully add nurse to hospital assignment", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddNurseToHospitalAssignment(gomock.Any(), gomock.Any()).Return(nil)
+		deps.repository.EXPECT().AddOutboxEvent(gomock.Any(), gomock.Any()).Return(nil)
 
 		assignment, err := service.AddNurseToHospitalAssignment(ctx, "nurse-id-1", "hospital-id-1")
 		require.NoError(t, err)
@@ -212,6 +235,12 @@ func TestService_AddNurseToHospitalAssignment(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to add nurse to hospital assignment", func(t *testing.T) {
+		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, fn func(context.Context) error) error {
+				return fn(ctx)
+			},
+		)
+
 		deps.repository.EXPECT().AddNurseToHospitalAssignment(gomock.Any(), gomock.Any()).Return(errors.New("assign error"))
 
 		assignment, err := service.AddNurseToHospitalAssignment(ctx, "nurse-id-1", "hospital-id-1")

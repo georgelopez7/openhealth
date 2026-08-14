@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"openhealth/internal/domain"
+	"openhealth/internal/event"
 )
 
 type Service struct {
@@ -20,9 +21,24 @@ func NewService(tx TxManager, repository Repository, authorizationSVC Authorizat
 	}
 }
 
+func (s *Service) addOutboxEvent(ctx context.Context, evt event.Event) error {
+	outboxEvent, err := event.NewOutboxEvent(evt)
+	if err != nil {
+		return err
+	}
+
+	return s.repository.AddOutboxEvent(ctx, *outboxEvent)
+}
+
 // CreateMedicalRecord - creates a new medical record
 func (s *Service) CreateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error {
-	return s.repository.AddMedicalRecord(ctx, record)
+	return s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		if err := s.repository.AddMedicalRecord(ctx, record); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewMedicalRecordCreatedEvent(record))
+	})
 }
 
 // GetMedicalRecordByID - get a medical record by its ID
@@ -90,5 +106,20 @@ func (s *Service) UpdateMedicalRecord(ctx context.Context, record domain.Medical
 
 // ArchiveMedicalRecord - archives an existing medical record
 func (s *Service) ArchiveMedicalRecord(ctx context.Context, id string) error {
-	return s.repository.ArchiveMedicalRecord(ctx, id)
+	return s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		record, err := s.repository.GetMedicalRecordByID(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		if record == nil {
+			return domain.MedicalRecordNotFoundError
+		}
+
+		if err := s.repository.ArchiveMedicalRecord(ctx, id); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewMedicalRecordDeletedEvent(record.ID, record.AccountID))
+	})
 }

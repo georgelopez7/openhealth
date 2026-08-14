@@ -2,7 +2,9 @@ package doctors
 
 import (
 	"context"
+
 	"openhealth/internal/domain"
+	"openhealth/internal/event"
 )
 
 type Service struct {
@@ -17,9 +19,24 @@ func NewService(tx TxManager, repository Repository) *Service {
 	}
 }
 
+func (s *Service) addOutboxEvent(ctx context.Context, evt event.Event) error {
+	outboxEvent, err := event.NewOutboxEvent(evt)
+	if err != nil {
+		return err
+	}
+
+	return s.repository.AddOutboxEvent(ctx, *outboxEvent)
+}
+
 // CreateDoctor - creates a new doctor record
 func (s *Service) CreateDoctor(ctx context.Context, doctor domain.Doctor) error {
-	return s.repository.AddDoctor(ctx, doctor)
+	return s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		if err := s.repository.AddDoctor(ctx, doctor); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewDoctorCreatedEvent(doctor))
+	})
 }
 
 // GetDoctorByID - get a doctor by its ID
@@ -68,17 +85,40 @@ func (s *Service) UpdateDoctorStatusByID(ctx context.Context, id string, status 
 		}
 
 		if status != domain.DoctorStatusArchived {
-			return nil
+			return s.addOutboxEvent(ctx, event.NewDoctorUpdatedEvent(domain.Doctor{ID: id, Status: status}))
 		}
 
-		return s.repository.RemoveAllDoctorToAccountAssignments(ctx, id)
+		assignments, err := s.repository.GetDoctorAssignmentsByDoctorID(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		if err := s.repository.RemoveAllDoctorToAccountAssignments(ctx, id); err != nil {
+			return err
+		}
+
+		for _, assignment := range assignments {
+			if err := s.addOutboxEvent(ctx, event.NewDoctorToAccountAssignmentRemovedEvent(assignment)); err != nil {
+				return err
+			}
+		}
+
+		return s.addOutboxEvent(ctx, event.NewDoctorUpdatedEvent(domain.Doctor{ID: id, Status: status}))
 	})
 }
 
 // AddDoctorToAccountAssignment - assigns a doctor to an account
 func (s *Service) AddDoctorToAccountAssignment(ctx context.Context, accountID string, doctorID string) (*domain.DoctorAssignment, error) {
 	assignment := domain.NewDoctorToAccountAssignment(accountID, doctorID)
-	if err := s.repository.AddDoctorToAccountAssignment(ctx, *assignment); err != nil {
+
+	err := s.tx.WithTransaction(ctx, func(ctx context.Context) error {
+		if err := s.repository.AddDoctorToAccountAssignment(ctx, *assignment); err != nil {
+			return err
+		}
+
+		return s.addOutboxEvent(ctx, event.NewDoctorToAccountAssignmentCreatedEvent(*assignment))
+	})
+	if err != nil {
 		return nil, err
 	}
 

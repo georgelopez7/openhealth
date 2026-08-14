@@ -10,6 +10,9 @@ const (
 	EventTypeNurseCreated EventType = "nurse.created"
 	EventTypeNurseUpdated EventType = "nurse.updated"
 	EventTypeNurseDeleted EventType = "nurse.deleted"
+
+	EventTypeNurseToHospitalAssignmentCreated EventType = "nurse_to_hospital_assignment.created"
+	EventTypeNurseToHospitalAssignmentRemoved EventType = "nurse_to_hospital_assignment.removed"
 )
 
 // nurse.created
@@ -53,11 +56,6 @@ func NewNurseDeletedEvent(nurse domain.Nurse) Event {
 		Payload: NurseDeletedEventPayload{Nurse: nurse},
 	}
 }
-
-const (
-	EventTypeNurseToHospitalAssignmentCreated EventType = "nurse_to_hospital_assignment.created"
-	EventTypeNurseToHospitalAssignmentRemoved EventType = "nurse_to_hospital_assignment.removed"
-)
 
 // nurse_to_hospital_assignment.created
 

@@ -12,6 +12,7 @@ package test
 import (
 	context "context"
 	domain "openhealth/internal/domain"
+	event "openhealth/internal/event"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -53,6 +54,20 @@ func (m *MockRepository) AddAccount(ctx context.Context, account domain.Account)
 func (mr *MockRepositoryMockRecorder) AddAccount(ctx, account any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAccount", reflect.TypeOf((*MockRepository)(nil).AddAccount), ctx, account)
+}
+
+// AddOutboxEvent mocks base method.
+func (m *MockRepository) AddOutboxEvent(ctx context.Context, outboxEvent event.OutboxEvent) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddOutboxEvent", ctx, outboxEvent)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddOutboxEvent indicates an expected call of AddOutboxEvent.
+func (mr *MockRepositoryMockRecorder) AddOutboxEvent(ctx, outboxEvent any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOutboxEvent", reflect.TypeOf((*MockRepository)(nil).AddOutboxEvent), ctx, outboxEvent)
 }
 
 // ArchiveAccount mocks base method.
