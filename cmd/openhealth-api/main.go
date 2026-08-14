@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"openhealth/api/http"
 	"openhealth/internal/domain"
 	"openhealth/internal/pkg/postgres"
@@ -8,12 +9,15 @@ import (
 	"openhealth/internal/service/accounts"
 	"openhealth/internal/service/doctors"
 	"openhealth/internal/service/hospitals"
-	"openhealth/internal/service/medical-records"
+	medicalrecords "openhealth/internal/service/medical-records"
 	"openhealth/internal/service/nurses"
+	"openhealth/internal/service/outbox"
 	"os"
 )
 
 func main() {
+	ctx := context.Background()
+
 	// POSTGRES
 	postgresDB := postgres.NewPostgresDB(os.Getenv("POSTGRES_URI"))
 	tx := postgres.NewTxManager(postgresDB.DB)
@@ -27,6 +31,11 @@ func main() {
 	nurseSVC := nurses.NewService(tx, repository)
 	hospitalSVC := hospitals.NewService(tx, repository)
 	medicalRecordSVC := medicalrecords.NewService(tx, repository)
+	outboxSVC := outbox.NewService(repository)
+
+	// RELAY
+	relay := NewRelay(outboxSVC)
+	go relay.Start(ctx)
 
 	// SERVER
 	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)
