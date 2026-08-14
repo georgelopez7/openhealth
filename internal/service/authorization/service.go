@@ -26,6 +26,11 @@ func (s *Service) RemoveTuple(ctx context.Context, tuple domain.Tuple) error {
 	return s.openfga.RemoveTuple(ctx, tuple)
 }
 
+// Check - asks OpenFGA whether the tuple's user has the requested relation on the object.
+func (s *Service) Check(ctx context.Context, tuple domain.Tuple) (bool, error) {
+	return s.openfga.Check(ctx, tuple)
+}
+
 // AddDoctorAccount - links a doctor to its account.
 func (s *Service) AddDoctorAccount(ctx context.Context, doctorID, accountID string) error {
 	tuple := domain.NewDoctorAccountTuple(doctorID, accountID)

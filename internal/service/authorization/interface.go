@@ -11,4 +11,5 @@ import (
 type OpenFGA interface {
 	AddTuple(ctx context.Context, tuple domain.Tuple) error
 	RemoveTuple(ctx context.Context, tuple domain.Tuple) error
+	Check(ctx context.Context, tuple domain.Tuple) (bool, error)
 }

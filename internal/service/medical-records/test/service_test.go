@@ -66,6 +66,55 @@ func TestService_GetMedicalRecordByID(t *testing.T) {
 	})
 }
 
+func TestService_GetMedicalRecordAccess(t *testing.T) {
+	ctx := t.Context()
+
+	service, deps := newMockService(t)
+
+	t.Run("should successfully return access flags", func(t *testing.T) {
+		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
+
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(record, nil)
+		deps.authorizationSVC.EXPECT().Check(gomock.Any(), domain.NewMedicalRecordCanViewTuple("record-id-1", "account-id-1")).Return(true, nil)
+		deps.authorizationSVC.EXPECT().Check(gomock.Any(), domain.NewMedicalRecordCanEditTuple("record-id-1", "account-id-1")).Return(false, nil)
+
+		canView, canEdit, err := service.GetMedicalRecordAccess(ctx, "record-id-1", "account-id-1")
+		require.NoError(t, err)
+		require.True(t, canView)
+		require.False(t, canEdit)
+	})
+
+	t.Run("should return not found when medical record does not exist", func(t *testing.T) {
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(nil, nil)
+
+		canView, canEdit, err := service.GetMedicalRecordAccess(ctx, "record-id-1", "account-id-1")
+		require.ErrorIs(t, err, domain.MedicalRecordNotFoundError)
+		require.False(t, canView)
+		require.False(t, canEdit)
+	})
+
+	t.Run("should handle error when repository fails to get medical record", func(t *testing.T) {
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(nil, errors.New("repository error"))
+
+		canView, canEdit, err := service.GetMedicalRecordAccess(ctx, "record-id-1", "account-id-1")
+		require.Error(t, err)
+		require.False(t, canView)
+		require.False(t, canEdit)
+	})
+
+	t.Run("should handle error when authorization service fails", func(t *testing.T) {
+		record := domain.NewMedicalRecord("account-id-1", "Checkup", "Annual physical examination")
+
+		deps.repository.EXPECT().GetMedicalRecordByID(gomock.Any(), "record-id-1").Return(record, nil)
+		deps.authorizationSVC.EXPECT().Check(gomock.Any(), domain.NewMedicalRecordCanViewTuple("record-id-1", "account-id-1")).Return(false, errors.New("auth error"))
+
+		canView, canEdit, err := service.GetMedicalRecordAccess(ctx, "record-id-1", "account-id-1")
+		require.Error(t, err)
+		require.False(t, canView)
+		require.False(t, canEdit)
+	})
+}
+
 func TestService_GetMedicalRecords(t *testing.T) {
 	ctx := t.Context()
 

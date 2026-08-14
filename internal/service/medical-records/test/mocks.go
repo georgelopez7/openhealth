@@ -165,3 +165,42 @@ func (mr *MockTxManagerMockRecorder) WithTransaction(ctx, fn any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithTransaction", reflect.TypeOf((*MockTxManager)(nil).WithTransaction), ctx, fn)
 }
+
+// MockAuthorizationSVC is a mock of AuthorizationSVC interface.
+type MockAuthorizationSVC struct {
+	ctrl     *gomock.Controller
+	recorder *MockAuthorizationSVCMockRecorder
+	isgomock struct{}
+}
+
+// MockAuthorizationSVCMockRecorder is the mock recorder for MockAuthorizationSVC.
+type MockAuthorizationSVCMockRecorder struct {
+	mock *MockAuthorizationSVC
+}
+
+// NewMockAuthorizationSVC creates a new mock instance.
+func NewMockAuthorizationSVC(ctrl *gomock.Controller) *MockAuthorizationSVC {
+	mock := &MockAuthorizationSVC{ctrl: ctrl}
+	mock.recorder = &MockAuthorizationSVCMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAuthorizationSVC) EXPECT() *MockAuthorizationSVCMockRecorder {
+	return m.recorder
+}
+
+// Check mocks base method.
+func (m *MockAuthorizationSVC) Check(ctx context.Context, tuple domain.Tuple) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Check", ctx, tuple)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Check indicates an expected call of Check.
+func (mr *MockAuthorizationSVCMockRecorder) Check(ctx, tuple any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Check", reflect.TypeOf((*MockAuthorizationSVC)(nil).Check), ctx, tuple)
+}

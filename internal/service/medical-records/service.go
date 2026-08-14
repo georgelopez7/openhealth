@@ -7,14 +7,16 @@ import (
 )
 
 type Service struct {
-	tx         TxManager
-	repository Repository
+	tx               TxManager
+	repository       Repository
+	authorizationSVC AuthorizationSVC
 }
 
-func NewService(tx TxManager, repository Repository) *Service {
+func NewService(tx TxManager, repository Repository, authorizationSVC AuthorizationSVC) *Service {
 	return &Service{
-		tx:         tx,
-		repository: repository,
+		tx:               tx,
+		repository:       repository,
+		authorizationSVC: authorizationSVC,
 	}
 }
 
@@ -35,6 +37,30 @@ func (s *Service) GetMedicalRecordByID(ctx context.Context, id string) (*domain.
 	}
 
 	return record, nil
+}
+
+// GetMedicalRecordAccess - checks whether an account can view and/or edit a medical record
+func (s *Service) GetMedicalRecordAccess(ctx context.Context, recordID, accountID string) (canView bool, canEdit bool, err error) {
+	record, err := s.repository.GetMedicalRecordByID(ctx, recordID)
+	if err != nil {
+		return false, false, err
+	}
+
+	if record == nil {
+		return false, false, domain.MedicalRecordNotFoundError
+	}
+
+	canView, err = s.authorizationSVC.Check(ctx, domain.NewMedicalRecordCanViewTuple(recordID, accountID))
+	if err != nil {
+		return false, false, err
+	}
+
+	canEdit, err = s.authorizationSVC.Check(ctx, domain.NewMedicalRecordCanEditTuple(recordID, accountID))
+	if err != nil {
+		return false, false, err
+	}
+
+	return canView, canEdit, nil
 }
 
 // GetMedicalRecords - get all medical records

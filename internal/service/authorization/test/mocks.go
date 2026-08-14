@@ -17,32 +17,32 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockClient is a mock of Client interface.
-type MockClient struct {
+// MockOpenFGA is a mock of OpenFGA interface.
+type MockOpenFGA struct {
 	ctrl     *gomock.Controller
-	recorder *MockClientMockRecorder
+	recorder *MockOpenFGAMockRecorder
 	isgomock struct{}
 }
 
-// MockClientMockRecorder is the mock recorder for MockClient.
-type MockClientMockRecorder struct {
-	mock *MockClient
+// MockOpenFGAMockRecorder is the mock recorder for MockOpenFGA.
+type MockOpenFGAMockRecorder struct {
+	mock *MockOpenFGA
 }
 
-// NewMockClient creates a new mock instance.
-func NewMockClient(ctrl *gomock.Controller) *MockClient {
-	mock := &MockClient{ctrl: ctrl}
-	mock.recorder = &MockClientMockRecorder{mock}
+// NewMockOpenFGA creates a new mock instance.
+func NewMockOpenFGA(ctrl *gomock.Controller) *MockOpenFGA {
+	mock := &MockOpenFGA{ctrl: ctrl}
+	mock.recorder = &MockOpenFGAMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockClient) EXPECT() *MockClientMockRecorder {
+func (m *MockOpenFGA) EXPECT() *MockOpenFGAMockRecorder {
 	return m.recorder
 }
 
 // AddTuple mocks base method.
-func (m *MockClient) AddTuple(ctx context.Context, tuple domain.Tuple) error {
+func (m *MockOpenFGA) AddTuple(ctx context.Context, tuple domain.Tuple) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddTuple", ctx, tuple)
 	ret0, _ := ret[0].(error)
@@ -50,13 +50,28 @@ func (m *MockClient) AddTuple(ctx context.Context, tuple domain.Tuple) error {
 }
 
 // AddTuple indicates an expected call of AddTuple.
-func (mr *MockClientMockRecorder) AddTuple(ctx, tuple any) *gomock.Call {
+func (mr *MockOpenFGAMockRecorder) AddTuple(ctx, tuple any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTuple", reflect.TypeOf((*MockClient)(nil).AddTuple), ctx, tuple)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTuple", reflect.TypeOf((*MockOpenFGA)(nil).AddTuple), ctx, tuple)
+}
+
+// Check mocks base method.
+func (m *MockOpenFGA) Check(ctx context.Context, tuple domain.Tuple) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Check", ctx, tuple)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Check indicates an expected call of Check.
+func (mr *MockOpenFGAMockRecorder) Check(ctx, tuple any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Check", reflect.TypeOf((*MockOpenFGA)(nil).Check), ctx, tuple)
 }
 
 // RemoveTuple mocks base method.
-func (m *MockClient) RemoveTuple(ctx context.Context, tuple domain.Tuple) error {
+func (m *MockOpenFGA) RemoveTuple(ctx context.Context, tuple domain.Tuple) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveTuple", ctx, tuple)
 	ret0, _ := ret[0].(error)
@@ -64,7 +79,7 @@ func (m *MockClient) RemoveTuple(ctx context.Context, tuple domain.Tuple) error 
 }
 
 // RemoveTuple indicates an expected call of RemoveTuple.
-func (mr *MockClientMockRecorder) RemoveTuple(ctx, tuple any) *gomock.Call {
+func (mr *MockOpenFGAMockRecorder) RemoveTuple(ctx, tuple any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveTuple", reflect.TypeOf((*MockClient)(nil).RemoveTuple), ctx, tuple)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveTuple", reflect.TypeOf((*MockOpenFGA)(nil).RemoveTuple), ctx, tuple)
 }

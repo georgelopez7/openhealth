@@ -16,6 +16,8 @@ const (
 	RelationNurse    = "nurse"
 	RelationHospital = "hospital"
 	RelationOwner    = "owner"
+	RelationCanView  = "can_view"
+	RelationCanEdit  = "can_edit"
 )
 
 type Tuple struct {
@@ -111,6 +113,28 @@ func NewMedicalRecordOwnerTuple(recordID, accountID string) Tuple {
 		UserType:   EntityAccount,
 		UserID:     accountID,
 		Relation:   RelationOwner,
+		ObjectType: EntityMedicalRecord,
+		ObjectID:   recordID,
+	}
+}
+
+// NewMedicalRecordCanViewTuple - creates the tuple used to check whether an account can view a medical record.
+func NewMedicalRecordCanViewTuple(recordID, accountID string) Tuple {
+	return Tuple{
+		UserType:   EntityAccount,
+		UserID:     accountID,
+		Relation:   RelationCanView,
+		ObjectType: EntityMedicalRecord,
+		ObjectID:   recordID,
+	}
+}
+
+// NewMedicalRecordCanEditTuple - creates the tuple used to check whether an account can edit a medical record.
+func NewMedicalRecordCanEditTuple(recordID, accountID string) Tuple {
+	return Tuple{
+		UserType:   EntityAccount,
+		UserID:     accountID,
+		Relation:   RelationCanEdit,
 		ObjectType: EntityMedicalRecord,
 		ObjectID:   recordID,
 	}

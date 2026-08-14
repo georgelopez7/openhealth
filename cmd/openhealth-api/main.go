@@ -46,7 +46,7 @@ func main() {
 	doctorSVC := doctors.NewService(tx, repository)
 	nurseSVC := nurses.NewService(tx, repository)
 	hospitalSVC := hospitals.NewService(tx, repository)
-	medicalRecordSVC := medicalrecords.NewService(tx, repository)
+	medicalRecordSVC := medicalrecords.NewService(tx, repository, authorizationSVC)
 	outboxSVC := outbox.NewService(repository)
 
 	// RELAY

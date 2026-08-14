@@ -8,8 +8,9 @@ import (
 )
 
 type Dependencies struct {
-	repository *MockRepository
-	tx         *MockTxManager
+	repository       *MockRepository
+	tx               *MockTxManager
+	authorizationSVC *MockAuthorizationSVC
 }
 
 // newMockService - creates a new mock service for testing
@@ -19,13 +20,15 @@ func newMockService(t *testing.T) (*medicalrecords.Service, Dependencies) {
 
 	tx := NewMockTxManager(ctrl)
 	repository := NewMockRepository(ctrl)
+	authorizationSVC := NewMockAuthorizationSVC(ctrl)
 
 	deps := Dependencies{
-		repository: repository,
-		tx:         tx,
+		repository:       repository,
+		tx:               tx,
+		authorizationSVC: authorizationSVC,
 	}
 
-	service := medicalrecords.NewService(tx, repository)
+	service := medicalrecords.NewService(tx, repository, authorizationSVC)
 
 	return service, deps
 }

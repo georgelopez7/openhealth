@@ -20,3 +20,7 @@ type Repository interface {
 type TxManager interface {
 	WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
+
+type AuthorizationSVC interface {
+	Check(ctx context.Context, tuple domain.Tuple) (bool, error)
+}
