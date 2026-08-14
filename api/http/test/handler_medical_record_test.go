@@ -164,3 +164,36 @@ func TestServer_GetMedicalRecordsByAccountIDHandler(t *testing.T) {
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
 }
+
+func TestServer_GetMedicalRecordAccessHandler(t *testing.T) {
+	api, deps, teardown := newMockServer(t)
+	defer teardown()
+
+	endpoint := "/api/v1/accounts/mock-account-id-1/medical-records/mock-record-id-1/access"
+
+	t.Run("should return access flags", func(t *testing.T) {
+		deps.MockMedicalRecordSvc.EXPECT().GetMedicalRecordAccess(gomock.Any(), "mock-record-id-1", "mock-account-id-1").Return(true, false, nil)
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusOK, resp.Code)
+
+		var response struct {
+			CanView bool `json:"can_view"`
+			CanEdit bool `json:"can_edit"`
+		}
+
+		err := json.NewDecoder(resp.Body).Decode(&response)
+		require.NoError(t, err)
+		require.True(t, response.CanView)
+		require.False(t, response.CanEdit)
+	})
+
+	t.Run("should handle service error", func(t *testing.T) {
+		deps.MockMedicalRecordSvc.EXPECT().GetMedicalRecordAccess(gomock.Any(), "mock-record-id-1", "mock-account-id-1").Return(false, false, errors.New("mock-error"))
+
+		resp := api.Get(endpoint)
+
+		require.Equal(t, http.StatusInternalServerError, resp.Code)
+	})
+}

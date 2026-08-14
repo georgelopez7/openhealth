@@ -1,7 +1,7 @@
 info:
   name: /api/v1/nurses/assignments - [POST]
   type: http
-  seq: 2
+  seq: 3
   tags:
     - nurses
 

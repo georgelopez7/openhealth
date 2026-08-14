@@ -43,3 +43,15 @@ type CreateMedicalRecordResponse struct {
 		MedicalRecord domain.MedicalRecord `json:"medical_record"`
 	}
 }
+
+type GetMedicalRecordAccessInput struct {
+	AccountID       string `path:"accountID"`
+	MedicalRecordID string `path:"medicalRecordID"`
+}
+
+type GetMedicalRecordAccessResponse struct {
+	Body struct {
+		CanView bool `json:"can_view"`
+		CanEdit bool `json:"can_edit"`
+	}
+}

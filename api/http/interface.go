@@ -38,6 +38,7 @@ type HospitalSVC interface {
 type MedicalRecordSVC interface {
 	CreateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error
 	GetMedicalRecordByID(ctx context.Context, id string) (*domain.MedicalRecord, error)
+	GetMedicalRecordAccess(ctx context.Context, recordID, accountID string) (canView bool, canEdit bool, err error)
 	GetMedicalRecords(ctx context.Context) ([]domain.MedicalRecord, error)
 	GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error)
 }

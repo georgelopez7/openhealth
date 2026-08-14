@@ -62,3 +62,16 @@ func (s *Server) GetMedicalRecordsByAccountIDHandler(ctx context.Context, input 
 
 	return resp, nil
 }
+
+func (s *Server) GetMedicalRecordAccessHandler(ctx context.Context, input *GetMedicalRecordAccessInput) (*GetMedicalRecordAccessResponse, error) {
+	canView, canEdit, err := s.MedicalRecordSVC.GetMedicalRecordAccess(ctx, input.MedicalRecordID, input.AccountID)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &GetMedicalRecordAccessResponse{}
+	resp.Body.CanView = canView
+	resp.Body.CanEdit = canEdit
+
+	return resp, nil
+}

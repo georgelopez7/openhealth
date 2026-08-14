@@ -19,7 +19,7 @@ type CreateAccountResponse struct {
 
 type UpdateAccountInput struct {
 	AccountID string `path:"accountID"`
-	Body struct {
+	Body      struct {
 		FirstName string `json:"first_name"`
 		LastName  string `json:"last_name"`
 		Age       int    `json:"age"`

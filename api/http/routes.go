@@ -204,6 +204,16 @@ func (s *Server) addRoutes(api huma.API) {
 	}, s.GetMedicalRecordByIDHandler)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "get-medical-record-access",
+		Method:        http.MethodGet,
+		Path:          "/api/v1/accounts/{accountID}/medical-records/{medicalRecordID}/access",
+		Summary:       "/api/v1/accounts/{accountID}/medical-records/{medicalRecordID}/access - [GET]",
+		Description:   "Checks whether an account can view and edit a medical record",
+		Tags:          []string{"medical-records"},
+		DefaultStatus: http.StatusOK,
+	}, s.GetMedicalRecordAccessHandler)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "list-medical-records",
 		Method:        http.MethodGet,
 		Path:          "/api/v1/medical-records",
