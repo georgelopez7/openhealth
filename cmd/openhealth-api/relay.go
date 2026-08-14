@@ -6,23 +6,26 @@ import (
 	"time"
 
 	"openhealth/internal/event"
+	"openhealth/internal/service/authorization"
 	"openhealth/internal/service/outbox"
 )
 
 const relayBatchSize = 100
 
 type Relay struct {
-	outboxService *outbox.Service
-	mutex         *event.EventMutex
-	done          chan struct{}
+	outboxService        *outbox.Service
+	authorizationService *authorization.Service
+	mutex                *event.EventMutex
+	done                 chan struct{}
 }
 
 // NewRelay - creates a new outbox relay
-func NewRelay(outboxService *outbox.Service) *Relay {
+func NewRelay(outboxService *outbox.Service, authorizationService *authorization.Service) *Relay {
 	return &Relay{
-		outboxService: outboxService,
-		mutex:         event.NewEventMutex(),
-		done:          make(chan struct{}),
+		outboxService:        outboxService,
+		authorizationService: authorizationService,
+		mutex:                event.NewEventMutex(),
+		done:                 make(chan struct{}),
 	}
 }
 
@@ -48,6 +51,7 @@ func (r *Relay) Stop() {
 	close(r.done)
 }
 
+// processPendingEvents - processes pending outbox events
 func (r *Relay) processPendingEvents(ctx context.Context) {
 	outboxEvents, err := r.outboxService.GetPendingOutboxEvents(ctx, relayBatchSize)
 	if err != nil {
@@ -64,6 +68,7 @@ func (r *Relay) processPendingEvents(ctx context.Context) {
 	}
 }
 
+// handleEvent - handles an outbox event
 func (r *Relay) handleEvent(ctx context.Context, outboxEvent event.OutboxEvent) {
 	defer r.mutex.Remove(outboxEvent.EventID)
 
