@@ -8,8 +8,6 @@ import { cn } from "#/lib/utils";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-const buttonBaseClasses = "h-12 border-2 border-dashed border-white text-lg";
-
 function Home() {
   return (
     <PageLayout navbar={false}>
@@ -24,7 +22,7 @@ function Home() {
             to="/dashboard"
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              buttonBaseClasses,
+              "h-12 border-2 border-dashed border-white text-lg",
               "px-6",
             )}
           >
@@ -36,7 +34,7 @@ function Home() {
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: "outline", size: "icon-lg" }),
-              buttonBaseClasses,
+              "h-12 border-2 border-dashed border-white text-lg",
               "size-12",
             )}
           >
