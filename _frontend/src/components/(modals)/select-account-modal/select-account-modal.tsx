@@ -15,7 +15,7 @@ interface IProps {
   onSelect?: (account: Account) => void;
 }
 
-const SelectCharacterModal = ({
+const SelectAccountModal = ({
   accounts,
   open,
   onOpenChange,
@@ -25,8 +25,10 @@ const SelectCharacterModal = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Select Character</DialogTitle>
-          <DialogDescription>Choose an account to continue.</DialogDescription>
+          <DialogTitle>Select Account</DialogTitle>
+          <DialogDescription className="text-xs">
+            Choose an account to continue.
+          </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4">
           {accounts.map((account) => (
@@ -35,7 +37,7 @@ const SelectCharacterModal = ({
               type="button"
               onClick={() => onSelect?.(account)}
               className={cn(
-                "flex items-center justify-center rounded-lg border border-dashed border-white p-4 text-center cursor-pointer hover:bg-white/10",
+                "flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-white p-4 text-center hover:bg-white/10",
               )}
             >
               {account.first_name} {account.last_name}
@@ -47,4 +49,4 @@ const SelectCharacterModal = ({
   );
 };
 
-export default SelectCharacterModal;
+export default SelectAccountModal;
