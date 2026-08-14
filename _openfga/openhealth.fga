@@ -1,22 +1,26 @@
 model
   schema 1.1
 
-type user
-
-type hospital
+type account
   relations
-    define nurse: [user]
-
-type patient
-  relations
-    define _self: [user]
-    define doctor: [user]
-    define guardian: [user]
+    define doctor: [doctor#account]
     define hospital: [hospital]
     define nurse: nurse from hospital
 
-type record
+type hospital
   relations
-    define owner: [patient]
-    define can_view: _self from owner or doctor from owner or guardian from owner or nurse from owner
-    define can_edit: _self from owner or doctor from owner
+    define nurse: [nurse#account]
+
+type doctor
+  relations
+    define account: [account]
+
+type nurse
+  relations
+    define account: [account]
+
+type medical_record
+  relations
+    define owner: [account]
+    define can_view: owner or doctor from owner or nurse from owner
+    define can_edit: owner or doctor from owner
