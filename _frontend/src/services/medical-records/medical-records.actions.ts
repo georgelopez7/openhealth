@@ -36,6 +36,46 @@ export const GetMedicalRecordsFn = createServerFn({ method: "GET" }).handler(
   },
 );
 
+export type GetMedicalRecordAccessResult = {
+  access: {
+    can_view: boolean;
+    can_edit: boolean;
+  } | null;
+  error: string | null;
+};
+
+// GetMedicalRecordAccessFn - Fetches access permissions for a medical record.
+export const GetMedicalRecordAccessFn = createServerFn({ method: "GET" })
+  .validator((data: { record_id: string; account_id: string }) => data)
+  .handler(async ({ data }): Promise<GetMedicalRecordAccessResult> => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/v1/accounts/${data.account_id}/medical-records/${data.record_id}/access`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        access: null,
+        error: `Failed to fetch medical record access: ${response.status} ${response.statusText}`,
+      };
+    }
+
+    type GetMedicalRecordAccessResponseBody = {
+      can_view: boolean;
+      can_edit: boolean;
+    };
+
+    const body: GetMedicalRecordAccessResponseBody = await response.json();
+    return {
+      access: body,
+      error: null,
+    };
+  });
+
 export type CreateMedicalRecordResult = {
   medicalRecord: MedicalRecord | null;
   error: string | null;

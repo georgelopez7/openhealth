@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageLayout } from "#/components/(layouts)/page-layout/page-layout";
-import MedicalRecordsSection from "#/components/(sections)/medical-records-section/medical-records-section";
+import Spacer from "#/components/(layouts)/spacer/spacer";
 import AccountSection from "#/components/(sections)/account-section/account-section";
+import MedicalRecordsSection from "#/components/(sections)/medical-records-section/medical-records-section";
 import { GetAccounts } from "#/services/accounts/accounts.queries";
 import { GetMedicalRecords } from "#/services/medical-records/medical-records.queries";
-import Spacer from "#/components/(layouts)/spacer/spacer";
 import { useAccount } from "#/stores/account-store/account-store";
 
 export const Route = createFileRoute("/(pages)/dashboard")({
@@ -26,6 +26,7 @@ function RouteComponent() {
         <>
           <Spacer size="medium" />
           <MedicalRecordsSection
+            account={account}
             accounts={accounts}
             medicalRecords={medicalRecords}
           />

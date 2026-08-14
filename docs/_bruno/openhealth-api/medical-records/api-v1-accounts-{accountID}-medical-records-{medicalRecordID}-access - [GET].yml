@@ -10,10 +10,10 @@ http:
   url: "{{BASE_URL}}/api/v1/accounts/:accountID/medical-records/:medicalRecordID/access"
   params:
     - name: accountID
-      value: ""
+      value: 05b45a71-f37f-4e47-8446-90a83493d067
       type: path
     - name: medicalRecordID
-      value: ""
+      value: 0e0bb757-fee6-45e2-bfa1-0528e072bf59
       type: path
   auth: inherit
 
