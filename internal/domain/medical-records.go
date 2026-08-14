@@ -23,7 +23,6 @@ type MedicalRecord struct {
 	UpdatedAt   time.Time           `json:"updated_at" db:"updated_at"`
 }
 
-// NewMedicalRecord - creates a new medical record for an account.
 func NewMedicalRecord(accountID string, title string, description string) *MedicalRecord {
 	now := time.Now().UTC()
 	return &MedicalRecord{
