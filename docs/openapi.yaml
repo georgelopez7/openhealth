@@ -6,6 +6,8 @@ components:
         age:
           format: int64
           type: integer
+        avatar:
+          type: string
         created_at:
           format: date-time
           type: string
@@ -32,6 +34,7 @@ components:
         - last_name
         - age
         - email
+        - avatar
         - status
         - doctor_id
         - hospital_id
@@ -51,6 +54,8 @@ components:
         age:
           format: int64
           type: integer
+        avatar:
+          type: string
         email:
           type: string
         first_name:
@@ -725,6 +730,8 @@ components:
         age:
           format: int64
           type: integer
+        avatar:
+          type: string
         email:
           type: string
         first_name:

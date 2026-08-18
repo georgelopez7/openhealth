@@ -17,7 +17,7 @@ func TestService_CreateAccount(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully create account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
 			func(ctx context.Context, fn func(context.Context) error) error {
@@ -33,7 +33,7 @@ func TestService_CreateAccount(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to add account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
 			func(ctx context.Context, fn func(context.Context) error) error {
@@ -48,7 +48,7 @@ func TestService_CreateAccount(t *testing.T) {
 	})
 
 	// t.Run("should handle error when repository fails to add outbox event", func(t *testing.T) {
-	// 	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	// 	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 	// 	deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
 	// 		func(ctx context.Context, fn func(context.Context) error) error {
@@ -70,7 +70,7 @@ func TestService_GetAccountByID(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully get account with assigned doctor and hospital", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		account.DoctorID = "doctor-id-1"
 		account.HospitalID = "hospital-id-1"
 
@@ -86,7 +86,7 @@ func TestService_GetAccountByID(t *testing.T) {
 	})
 
 	t.Run("should successfully get account without assigned doctor or hospital", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
@@ -118,7 +118,7 @@ func TestService_GetAccountByID(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to get doctor id", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", errors.New("doctor id error"))
@@ -130,7 +130,7 @@ func TestService_GetAccountByID(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to get hospital id", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.repository.EXPECT().GetAccountByID(gomock.Any(), "test-account-id").Return(account, nil)
 		deps.repository.EXPECT().GetDoctorIDByAccountID(gomock.Any(), "test-account-id").Return("", nil)
@@ -150,8 +150,8 @@ func TestService_GetAllAccounts(t *testing.T) {
 
 	t.Run("should successfully return accounts up to the limit", func(t *testing.T) {
 		expected := []domain.Account{
-			*domain.NewAccount("John", "Doe", 30, "john.doe@example.com"),
-			*domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com"),
+			*domain.NewAccount("John", "Doe", 30, "john.doe@example.com", ""),
+			*domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", ""),
 		}
 
 		deps.repository.EXPECT().GetAccounts(gomock.Any(), 2).Return(expected, nil)
@@ -185,7 +185,7 @@ func TestService_UpdateAccount(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully update account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		account.UpdatedAt = time.Now().UTC()
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
@@ -202,7 +202,7 @@ func TestService_UpdateAccount(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to update account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		account.UpdatedAt = time.Now().UTC()
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
@@ -224,7 +224,7 @@ func TestService_ArchiveAccount(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully archive account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
 			func(ctx context.Context, fn func(context.Context) error) error {
@@ -254,7 +254,7 @@ func TestService_ArchiveAccount(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails to archive account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		deps.tx.EXPECT().WithTransaction(gomock.Any(), gomock.Any()).DoAndReturn(
 			func(ctx context.Context, fn func(context.Context) error) error {

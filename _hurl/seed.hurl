@@ -4,7 +4,8 @@ Content-Type: application/json
   "first_name": "Ash",
   "last_name": "Ketchum",
   "age": 10,
-  "email": "ash.ketchum@pokemon.com"
+  "email": "ash.ketchum@pokemon.com",
+  "avatar": "ash-ketchum"
 }
 
 HTTP 201
@@ -18,7 +19,8 @@ Content-Type: application/json
   "first_name": "Misty",
   "last_name": "Waterflower",
   "age": 12,
-  "email": "misty.waterflower@pokemon.com"
+  "email": "misty.waterflower@pokemon.com",
+  "avatar": "misty-waterflower"
 }
 
 HTTP 201
@@ -32,7 +34,8 @@ Content-Type: application/json
   "first_name": "Professor",
   "last_name": "Oak",
   "age": 65,
-  "email": "professor.oak@pokemon.com"
+  "email": "professor.oak@pokemon.com",
+  "avatar": "professor-oak"
 }
 
 HTTP 201
@@ -46,7 +49,8 @@ Content-Type: application/json
   "first_name": "Nurse",
   "last_name": "Joy",
   "age": 24,
-  "email": "nurse.joy@pokemon.com"
+  "email": "nurse.joy@pokemon.com",
+  "avatar": "nurse-joy"
 }
 
 HTTP 201

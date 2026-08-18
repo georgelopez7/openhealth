@@ -43,6 +43,7 @@ examples:
             "$schema": "",
             "account": {
               "age": 0,
+              "avatar": "",
               "created_at": "",
               "doctor_id": "",
               "email": "",

@@ -6,10 +6,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Account } from "@/domain/accounts";
+import { getAccountDisplayName } from "@/domain/accounts";
+import { AccountIcon } from "@/domain/icon";
 import { cn } from "@/lib/utils";
 
 interface IProps {
   accounts: Account[];
+  selectedAccountID?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onSelect?: (account: Account) => void;
@@ -17,6 +20,7 @@ interface IProps {
 
 const SelectAccountModal = ({
   accounts,
+  selectedAccountID,
   open,
   onOpenChange,
   onSelect,
@@ -31,18 +35,27 @@ const SelectAccountModal = ({
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4">
-          {accounts.map((account) => (
-            <button
-              key={account.id}
-              type="button"
-              onClick={() => onSelect?.(account)}
-              className={cn(
-                "flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-white p-4 text-center hover:bg-white/10",
-              )}
-            >
-              {account.first_name} {account.last_name}
-            </button>
-          ))}
+          {accounts.map((account) => {
+            const isSelected = account.id === selectedAccountID;
+            return (
+              <button
+                key={account.id}
+                type="button"
+                disabled={isSelected}
+                onClick={() => onSelect?.(account)}
+                className={cn(
+                  "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-white p-4 text-center hover:bg-white/10",
+                  isSelected && "cursor-not-allowed opacity-50",
+                )}
+              >
+                <AccountIcon
+                  avatar={account.avatar}
+                  className="mb-2 h-12 w-12"
+                />
+                {getAccountDisplayName(account)}
+              </button>
+            );
+          })}
         </div>
       </DialogContent>
     </Dialog>

@@ -13,7 +13,7 @@ func TestRepository_AddOutboxEvent(t *testing.T) {
 
 	repo.ResetOutboxEvents(ctx)
 
-	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 	accountEvent := event.NewAccountCreatedEvent(*account)
 
 	expected, err := event.NewOutboxEvent(accountEvent)
@@ -37,7 +37,7 @@ func TestRepository_UpdateOutboxEventStatus(t *testing.T) {
 
 	repo.ResetOutboxEvents(ctx)
 
-	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 	accountEvent := event.NewAccountCreatedEvent(*account)
 
 	outboxEvent, err := event.NewOutboxEvent(accountEvent)
@@ -59,12 +59,12 @@ func TestRepository_GetPendingOutboxEvents(t *testing.T) {
 
 	repo.ResetOutboxEvents(ctx)
 
-	firstAccount := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	firstAccount := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 	firstEvent := event.NewAccountCreatedEvent(*firstAccount)
 	first, err := event.NewOutboxEvent(firstEvent)
 	require.NoError(t, err)
 
-	secondAccount := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+	secondAccount := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 	secondEvent := event.NewAccountCreatedEvent(*secondAccount)
 	second, err := event.NewOutboxEvent(secondEvent)
 	require.NoError(t, err)

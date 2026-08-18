@@ -17,6 +17,7 @@ type Account struct {
 	LastName  string    `json:"last_name" db:"last_name"`
 	Age       int       `json:"age" db:"age"`
 	Email     string    `json:"email" db:"email"`
+	Avatar     string    `json:"avatar" db:"avatar"`
 	Status     string    `json:"status" db:"status"`
 	DoctorID   string    `json:"doctor_id" db:"-"`
 	HospitalID string    `json:"hospital_id" db:"-"`
@@ -24,7 +25,7 @@ type Account struct {
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
-func NewAccount(firstName string, lastName string, age int, email string) *Account {
+func NewAccount(firstName string, lastName string, age int, email string, avatar string) *Account {
 	now := time.Now().UTC()
 	return &Account{
 		ID:        uuid.NewString(),
@@ -32,6 +33,7 @@ func NewAccount(firstName string, lastName string, age int, email string) *Accou
 		LastName:  lastName,
 		Age:       age,
 		Email:     email,
+		Avatar:    avatar,
 		Status:    AccountStatusActive,
 		CreatedAt: now,
 		UpdatedAt: now,

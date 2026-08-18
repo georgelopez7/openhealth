@@ -500,7 +500,7 @@ func TestRepository_GetNursesByHospitalID(t *testing.T) {
 func newTestNurse(t *testing.T) *domain.Nurse {
 	t.Helper()
 
-	account := domain.NewAccount("Nurse", "Joy", 30, "nurse.joy@example.com")
+	account := domain.NewAccount("Nurse", "Joy", 30, "nurse.joy@example.com", "")
 	err := repo.AddAccount(t.Context(), *account)
 	require.NoError(t, err)
 

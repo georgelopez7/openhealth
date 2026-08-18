@@ -163,7 +163,7 @@ func TestRepository_AddDoctorToAccountAssignment(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -191,7 +191,7 @@ func TestRepository_RemoveDoctorAssignment(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -224,8 +224,8 @@ func TestRepository_RemoveAllDoctorToAccountAssignments(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
+		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		err = repo.AddAccount(ctx, *accountOne)
 		require.NoError(t, err)
 		err = repo.AddAccount(ctx, *accountTwo)
@@ -254,7 +254,7 @@ func TestRepository_RemoveAllDoctorToAccountAssignments(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -289,7 +289,7 @@ func TestRepository_GetDoctorAssignmentByID(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -322,8 +322,8 @@ func TestRepository_GetDoctorAssignments(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		accountOne := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
+		accountTwo := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		err = repo.AddAccount(ctx, *accountOne)
 		require.NoError(t, err)
 		err = repo.AddAccount(ctx, *accountTwo)
@@ -361,7 +361,7 @@ func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -383,7 +383,7 @@ func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -404,7 +404,7 @@ func TestRepository_GetDoctorAssignmentsByDoctorID(t *testing.T) {
 func newTestDoctor(t *testing.T) *domain.Doctor {
 	t.Helper()
 
-	account := domain.NewAccount("Dr", "Jones", 45, "dr.jones@example.com")
+	account := domain.NewAccount("Dr", "Jones", 45, "dr.jones@example.com", "")
 	err := repo.AddAccount(t.Context(), *account)
 	require.NoError(t, err)
 

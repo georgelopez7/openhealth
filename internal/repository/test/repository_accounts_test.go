@@ -13,7 +13,7 @@ func TestRepository_AddAccount(t *testing.T) {
 
 	repo.ResetAccounts(ctx)
 
-	expected := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	expected := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 	err := repo.AddAccount(ctx, *expected)
 	require.NoError(t, err)
@@ -34,7 +34,7 @@ func TestRepository_GetAccountByID(t *testing.T) {
 	repo.ResetAccounts(ctx)
 
 	t.Run("should successfully return account", func(t *testing.T) {
-		expected := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		expected := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 
 		err := repo.AddAccount(ctx, *expected)
 		require.NoError(t, err)
@@ -62,9 +62,9 @@ func TestRepository_GetAccounts(t *testing.T) {
 	repo.ResetAccounts(ctx)
 
 	t.Run("should return accounts up to the limit", func(t *testing.T) {
-		john := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
-		jane := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		bob := domain.NewAccount("Bob", "Brown", 40, "bob.brown@example.com")
+		john := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
+		jane := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
+		bob := domain.NewAccount("Bob", "Brown", 40, "bob.brown@example.com", "")
 
 		err := repo.AddAccount(ctx, *john)
 		require.NoError(t, err)
@@ -86,7 +86,7 @@ func TestRepository_GetAccounts(t *testing.T) {
 	t.Run("should return all accounts when limit is greater than count", func(t *testing.T) {
 		repo.ResetAccounts(ctx)
 
-		expected := domain.NewAccount("Alice", "Wonder", 28, "alice@example.com")
+		expected := domain.NewAccount("Alice", "Wonder", 28, "alice@example.com", "")
 		err := repo.AddAccount(ctx, *expected)
 		require.NoError(t, err)
 
@@ -111,7 +111,7 @@ func TestRepository_UpdateAccount(t *testing.T) {
 	repo.ResetAccounts(ctx)
 
 	t.Run("should successfully update account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		err := repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -135,7 +135,7 @@ func TestRepository_UpdateAccount(t *testing.T) {
 	})
 
 	t.Run("should handle case when account is not found", func(t *testing.T) {
-		account := domain.NewAccount("Ghost", "User", 99, "ghost@example.com")
+		account := domain.NewAccount("Ghost", "User", 99, "ghost@example.com", "")
 		account.ID = "non-existent-id"
 
 		err := repo.UpdateAccount(ctx, *account)
@@ -153,7 +153,7 @@ func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -167,7 +167,7 @@ func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
 	})
 
 	t.Run("should return empty string when no doctor is assigned", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		err := repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
@@ -182,7 +182,7 @@ func TestRepository_GetDoctorIDByAccountID(t *testing.T) {
 		err := repo.AddDoctor(ctx, *doctor)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Bob", "Brown", 40, "bob.brown@example.com")
+		account := domain.NewAccount("Bob", "Brown", 40, "bob.brown@example.com", "")
 
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -206,7 +206,7 @@ func TestRepository_ArchiveAccount(t *testing.T) {
 	repo.ResetAccounts(ctx)
 
 	t.Run("should successfully archive account", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		err := repo.AddAccount(ctx, *account)
 		require.NoError(t, err)

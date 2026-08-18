@@ -4,6 +4,8 @@ import { useState } from "react";
 import SelectAccountModal from "#/components/(modals)/select-account-modal/select-account-modal";
 import { buttonVariants } from "#/components/ui/button";
 import type { Account } from "#/domain/accounts";
+import { getAccountDisplayName } from "#/domain/accounts";
+import { AccountIcon } from "#/domain/icon";
 import { cn } from "#/lib/utils";
 import { useAccount } from "#/stores/account-store/account-store";
 
@@ -24,9 +26,10 @@ const AccountSection = ({ accounts }: IProps) => {
     <section className="w-full">
       {account ? (
         <div className="flex w-full items-center justify-between py-2 text-white">
-          <div>
-            <p className="text-xl font-semibold">
-              {account.first_name} {account.last_name}
+          <div className="flex items-center gap-3">
+            <AccountIcon avatar={account.avatar} className="size-12 shrink-0" />
+            <p className="text-2xl font-semibold">
+              {getAccountDisplayName(account)}
             </p>
           </div>
           <button
@@ -55,6 +58,7 @@ const AccountSection = ({ accounts }: IProps) => {
 
       <SelectAccountModal
         accounts={accounts}
+        selectedAccountID={account?.id}
         open={open}
         onOpenChange={setOpen}
         onSelect={handleSelect}

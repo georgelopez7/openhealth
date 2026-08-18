@@ -18,6 +18,7 @@ http:
       {
         "$schema": "",
         "age": 0,
+        "avatar": "",
         "email": "",
         "first_name": "",
         "last_name": ""
@@ -46,6 +47,7 @@ examples:
           {
             "$schema": "",
             "age": 0,
+            "avatar": "",
             "email": "",
             "first_name": "",
             "last_name": ""
@@ -71,6 +73,7 @@ examples:
           {
             "$schema": "",
             "age": 0,
+            "avatar": "",
             "email": "",
             "first_name": "",
             "last_name": ""

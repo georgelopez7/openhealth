@@ -14,6 +14,7 @@ func (s *Server) CreateAccountHandler(ctx context.Context, input *CreateAccountI
 		input.Body.LastName,
 		input.Body.Age,
 		input.Body.Email,
+		input.Body.Avatar,
 	)
 
 	err := s.AccountSVC.CreateAccount(ctx, *account)
@@ -34,6 +35,7 @@ func (s *Server) UpdateAccountHandler(ctx context.Context, input *UpdateAccountI
 		LastName:  input.Body.LastName,
 		Age:       input.Body.Age,
 		Email:     input.Body.Email,
+		Avatar:    input.Body.Avatar,
 		UpdatedAt: time.Now().UTC(),
 	}
 

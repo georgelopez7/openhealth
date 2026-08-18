@@ -167,7 +167,7 @@ func TestRepository_AddHospitalAssignment(t *testing.T) {
 		err := repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -197,7 +197,7 @@ func TestRepository_RemoveHospitalToAccountAssignment(t *testing.T) {
 		err := repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -232,7 +232,7 @@ func TestRepository_GetHospitalAssignmentByID(t *testing.T) {
 		err := repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -267,8 +267,8 @@ func TestRepository_GetHospitalAssignments(t *testing.T) {
 		err := repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		account1 := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
-		account2 := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account1 := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
+		account2 := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		err = repo.AddAccount(ctx, *account1)
 		require.NoError(t, err)
@@ -310,7 +310,7 @@ func TestRepository_GetHospitalIDByAccountID(t *testing.T) {
 		err := repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com")
+		account := domain.NewAccount("Jane", "Smith", 25, "jane.smith@example.com", "")
 
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
@@ -327,7 +327,7 @@ func TestRepository_GetHospitalIDByAccountID(t *testing.T) {
 	})
 
 	t.Run("should return empty when no hospital is assigned", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 
 		err := repo.AddAccount(ctx, *account)
 		require.NoError(t, err)

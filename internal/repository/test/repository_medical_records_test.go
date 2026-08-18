@@ -147,7 +147,7 @@ func TestRepository_ArchiveMedicalRecord(t *testing.T) {
 func newTestAccount(t *testing.T) *domain.Account {
 	t.Helper()
 
-	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+	account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 	err := repo.AddAccount(t.Context(), *account)
 	require.NoError(t, err)
 

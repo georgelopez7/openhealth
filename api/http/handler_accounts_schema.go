@@ -8,6 +8,7 @@ type CreateAccountInput struct {
 		LastName  string `json:"last_name"`
 		Age       int    `json:"age"`
 		Email     string `json:"email"`
+		Avatar    string `json:"avatar,omitempty"`
 	}
 }
 
@@ -24,6 +25,7 @@ type UpdateAccountInput struct {
 		LastName  string `json:"last_name"`
 		Age       int    `json:"age"`
 		Email     string `json:"email"`
+		Avatar    string `json:"avatar,omitempty"`
 	}
 }
 

@@ -16,7 +16,7 @@ func TestService_AddOutboxEvent(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully add outbox event", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		accountEvent := event.NewAccountCreatedEvent(*account)
 
 		outboxEvent, err := event.NewOutboxEvent(accountEvent)
@@ -29,7 +29,7 @@ func TestService_AddOutboxEvent(t *testing.T) {
 	})
 
 	t.Run("should handle error when repository fails", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		accountEvent := event.NewAccountCreatedEvent(*account)
 
 		outboxEvent, err := event.NewOutboxEvent(accountEvent)
@@ -68,7 +68,7 @@ func TestService_GetPendingOutboxEvents(t *testing.T) {
 	service, deps := newMockService(t)
 
 	t.Run("should successfully return pending outbox events", func(t *testing.T) {
-		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com")
+		account := domain.NewAccount("John", "Doe", 30, "john.doe@example.com", "")
 		accountEvent := event.NewAccountCreatedEvent(*account)
 
 		outboxEvent, err := event.NewOutboxEvent(accountEvent)
