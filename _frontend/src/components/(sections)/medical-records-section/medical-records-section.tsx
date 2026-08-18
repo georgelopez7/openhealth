@@ -42,7 +42,7 @@ const MedicalRecordsSection = ({
 
   return (
     <section className="w-full space-y-4 text-white">
-      <h2 className="text-xl font-bold">Medical Records</h2>
+      <h2 className="text-lg font-bold md:text-xl">Medical Records</h2>
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {medicalRecords.map((record, index) => {
           const { canView, canEdit, isLoading } = accessResults[index];

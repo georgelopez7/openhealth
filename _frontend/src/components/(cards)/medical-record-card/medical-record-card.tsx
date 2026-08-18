@@ -20,7 +20,7 @@ const PermissionBanner = ({ action, granted }: IPermissionBannerProps) => {
           : "border-white/10 bg-white/3 text-white/30 opacity-40 cursor-not-allowed",
       )}
     >
-      {granted ? "Can" : "Cannot"} {action}
+      Can {action}
     </span>
   );
 };

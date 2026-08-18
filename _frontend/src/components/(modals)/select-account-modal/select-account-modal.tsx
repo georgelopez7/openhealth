@@ -44,7 +44,7 @@ const SelectAccountModal = ({
                 disabled={isSelected}
                 onClick={() => onSelect?.(account)}
                 className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-white p-4 text-center hover:bg-white/10",
+                  "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-white/20 bg-white/5 p-4 text-center transition-colors hover:bg-white/10",
                   isSelected && "cursor-not-allowed opacity-50",
                 )}
               >

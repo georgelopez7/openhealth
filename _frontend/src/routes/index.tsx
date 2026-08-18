@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import GitHubIcon from "#/components/(icons)/github-icon";
+import OpenFGAIcon from "#/components/(icons)/openfga-icon";
 import OpenhealthIcon from "#/components/(icons)/openhealth-icon";
 import { PageLayout } from "#/components/(layouts)/page-layout/page-layout";
 import Spacer from "#/components/(layouts)/spacer/spacer";
-import { buttonVariants } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
+import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -21,9 +22,7 @@ function Home() {
           <Link
             to="/dashboard"
             className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "h-12 border-2 border-dashed border-white text-lg",
-              "px-6",
+              "inline-flex h-12 items-center justify-center gap-3 rounded-lg border border-white/20 bg-white/5 px-5 text-lg font-medium text-white transition-colors hover:bg-white/10",
             )}
           >
             Get Started
@@ -33,13 +32,26 @@ function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              buttonVariants({ variant: "outline", size: "icon-lg" }),
-              "h-12 border-2 border-dashed border-white text-lg",
-              "size-12",
+              "inline-flex size-12 items-center justify-center rounded-lg border border-white/20 bg-white/5 text-white transition-colors hover:bg-white/10",
             )}
+            aria-label="GitHub"
           >
             <GitHubIcon className="size-6" />
           </a>
+        </div>
+        <Spacer size="medium" />
+        <div className="inline-flex items-center gap-2 px-4 py-2 text-[10px] text-white/60">
+          <span>
+            Powered by{" "}
+            <a
+              href="https://openfga.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline-offset-2 transition-colors hover:text-white hover:underline"
+            >
+              OpenFGA
+            </a>
+          </span>
         </div>
       </div>
     </PageLayout>

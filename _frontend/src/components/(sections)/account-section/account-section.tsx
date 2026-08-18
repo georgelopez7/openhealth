@@ -2,7 +2,6 @@ import { ArrowRightLeft } from "lucide-react";
 import { useState } from "react";
 
 import SelectAccountModal from "#/components/(modals)/select-account-modal/select-account-modal";
-import { buttonVariants } from "#/components/ui/button";
 import type { Account } from "#/domain/accounts";
 import { getAccountDisplayName } from "#/domain/accounts";
 import { AccountIcon } from "#/domain/icon";
@@ -26,9 +25,9 @@ const AccountSection = ({ accounts }: IProps) => {
     <section className="w-full">
       {account ? (
         <div className="flex w-full items-center justify-between py-2 text-white">
-          <div className="flex items-center gap-3">
-            <AccountIcon avatar={account.avatar} className="size-12 shrink-0" />
-            <p className="text-2xl font-semibold">
+          <div className="flex h-12 items-center gap-3 rounded-lg border border-white/20 bg-white/5 px-4 py-2.5">
+            <AccountIcon avatar={account.avatar} className="size-8 shrink-0" />
+            <p className="text-sm font-semibold md:text-base">
               {getAccountDisplayName(account)}
             </p>
           </div>
@@ -36,11 +35,11 @@ const AccountSection = ({ accounts }: IProps) => {
             type="button"
             onClick={() => setOpen(true)}
             className={cn(
-              buttonVariants({ variant: "outline", size: "icon-lg" }),
-              "cursor-pointer gap-2 border-2 border-dashed border-white px-4",
+              "inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 text-sm font-medium text-white transition-colors hover:bg-white/10 md:text-base cursor-pointer",
             )}
           >
-            <ArrowRightLeft className="h-4 w-4" />
+            <ArrowRightLeft className="size-6 shrink-0" />
+            <span className="hidden md:inline">Switch</span>
           </button>
         </div>
       ) : (
@@ -48,14 +47,12 @@ const AccountSection = ({ accounts }: IProps) => {
           type="button"
           onClick={() => setOpen(true)}
           className={cn(
-            buttonVariants({ variant: "outline", size: "lg" }),
-            "h-12 cursor-pointer border-2 border-dashed border-white px-6 text-lg",
+            "inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 text-lg font-medium text-white transition-colors hover:bg-white/10",
           )}
         >
           Select Account
         </button>
       )}
-
       <SelectAccountModal
         accounts={accounts}
         selectedAccountID={account?.id}
