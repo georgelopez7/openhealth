@@ -4,7 +4,7 @@ dev: # [ make dev ]
 	@printf "\033[0;34m💨 Spinning up Dev Environment...\033[0m\n"
 	@make init-openfga PRINT_ENV=false
 	@echo
-	@printf "\033[0;34m🚧 Building OpenHealth Services...\033[0m\n"
+	@printf "\033[0;34m🐙 Building OpenHealth Services...\033[0m\n"
 	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
 	@echo
 	@printf "\033[0;32m🚀 Dev environment started!\033[0m\n"

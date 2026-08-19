@@ -7,10 +7,19 @@ import {
 import "../styles.css";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { getOGImage, getSiteURL } from "../lib/seo";
 
 interface RouterContext {
   queryClient: QueryClient;
 }
+
+const SEO = {
+  url: getSiteURL(),
+  title: "OpenHealth",
+  description:
+    "Explore fine-grained authorization for medical records and health accounts with OpenFGA.",
+  image: getOGImage(),
+};
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
@@ -23,23 +32,49 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "OpenHealth",
+        title: SEO.title,
+      },
+      {
+        name: "description",
+        content: SEO.description,
+      },
+      {
+        property: "og:title",
+        content: SEO.title,
+      },
+      {
+        property: "og:description",
+        content: SEO.description,
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:image",
+        content: SEO.image,
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:title",
+        content: SEO.title,
+      },
+      {
+        name: "twitter:description",
+        content: SEO.description,
+      },
+      {
+        name: "twitter:image",
+        content: SEO.image,
       },
     ],
   }),
   component: RootComponent,
   shellComponent: RootDocument,
-  notFoundComponent: NotFound,
 });
-
-function NotFound() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center text-white">
-      <h1 className="text-4xl font-bold">404</h1>
-      <p className="mt-2 text-white/70">Page not found.</p>
-    </div>
-  );
-}
 
 function RootComponent() {
   return <Outlet />;
