@@ -263,7 +263,7 @@ func TestRepository_RemoveAllNurseToHospitalAssignments(t *testing.T) {
 		err = repo.AddHospital(ctx, *hospital)
 		require.NoError(t, err)
 
-		now := time.Now().UTC()
+		now := time.Now().UTC().Truncate(time.Microsecond)
 		assignment := domain.NurseToHospitalAssignment{
 			ID:         "assignment-id-1",
 			NurseID:    nurse.ID,

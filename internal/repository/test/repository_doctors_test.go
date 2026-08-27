@@ -258,7 +258,7 @@ func TestRepository_RemoveAllDoctorToAccountAssignments(t *testing.T) {
 		err = repo.AddAccount(ctx, *account)
 		require.NoError(t, err)
 
-		now := time.Now().UTC()
+		now := time.Now().UTC().Truncate(time.Microsecond)
 		assignment := domain.DoctorAssignment{
 			ID:        "assignment-id-1",
 			AccountID: account.ID,
