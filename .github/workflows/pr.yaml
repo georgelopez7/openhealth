@@ -44,7 +44,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run OpenFGA tests
-        uses: ./.github/actions/test-openfga
+        uses: openfga/action-openfga-test@v0.1.2
+        with:
+          test_path: _openfga
 
   build-frontend:
     name: Build openhealth-app
