@@ -1,0 +1,20 @@
+name: Bun - Unit Testing
+description: Installs dependencies and runs Bun tests for the openhealth frontend
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: _frontend
+      run: bun install
+
+    - name: Run tests
+      shell: bash
+      working-directory: _frontend
+      run: bun run test

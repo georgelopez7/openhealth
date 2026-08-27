@@ -6,6 +6,7 @@ const OpenhealthIcon = forwardRef<
   React.HTMLProps<SVGSVGElement>
 >((props, ref) => (
   <svg
+    aria-hidden="true"
     width="299"
     height="299"
     viewBox="0 0 299 299"

@@ -1,10 +1,10 @@
 import { User } from "lucide-react";
 import type { ComponentType } from "react";
 import AshIcon from "#/components/(icons)/ash-icon";
+import BrockIcon from "#/components/(icons)/brock-icon";
 import MistyIcon from "#/components/(icons)/misty-icon";
 import NurseJoy from "#/components/(icons)/nurse-joy-icon";
 import ProfessorOak from "#/components/(icons)/professor-oak-icon";
-import BrockIcon from "#/components/(icons)/brock-icon";
 
 export const AccountIconMap: Record<
   string,

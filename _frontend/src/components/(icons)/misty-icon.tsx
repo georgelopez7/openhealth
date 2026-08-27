@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const MistyIcon = forwardRef<SVGSVGElement, React.HTMLProps<SVGSVGElement>>(
   (props, ref) => (
     <svg
+      aria-hidden="true"
       width="57"
       height="70"
       viewBox="0 0 57 70"

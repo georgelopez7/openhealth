@@ -1,0 +1,66 @@
+name: Release Deployment
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-frontend:
+    name: Build & Push - openhealth-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: ./_frontend
+          file: ./_frontend/Dockerfile
+          image: openhealth-app
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+          push: true
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-backend:
+    name: Build & Push - openhealth-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./cmd/openhealth-api/Dockerfile
+          image: openhealth-api
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+          push: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  deploy:
+    name: Deploy to Dokploy
+    runs-on: ubuntu-latest
+    needs:
+      - build-frontend
+      - build-backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trigger Dokploy deployment
+        uses: ./.github/actions/dokploy-deploy
+        with:
+          dokploy-domain: ${{ secrets.DOKPLOY_DOMAIN }}
+          api-key: ${{ secrets.DOKPLOY_API_KEY }}
+          compose-id: ${{ secrets.DOKPLOY_COMPOSE_ID }}
+          title: Release ${{ github.ref_name }}

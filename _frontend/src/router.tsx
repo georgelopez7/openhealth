@@ -1,9 +1,9 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { routeTree } from "./routeTree.gen";
 import DefaultErrorLayout from "./components/(layouts)/default-error-layout/default-error-layout";
 import NotFoundLayout from "./components/(layouts)/not-found-layout/not-found-layout";
+import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
   const queryClient = new QueryClient({

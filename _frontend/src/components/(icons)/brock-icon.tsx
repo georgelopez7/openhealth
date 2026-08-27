@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const BrockIcon = forwardRef<SVGSVGElement, React.HTMLProps<SVGSVGElement>>(
   (props, ref) => (
     <svg
+      aria-hidden="true"
       width="50"
       height="70"
       viewBox="0 0 50 70"

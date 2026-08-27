@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const OpenFGAIcon = forwardRef<SVGSVGElement, React.HTMLProps<SVGSVGElement>>(
   (props, ref) => (
     <svg
+      aria-hidden="true"
       width="463"
       height="463"
       viewBox="0 0 463 463"

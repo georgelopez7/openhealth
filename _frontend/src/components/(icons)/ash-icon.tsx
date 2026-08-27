@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const AshIcon = forwardRef<SVGSVGElement, React.HTMLProps<SVGSVGElement>>(
   (props, ref) => (
     <svg
+      aria-hidden="true"
       width="66"
       height="74"
       viewBox="0 0 66 74"

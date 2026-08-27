@@ -1,0 +1,44 @@
+name: Push To Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-frontend:
+    name: Build & Push - openhealth-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: ./_frontend
+          file: ./_frontend/Dockerfile
+          image: openhealth-app
+          tags: type=raw,value=sha-${{ github.sha }}
+          push: true
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-backend:
+    name: Build & Push - openhealth-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./cmd/openhealth-api/Dockerfile
+          image: openhealth-api
+          tags: type=raw,value=sha-${{ github.sha }}
+          push: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}

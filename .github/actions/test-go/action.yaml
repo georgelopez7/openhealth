@@ -1,0 +1,19 @@
+name: Go - Unit Testing
+description: Downloads dependencies and runs Go tests for the backend
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.24.3"
+        cache: true
+
+    - name: Download dependencies
+      shell: bash
+      run: go mod download
+
+    - name: Run tests
+      shell: bash
+      run: make test

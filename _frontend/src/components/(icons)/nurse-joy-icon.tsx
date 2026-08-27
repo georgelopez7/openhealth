@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 const NurseJoy = forwardRef<SVGSVGElement, React.HTMLProps<SVGSVGElement>>(
   (props, ref) => (
     <svg
+      aria-hidden="true"
       width="57"
       height="68"
       viewBox="0 0 57 68"

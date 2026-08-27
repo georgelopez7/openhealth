@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
 import GitHubIcon from "#/components/(icons)/github-icon";
 import OpenFGAIcon from "#/components/(icons)/openfga-icon";
 import OpenhealthIcon from "#/components/(icons)/openhealth-icon";
 import { PageLayout } from "#/components/(layouts)/page-layout/page-layout";
 import Spacer from "#/components/(layouts)/spacer/spacer";
 import { cn } from "#/lib/utils";
-import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Home });
 
