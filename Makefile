@@ -1,4 +1,4 @@
-.PHONY: test gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
+.PHONY: test test-go test-openfga gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
 
 dev: # [ make dev ]
 	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
@@ -22,14 +22,20 @@ seed-db: # [ make seed-db ]
 dev-down: # [ make dev-down ]
 	docker compose -f dev.docker-compose.yaml down -v
 
-# Run Tests
-test: # [ make test ]
+# Run All Tests
+test: test-go test-openfga # [ make test ]
+
+# Run Go Tests
+test-go: # [ make test-go ]
 	@echo "\033[0;34m[ Go Tests ]\033[0m"
+	@echo
 	go test ./...
-	@echo
+
+# Run OpenFGA Tests
+test-openfga: # [ make test-openfga ]
 	@echo "\033[0;35m[ OpenFGA Tests ]\033[0m"
-	@fga model test --tests ${OPENFGA_TESTS}
 	@echo
+	fga model test --tests ${OPENFGA_TESTS}
 	@echo "\033[0;32m✨ Success\033[0m"
 
 # Generate Mocks

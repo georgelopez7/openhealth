@@ -16,4 +16,4 @@ runs:
 
     - name: Run tests
       shell: bash
-      run: make test
+      run: make test-go

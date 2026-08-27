@@ -36,6 +36,16 @@ jobs:
       - name: Run Go tests
         uses: ./.github/actions/test-go
 
+  test-openfga:
+    name: OpenFGA Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run OpenFGA tests
+        uses: ./.github/actions/test-openfga
+
   build-frontend:
     name: Build openhealth-app
     runs-on: ubuntu-latest
