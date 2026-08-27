@@ -23,4 +23,4 @@ type medical_record
   relations
     define owner: [account]
     define can_view: owner or doctor from owner or nurse from owner
-    define can_edit: owner or doctor from owner
+    define can_edit: doctor from owner

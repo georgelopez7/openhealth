@@ -16,6 +16,7 @@ type Server struct {
 	BaseURL          string
 	Router           *http.ServeMux
 	API              huma.API
+	AuthToken        string
 	AccountSVC       AccountSVC
 	DoctorSVC        DoctorSVC
 	NurseSVC         NurseSVC
@@ -23,7 +24,7 @@ type Server struct {
 	MedicalRecordSVC MedicalRecordSVC
 }
 
-func NewServer(name string, version string, port string, accountSVC AccountSVC, doctorSVC DoctorSVC, nurseSVC NurseSVC, hospitalSVC HospitalSVC, medicalRecordSVC MedicalRecordSVC) *Server {
+func NewServer(name string, version string, port string, authToken string, accountSVC AccountSVC, doctorSVC DoctorSVC, nurseSVC NurseSVC, hospitalSVC HospitalSVC, medicalRecordSVC MedicalRecordSVC) *Server {
 	router := http.NewServeMux()
 	config := huma.DefaultConfig(name, version)
 
@@ -36,8 +37,10 @@ func NewServer(name string, version string, port string, accountSVC AccountSVC, 
 
 	return &Server{
 		Port:             port,
+		BaseURL:          baseURL,
 		Router:           router,
 		API:              api,
+		AuthToken:        authToken,
 		AccountSVC:       accountSVC,
 		DoctorSVC:        doctorSVC,
 		NurseSVC:         nurseSVC,

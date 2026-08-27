@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { API_BASE_URL } from "#/domain/config";
+import { API_AUTH_TOKEN, API_URL } from "#/domain/config";
 import type { MedicalRecord } from "#/domain/medical-records";
 
 export type GetMedicalRecordsResult = {
@@ -11,9 +11,10 @@ export type GetMedicalRecordsResult = {
 // GetMedicalRecordsFn - Fetches all medical records.
 export const GetMedicalRecordsFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<GetMedicalRecordsResult> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/medical-records`, {
+    const response = await fetch(`${API_URL}/api/v1/medical-records`, {
       headers: {
         Accept: "application/json",
+        Authorization: `Bearer ${API_AUTH_TOKEN}`,
       },
     });
 
@@ -49,10 +50,11 @@ export const GetMedicalRecordAccessFn = createServerFn({ method: "GET" })
   .validator((data: { record_id: string; account_id: string }) => data)
   .handler(async ({ data }): Promise<GetMedicalRecordAccessResult> => {
     const response = await fetch(
-      `${API_BASE_URL}/api/v1/accounts/${data.account_id}/medical-records/${data.record_id}/access`,
+      `${API_URL}/api/v1/accounts/${data.account_id}/medical-records/${data.record_id}/access`,
       {
         headers: {
           Accept: "application/json",
+          Authorization: `Bearer ${API_AUTH_TOKEN}`,
         },
       },
     );
@@ -87,11 +89,12 @@ export const CreateMedicalRecordFn = createServerFn({ method: "POST" })
     (data: { account_id: string; title: string; description: string }) => data,
   )
   .handler(async ({ data }): Promise<CreateMedicalRecordResult> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/medical-records`, {
+    const response = await fetch(`${API_URL}/api/v1/medical-records`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${API_AUTH_TOKEN}`,
       },
       body: JSON.stringify(data),
     });

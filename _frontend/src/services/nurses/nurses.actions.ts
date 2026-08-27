@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { API_BASE_URL } from "#/domain/config";
+import { API_AUTH_TOKEN, API_URL } from "#/domain/config";
 import type { Nurse } from "#/domain/nurses";
 
 export type GetNurseByAccountIDResult = {
@@ -13,10 +13,11 @@ export const GetNurseByAccountIDFn = createServerFn({ method: "GET" })
   .validator((data: { account_id: string }) => data)
   .handler(async ({ data }): Promise<GetNurseByAccountIDResult> => {
     const response = await fetch(
-      `${API_BASE_URL}/api/v1/accounts/${data.account_id}/nurse`,
+      `${API_URL}/api/v1/accounts/${data.account_id}/nurse`,
       {
         headers: {
           Accept: "application/json",
+          Authorization: `Bearer ${API_AUTH_TOKEN}`,
         },
       },
     );

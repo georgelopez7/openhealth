@@ -4,6 +4,7 @@ import AshIcon from "#/components/(icons)/ash-icon";
 import MistyIcon from "#/components/(icons)/misty-icon";
 import NurseJoy from "#/components/(icons)/nurse-joy-icon";
 import ProfessorOak from "#/components/(icons)/professor-oak-icon";
+import BrockIcon from "#/components/(icons)/brock-icon";
 
 export const AccountIconMap: Record<
   string,
@@ -13,6 +14,7 @@ export const AccountIconMap: Record<
   "misty-waterflower": MistyIcon,
   "nurse-joy": NurseJoy,
   "professor-oak": ProfessorOak,
+  "brock-harrison": BrockIcon,
 };
 
 export interface AccountIconProps {

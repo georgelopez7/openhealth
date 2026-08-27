@@ -131,8 +131,8 @@ POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{ash_id}}",
-  "title": "Ash Annual Checkup",
-  "description": "Routine annual physical examination for Ash Ketchum."
+  "title": "Pikachu Thunder Shock Incident",
+  "description": "Treatment for Ash Ketchum after Pikachu's Thunder Shock triggered his nosebleed allergy."
 }
 
 HTTP 201
@@ -144,8 +144,8 @@ POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{misty_id}}",
-  "title": "Misty Water Exposure Assessment",
-  "description": "Assessment following extended exposure to Water-type Pokemon."
+  "title": "Tentacool Beach Sting",
+  "description": "Treatment for Misty Waterflower after being stung during the Tentacool invasion of Porta Vista."
 }
 
 HTTP 201
@@ -157,10 +157,63 @@ POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
 {
   "account_id": "{{misty_id}}",
-  "title": "Misty Starmie Incident",
-  "description": "Follow-up visit after Starmie Psybeam-related dizziness."
+  "title": "Misty Psyduck Headache Incident",
+  "description": "Consultation for Misty Waterflower after enduring Psyduck's constant headaches."
 }
 
 HTTP 201
 [Captures]
 misty_medical_record_2_id: jsonpath "$.medical_record.id"
+
+
+POST http://localhost:8000/api/v1/accounts
+Content-Type: application/json
+{
+  "first_name": "Brock",
+  "last_name": "Harrison",
+  "age": 15,
+  "email": "brock.harrison@pokemon.com",
+  "avatar": "brock-harrison"
+}
+
+HTTP 201
+[Captures]
+brock_id: jsonpath "$.account.id"
+
+
+POST http://localhost:8000/api/v1/doctors/assignments
+Content-Type: application/json
+{
+  "account_id": "{{brock_id}}",
+  "doctor_id": "{{doctor_id}}"
+}
+
+HTTP 201
+[Captures]
+oak_to_brock_assignment_id: jsonpath "$.assignment.id"
+
+
+POST http://localhost:8000/api/v1/medical-records
+Content-Type: application/json
+{
+  "account_id": "{{brock_id}}",
+  "title": "Onix Training Injury",
+  "description": "Treatment for Brock Harrison after being crushed while training with Onix in the Pewter City Gym."
+}
+
+HTTP 201
+[Captures]
+brock_medical_record_1_id: jsonpath "$.medical_record.id"
+
+
+POST http://localhost:8000/api/v1/medical-records
+Content-Type: application/json
+{
+  "account_id": "{{brock_id}}",
+  "title": "Vulpix Flame Mishap",
+  "description": "Treatment for minor burns Brock Harrison sustained while feeding Vulpix."
+}
+
+HTTP 201
+[Captures]
+brock_medical_record_2_id: jsonpath "$.medical_record.id"

@@ -24,7 +24,7 @@ func TestServer_CreateHospitalHandler(t *testing.T) {
 	t.Run("should create hospital", func(t *testing.T) {
 		deps.MockHospitalSvc.EXPECT().CreateHospital(gomock.Any(), gomock.Any()).Return(nil)
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusCreated, resp.Code)
 
@@ -42,7 +42,7 @@ func TestServer_CreateHospitalHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockHospitalSvc.EXPECT().CreateHospital(gomock.Any(), gomock.Any()).Return(errors.New("mock-error"))
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
@@ -59,7 +59,7 @@ func TestServer_GetHospitalByIDHandler(t *testing.T) {
 
 		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(hospital, nil)
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusOK, resp.Code)
 
@@ -75,7 +75,7 @@ func TestServer_GetHospitalByIDHandler(t *testing.T) {
 	t.Run("should return 404 when hospital not found", func(t *testing.T) {
 		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(nil, domain.HospitalNotFoundError)
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusNotFound, resp.Code)
 	})
@@ -83,7 +83,7 @@ func TestServer_GetHospitalByIDHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockHospitalSvc.EXPECT().GetHospitalByID(gomock.Any(), "mock-hospital-id-1").Return(nil, errors.New("mock-error"))
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})

@@ -27,7 +27,7 @@ func TestServer_CreateAccountHandler(t *testing.T) {
 	t.Run("should create account", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().CreateAccount(gomock.Any(), gomock.Any()).Return(nil)
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusCreated, resp.Code)
 
@@ -47,7 +47,7 @@ func TestServer_CreateAccountHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().CreateAccount(gomock.Any(), gomock.Any()).Return(errors.New("mock-error"))
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
@@ -69,7 +69,7 @@ func TestServer_UpdateAccountHandler(t *testing.T) {
 	t.Run("should update account", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().UpdateAccount(gomock.Any(), gomock.Any()).Return(nil)
 
-		resp := api.Put(endpoint, body)
+		resp := api.Put(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusOK, resp.Code)
 	})
@@ -77,7 +77,7 @@ func TestServer_UpdateAccountHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().UpdateAccount(gomock.Any(), gomock.Any()).Return(errors.New("mock-error"))
 
-		resp := api.Put(endpoint, body)
+		resp := api.Put(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
@@ -100,7 +100,7 @@ func TestServer_GetAccountByIDHandler(t *testing.T) {
 
 		deps.MockAccountSvc.EXPECT().GetAccountByID(gomock.Any(), "mock-id-1").Return(&account, nil)
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusOK, resp.Code)
 
@@ -116,7 +116,7 @@ func TestServer_GetAccountByIDHandler(t *testing.T) {
 	t.Run("should return 404 when account not found", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().GetAccountByID(gomock.Any(), "mock-id-1").Return(nil, domain.AccountNotFoundError)
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusNotFound, resp.Code)
 	})
@@ -124,7 +124,7 @@ func TestServer_GetAccountByIDHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().GetAccountByID(gomock.Any(), "mock-id-1").Return(nil, errors.New("mock-error"))
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
@@ -156,7 +156,7 @@ func TestServer_ListAccountsHandler(t *testing.T) {
 
 		deps.MockAccountSvc.EXPECT().GetAccounts(gomock.Any(), 10).Return(accounts, nil)
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusOK, resp.Code)
 
@@ -172,7 +172,7 @@ func TestServer_ListAccountsHandler(t *testing.T) {
 	t.Run("should pass limit query", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().GetAccounts(gomock.Any(), 5).Return([]domain.Account{}, nil)
 
-		resp := api.Get(endpoint + "?limit=5")
+		resp := api.Get(endpoint+"?limit=5", addAuthHeader())
 
 		require.Equal(t, http.StatusOK, resp.Code)
 	})
@@ -180,7 +180,7 @@ func TestServer_ListAccountsHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().GetAccounts(gomock.Any(), 10).Return(nil, errors.New("mock-error"))
 
-		resp := api.Get(endpoint)
+		resp := api.Get(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})
@@ -195,7 +195,7 @@ func TestServer_ArchiveAccountHandler(t *testing.T) {
 	t.Run("should archive account", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().ArchiveAccount(gomock.Any(), "mock-id-1").Return(nil)
 
-		resp := api.Delete(endpoint)
+		resp := api.Delete(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusOK, resp.Code)
 	})
@@ -203,7 +203,7 @@ func TestServer_ArchiveAccountHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockAccountSvc.EXPECT().ArchiveAccount(gomock.Any(), "mock-id-1").Return(errors.New("mock-error"))
 
-		resp := api.Delete(endpoint)
+		resp := api.Delete(endpoint, addAuthHeader())
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})

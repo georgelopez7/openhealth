@@ -1,5 +1,6 @@
 import Navbar from "#/components/(layouts)/navbar/navbar";
 import Spacer from "#/components/(layouts)/spacer/spacer";
+import { EXTERNAL_LINKS } from "#/domain/config";
 
 interface IPageLayoutProps {
   children: React.ReactNode;
@@ -13,8 +14,8 @@ export const PageLayout = ({ children, navbar = true }: IPageLayoutProps) => {
       <div className="relative z-10">
         {navbar && (
           <Navbar
-            githubLink={import.meta.env.VITE_GITHUB_URL}
-            openfgaLink={import.meta.env.VITE_OPENFGA_URL}
+            githubLink={EXTERNAL_LINKS["openhealth.github"]}
+            openfgaLink={EXTERNAL_LINKS["openfga.website"]}
           />
         )}
       </div>

@@ -44,23 +44,23 @@ tuples:
     object: medical_record:misty_starmie_incident
 
 tests:
-  - name: account can VIEW and EDIT own medical records
+  - name: account can VIEW but NOT EDIT own medical records
     check:
       - user: account:ash
         object: medical_record:ash_annual_checkup
         assertions:
           can_view: true
-          can_edit: true
+          can_edit: false
       - user: account:misty
         object: medical_record:misty_water_exposure_assessment
         assertions:
           can_view: true
-          can_edit: true
+          can_edit: false
       - user: account:misty
         object: medical_record:misty_starmie_incident
         assertions:
           can_view: true
-          can_edit: true
+          can_edit: false
 
   - name: doctor can VIEW and EDIT assigned patient's medical records
     check:

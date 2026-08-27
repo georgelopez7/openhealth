@@ -54,6 +54,6 @@ func main() {
 	go r.Start(ctx)
 
 	// SERVER
-	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)
+	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), os.Getenv("API_AUTH_TOKEN"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)
 	server.Start()
 }

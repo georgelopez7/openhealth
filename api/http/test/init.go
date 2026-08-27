@@ -22,9 +22,10 @@ func newMockServer(t *testing.T) (humatest.TestAPI, Dependencies, func()) {
 	ctrl := gomock.NewController(t)
 
 	const (
-		name    = "test-server"
-		version = "1.0.0"
-		port    = "8080"
+		name      = "test-server"
+		version   = "1.0.0"
+		port      = "8080"
+		authToken = "test-token"
 	)
 
 	mockAccountSvc := NewMockAccountSVC(ctrl)
@@ -41,8 +42,13 @@ func newMockServer(t *testing.T) (humatest.TestAPI, Dependencies, func()) {
 		MockMedicalRecordSvc: mockMedicalRecordSvc,
 	}
 
-	server := xhttp.NewServer(name, version, port, mockAccountSvc, mockDoctorSvc, mockNurseSvc, mockHospitalSvc, mockMedicalRecordSvc).Mock(t)
+	server := xhttp.NewServer(name, version, port, authToken, mockAccountSvc, mockDoctorSvc, mockNurseSvc, mockHospitalSvc, mockMedicalRecordSvc).Mock(t)
 	api := server.API.(humatest.TestAPI)
 
 	return api, deps, ctrl.Finish
+}
+
+// addAuthHeader - returns the Authorization header value used by the test server.
+func addAuthHeader() string {
+	return "Authorization: Bearer test-token"
 }

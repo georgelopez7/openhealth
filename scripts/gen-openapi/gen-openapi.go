@@ -21,7 +21,7 @@ func main() {
 		Use:   "openapi",
 		Short: "Print the OpenAPI spec",
 		Run: func(cmd *cobra.Command, args []string) {
-			server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), nil, nil, nil, nil, nil)
+			server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), "", nil, nil, nil, nil, nil)
 			server.AddRoutes(server.API)
 
 			b, err := server.API.OpenAPI().YAML()

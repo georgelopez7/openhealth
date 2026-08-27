@@ -1,19 +1,19 @@
 services:
-  # openhealth-app:
-  #   build:
-  #     context: ./_frontend
-  #     dockerfile: ./Dockerfile
-  #     args:
-  #       VITE_SITE_URL: https://localhost:3000
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - DOMAIN=https://localhost:3000
-  #     - API_URL=http://openhealth-api:8000
-  #   depends_on:
-  #     openhealth-api:
-  #       condition: service_healthy
-  #   restart: unless-stopped
+  openhealth-app:
+    build:
+      context: ./_frontend
+      dockerfile: ./Dockerfile
+      args:
+        VITE_SITE_URL: https://localhost:3000
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://openhealth-api:8000
+      - API_AUTH_TOKEN=12345
+    depends_on:
+      openhealth-api:
+        condition: service_healthy
+    restart: unless-stopped
 
   openhealth-api:
     build:
@@ -23,6 +23,7 @@ services:
     environment:
       - PORT=8000
       - ENVIRONMENT=dev
+      - API_AUTH_TOKEN=12345
       - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
       - FGA_API_URL=http://openfga:8080
       - FGA_STORE_ID=${FGA_STORE_ID}

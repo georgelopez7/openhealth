@@ -1,21 +1,22 @@
 .PHONY: test gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
 
 dev: # [ make dev ]
-	@printf "\033[0;34m💨 Spinning up Dev Environment...\033[0m\n"
+	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
+	@echo
 	@make init-openfga PRINT_ENV=false
 	@echo
-	@printf "\033[0;34m🐙 Building OpenHealth Services...\033[0m\n"
+	@printf "\033[0;34mBuilding OpenHealth Services...\033[0m\n"
 	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
 	@echo
-	@printf "\033[0;32m🚀 Dev environment started!\033[0m\n"
+	@printf "\033[0;32mDev environment started!\033[0m\n"
 	@echo
-	@printf "\033[0;34m🎨 Starting OpenHealth App...\033[0m\n"
-	@cd _frontend && (command -v bun >/dev/null 2>&1 && bun run dev || pnpm dev || npm run dev)
+	@printf "\033[0;35m> Seed DB via [ make seed-db ] \033[0m\n"
+	@echo
 
 # Seed the database with mock data
 seed-db: # [ make seed-db ]
 	@hurl --no-output _hurl/seed.hurl
-	@printf "\033[0;34m🌼 Database seeded successfully\033[0m\n"
+	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
 
 # Teardown dev containers and remove volumes
 dev-down: # [ make dev-down ]

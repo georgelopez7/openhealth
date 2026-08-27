@@ -29,7 +29,7 @@ func TestServer_CreateHospitalToAccountAssignmentHandler(t *testing.T) {
 			HospitalID: "mock-hospital-id-1",
 		}, nil)
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusCreated, resp.Code)
 
@@ -47,7 +47,7 @@ func TestServer_CreateHospitalToAccountAssignmentHandler(t *testing.T) {
 	t.Run("should handle service error", func(t *testing.T) {
 		deps.MockHospitalSvc.EXPECT().AddHospitalToAccountAssignment(gomock.Any(), "mock-account-id-1", "mock-hospital-id-1").Return(nil, errors.New("mock-error"))
 
-		resp := api.Post(endpoint, body)
+		resp := api.Post(endpoint, addAuthHeader(), body)
 
 		require.Equal(t, http.StatusInternalServerError, resp.Code)
 	})

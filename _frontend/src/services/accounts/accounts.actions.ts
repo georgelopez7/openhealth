@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import type { Account } from "#/domain/accounts";
-import { API_BASE_URL } from "#/domain/config";
+import { API_AUTH_TOKEN, API_URL } from "#/domain/config";
 
 export type GetAccountsResult = {
   accounts: Account[];
@@ -12,12 +12,13 @@ export type GetAccountsResult = {
 export const GetAccountsFn = createServerFn({ method: "GET" })
   .validator((data: { limit?: number }) => data)
   .handler(async ({ data }): Promise<GetAccountsResult> => {
-    const url = new URL("/api/v1/accounts", API_BASE_URL);
+    const url = new URL("/api/v1/accounts", API_URL);
     url.searchParams.set("limit", String(data.limit ?? 1000));
 
     const response = await fetch(url.toString(), {
       headers: {
         Accept: "application/json",
+        Authorization: `Bearer ${API_AUTH_TOKEN}`,
       },
     });
 
@@ -55,11 +56,12 @@ export const CreateAccountFn = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }): Promise<CreateAccountResult> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/accounts`, {
+    const response = await fetch(`${API_URL}/api/v1/accounts`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${API_AUTH_TOKEN}`,
       },
       body: JSON.stringify(data),
     });

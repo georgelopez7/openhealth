@@ -25,6 +25,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Creates a new account",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateAccountHandler)
 
 	huma.Register(api, huma.Operation{
@@ -35,6 +36,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Updates an existing account",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.UpdateAccountHandler)
 
 	huma.Register(api, huma.Operation{
@@ -45,6 +47,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Gets an account by its ID",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetAccountByIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -55,6 +58,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Lists accounts up to the provided limit",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.ListAccountsHandler)
 
 	huma.Register(api, huma.Operation{
@@ -65,6 +69,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Archives an existing account",
 		Tags:          []string{"accounts"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.ArchiveAccountHandler)
 
 	huma.Register(api, huma.Operation{
@@ -75,6 +80,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Creates a new doctor",
 		Tags:          []string{"doctors"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateDoctorHandler)
 
 	huma.Register(api, huma.Operation{
@@ -86,6 +92,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"doctors"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetDoctorByIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -97,6 +104,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"doctors"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetDoctorByAccountIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -107,6 +115,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Assigns a doctor to an account",
 		Tags:          []string{"doctors"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateDoctorToAccountAssignmentHandler)
 
 	huma.Register(api, huma.Operation{
@@ -117,6 +126,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Creates a new nurse",
 		Tags:          []string{"nurses"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateNurseHandler)
 
 	huma.Register(api, huma.Operation{
@@ -128,6 +138,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"nurses"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetNurseByIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -139,6 +150,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"nurses"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetNurseByAccountIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -149,6 +161,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Assigns a nurse to a hospital",
 		Tags:          []string{"nurses"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateNurseToHospitalAssignmentHandler)
 
 	huma.Register(api, huma.Operation{
@@ -159,6 +172,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Creates a new hospital",
 		Tags:          []string{"hospitals"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateHospitalHandler)
 
 	huma.Register(api, huma.Operation{
@@ -170,6 +184,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"hospitals"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetHospitalByIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -180,6 +195,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Assigns a hospital to an account",
 		Tags:          []string{"hospitals"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateHospitalToAccountAssignmentHandler)
 
 	huma.Register(api, huma.Operation{
@@ -190,6 +206,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Creates a new medical record",
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusCreated,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.CreateMedicalRecordHandler)
 
 	huma.Register(api, huma.Operation{
@@ -201,6 +218,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusOK,
 		Errors:        []int{http.StatusNotFound},
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetMedicalRecordByIDHandler)
 
 	huma.Register(api, huma.Operation{
@@ -211,6 +229,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Checks whether an account can view and edit a medical record",
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetMedicalRecordAccessHandler)
 
 	huma.Register(api, huma.Operation{
@@ -221,6 +240,7 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Lists all medical records",
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetMedicalRecordsHandler)
 
 	huma.Register(api, huma.Operation{
@@ -231,5 +251,6 @@ func (s *Server) addRoutes(api huma.API) {
 		Description:   "Lists medical records for an account",
 		Tags:          []string{"medical-records"},
 		DefaultStatus: http.StatusOK,
+		Middlewares:   huma.Middlewares{s.ValidateAuthTokenMiddleware},
 	}, s.GetMedicalRecordsByAccountIDHandler)
 }
