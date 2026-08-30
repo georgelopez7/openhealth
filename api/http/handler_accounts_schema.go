@@ -8,6 +8,7 @@ type CreateAccountInput struct {
 		LastName  string `json:"last_name"`
 		Age       int    `json:"age"`
 		Email     string `json:"email"`
+		Avatar    string `json:"avatar,omitempty"`
 	}
 }
 
@@ -18,19 +19,20 @@ type CreateAccountResponse struct {
 }
 
 type UpdateAccountInput struct {
-	ID string `path:"id"`
-	Body struct {
+	AccountID string `path:"accountID"`
+	Body      struct {
 		FirstName string `json:"first_name"`
 		LastName  string `json:"last_name"`
 		Age       int    `json:"age"`
 		Email     string `json:"email"`
+		Avatar    string `json:"avatar,omitempty"`
 	}
 }
 
 type UpdateAccountResponse struct{}
 
 type GetAccountByIDInput struct {
-	ID string `path:"id"`
+	AccountID string `path:"accountID"`
 }
 
 type GetAccountByIDResponse struct {
@@ -48,3 +50,9 @@ type ListAccountsResponse struct {
 		Accounts []domain.Account `json:"accounts"`
 	}
 }
+
+type ArchiveAccountInput struct {
+	AccountID string `path:"accountID"`
+}
+
+type ArchiveAccountResponse struct{}

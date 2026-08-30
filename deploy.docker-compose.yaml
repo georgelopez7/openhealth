@@ -1,0 +1,169 @@
+services:
+  openhealth-app:
+    image: ${DOCKERHUB_USERNAME}/openhealth-app:latest
+    pull_policy: always
+    expose:
+      - 3000
+    environment:
+      - API_URL=http://openhealth-api:8000
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+    depends_on:
+      openhealth-api:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      # HTTPS
+      - "traefik.http.routers.openhealth-app.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.openhealth-app.entrypoints=websecure"
+      - "traefik.http.routers.openhealth-app.tls.certresolver=letsencrypt"
+      # HTTP -> HTTPS
+      - "traefik.http.routers.openhealth-app-http.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.openhealth-app-http.entrypoints=web"
+      - "traefik.http.routers.openhealth-app-http.middlewares=openhealth-app-https-redirect"
+      - "traefik.http.middlewares.openhealth-app-https-redirect.redirectscheme.scheme=https"
+    restart: unless-stopped
+
+  openhealth-api:
+    image: ${DOCKERHUB_USERNAME}/openhealth-api:latest
+    pull_policy: always
+    environment:
+      - PORT=8000
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
+      - FGA_API_URL=http://openfga:8080
+      - FGA_STORE_ID=${FGA_STORE_ID}
+      - FGA_MODEL_ID=${FGA_MODEL_ID}
+    depends_on:
+      openhealth-migrate-db:
+        condition: service_completed_successfully
+      openfga-init:
+        condition: service_completed_successfully
+      openhealth-postgres:
+        condition: service_healthy
+      openfga:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  openhealth-migrate-db:
+    image: ${DOCKERHUB_USERNAME}/openhealth-migrate-db:latest
+    pull_policy: always
+    environment:
+      - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
+    depends_on:
+      openhealth-postgres:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
+
+  openhealth-seed-db:
+    image: ${DOCKERHUB_USERNAME}/openhealth-seed-db:latest
+    pull_policy: always
+    environment:
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - FGA_STORE_ID=${FGA_STORE_ID:-}
+      - FGA_MODEL_ID=${FGA_MODEL_ID:-}
+    depends_on:
+      openhealth-api:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
+
+  openhealth-postgres:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  openfga:
+    image: openfga/openfga:latest
+    command: run
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://${OPENFGA_POSTGRES_USER}:${OPENFGA_POSTGRES_PASSWORD}@openfga-postgres:5432/postgres?sslmode=disable
+      - OPENFGA_DATASTORE_MAX_OPEN_CONNS=100
+      - OPENFGA_PLAYGROUND_ENABLED=false
+    depends_on:
+      openfga-migrate:
+        condition: service_completed_successfully
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=openfga:8081"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    restart: unless-stopped
+
+  openfga-init:
+    image: ${DOCKERHUB_USERNAME}/openhealth-openfga-init:latest
+    pull_policy: always
+    environment:
+      - FGA_API_URL=http://openfga:8080
+      - FGA_STORE_NAME=openhealth
+      - FGA_STORE_ID=${FGA_STORE_ID:-}
+    depends_on:
+      openfga:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
+
+  openfga-migrate:
+    image: openfga/openfga:latest
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://${OPENFGA_POSTGRES_USER}:${OPENFGA_POSTGRES_PASSWORD}@openfga-postgres:5432/postgres?sslmode=disable
+    command: migrate
+    depends_on:
+      openfga-postgres:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
+
+  openfga-postgres:
+    image: postgres:17-alpine
+    command: postgres -c 'max_connections=100'
+    environment:
+      - POSTGRES_USER=${OPENFGA_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${OPENFGA_POSTGRES_PASSWORD}
+    volumes:
+      - openfga_postgres_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${OPENFGA_POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  openfga_postgres_data:
+
+networks:
+  dokploy-network:
+    external: true

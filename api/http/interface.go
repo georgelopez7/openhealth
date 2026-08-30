@@ -12,4 +12,33 @@ type AccountSVC interface {
 	GetAccountByID(ctx context.Context, id string) (*domain.Account, error)
 	GetAccounts(ctx context.Context, limit int) ([]domain.Account, error)
 	UpdateAccount(ctx context.Context, account domain.Account) error
+	ArchiveAccount(ctx context.Context, id string) error
+}
+
+type DoctorSVC interface {
+	CreateDoctor(ctx context.Context, doctor domain.Doctor) error
+	GetDoctorByID(ctx context.Context, id string) (*domain.Doctor, error)
+	GetDoctorByAccountID(ctx context.Context, accountID string) (*domain.Doctor, error)
+	AddDoctorToAccountAssignment(ctx context.Context, accountID string, doctorID string) (*domain.DoctorAssignment, error)
+}
+
+type NurseSVC interface {
+	CreateNurse(ctx context.Context, nurse domain.Nurse) error
+	GetNurseByID(ctx context.Context, id string) (*domain.Nurse, error)
+	GetNurseByAccountID(ctx context.Context, accountID string) (*domain.Nurse, error)
+	AddNurseToHospitalAssignment(ctx context.Context, nurseID string, hospitalID string) (*domain.NurseToHospitalAssignment, error)
+}
+
+type HospitalSVC interface {
+	CreateHospital(ctx context.Context, hospital domain.Hospital) error
+	GetHospitalByID(ctx context.Context, id string) (*domain.Hospital, error)
+	AddHospitalToAccountAssignment(ctx context.Context, accountID string, hospitalID string) (*domain.HospitalAssignment, error)
+}
+
+type MedicalRecordSVC interface {
+	CreateMedicalRecord(ctx context.Context, record domain.MedicalRecord) error
+	GetMedicalRecordByID(ctx context.Context, id string) (*domain.MedicalRecord, error)
+	GetMedicalRecordAccess(ctx context.Context, recordID, accountID string) (canView bool, canEdit bool, err error)
+	GetMedicalRecords(ctx context.Context) ([]domain.MedicalRecord, error)
+	GetMedicalRecordsByAccountID(ctx context.Context, accountID string) ([]domain.MedicalRecord, error)
 }

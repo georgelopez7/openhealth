@@ -3,166 +3,115 @@ name: openhealth authorization tests
 model_file: ./openhealth.fga
 
 tuples:
-  # Hospital Staff - Johto & Sinnoh Hospitals
-  - user: user:nurse_joy
-    relation: nurse
-    object: hospital:johto
+  # Professor Oak - he is a doctor
+  - user: account:oak
+    relation: account
+    object: doctor:oak
 
-  - user: user:nurse_nancy
-    relation: nurse
-    object: hospital:sinnoh
-
-  # Patient - Ash (Jhoto Hospital)
-  - user: user:ash
-    relation: _self
-    object: patient:ash
-
-  - user: user:gary
+  # Doctor Assignment - Professor Oak assigned to Ash
+  - user: doctor:oak#account
     relation: doctor
-    object: patient:ash
+    object: account:ash
 
-  - user: hospital:johto
+  # Nurse Joy - she is a nurse
+  - user: account:joy
+    relation: account
+    object: nurse:joy
+
+  # Pokemon Center - it is a hospital - nurse joy is assigned
+  - user: nurse:joy#account
+    relation: nurse
+    object: hospital:pokemon_center
+
+  # Ash is assigned to Pokemon Center
+  - user: hospital:pokemon_center
     relation: hospital
-    object: patient:ash
+    object: account:ash
 
-  # Patient - Dawn (Sinnoh Hospital)
-  - user: user:dawn
-    relation: _self
-    object: patient:dawn
-
-  - user: user:barry
-    relation: doctor
-    object: patient:dawn
-
-  - user: user:cynthia
-    relation: guardian
-    object: patient:dawn
-
-  - user: hospital:sinnoh
-    relation: hospital
-    object: patient:dawn
-
-  # Records
-  - user: patient:ash
+  # Ash's Medical Record
+  - user: account:ash
     relation: owner
-    object: record:ash_blood_results
+    object: medical_record:ash_annual_checkup
 
-  - user: patient:dawn
+  # Misty's Medical Record
+  - user: account:misty
     relation: owner
-    object: record:dawn_vaccinations
+    object: medical_record:misty_water_exposure_assessment
+
+  # Misty's Medical Record
+  - user: account:misty
+    relation: owner
+    object: medical_record:misty_starmie_incident
 
 tests:
-  - name: patient _self relationships
+  - name: account can VIEW but NOT EDIT own medical records
     check:
-      - user: user:ash
-        object: patient:ash
-        assertions:
-          _self: true
-          doctor: false
-          guardian: false
-      - user: user:dawn
-        object: patient:dawn
-        assertions:
-          _self: true
-          guardian: false
-
-  - name: nurse derived from hospital
-    check:
-      - user: user:nurse_joy
-        object: patient:ash
-        assertions:
-          nurse: true
-      - user: user:nurse_nancy
-        object: patient:dawn
-        assertions:
-          nurse: true
-      # Nurse from a different hospital is not a nurse for this patient
-      - user: user:nurse_joy
-        object: patient:dawn
-        assertions:
-          nurse: false
-      - user: user:nurse_nancy
-        object: patient:ash
-        assertions:
-          nurse: false
-
-  - name: record can_view - patient can view their own record
-    check:
-      - user: user:ash
-        object: record:ash_blood_results
+      - user: account:ash
+        object: medical_record:ash_annual_checkup
         assertions:
           can_view: true
-          can_edit: true
-      - user: user:dawn
-        object: record:dawn_vaccinations
+          can_edit: false
+      - user: account:misty
+        object: medical_record:misty_water_exposure_assessment
+        assertions:
+          can_view: true
+          can_edit: false
+      - user: account:misty
+        object: medical_record:misty_starmie_incident
+        assertions:
+          can_view: true
+          can_edit: false
+
+  - name: doctor can VIEW and EDIT assigned patient's medical records
+    check:
+      - user: account:oak
+        object: medical_record:ash_annual_checkup
         assertions:
           can_view: true
           can_edit: true
 
-  - name: record can_view - doctor can view and edit
+  - name: nurse at patient's hospital can VIEW but not EDIT
     check:
-      - user: user:gary
-        object: record:ash_blood_results
-        assertions:
-          can_view: true
-          can_edit: true
-      - user: user:barry
-        object: record:dawn_vaccinations
-        assertions:
-          can_view: true
-          can_edit: true
-
-  - name: record can_view - guardian can view but not edit
-    check:
-      - user: user:cynthia
-        object: record:dawn_vaccinations
+      - user: account:joy
+        object: medical_record:ash_annual_checkup
         assertions:
           can_view: true
           can_edit: false
 
-  - name: record can_view - nurse at owner's hospital can view but not edit
+  - name: access denied - doctor not assigned to patient
     check:
-      - user: user:nurse_joy
-        object: record:ash_blood_results
-        assertions:
-          can_view: true
-          can_edit: false
-      - user: user:nurse_nancy
-        object: record:dawn_vaccinations
-        assertions:
-          can_view: true
-          can_edit: false
-
-  - name: record access denied - nurse from a different hospital
-    check:
-      - user: user:nurse_nancy
-        object: record:ash_blood_results
-        assertions:
-          can_view: false
-          can_edit: false
-      - user: user:nurse_joy
-        object: record:dawn_vaccinations
+      - user: account:oak
+        object: medical_record:misty_water_exposure_assessment
         assertions:
           can_view: false
           can_edit: false
 
-  - name: record access denied - unrelated user
+  - name: access denied - nurse not assigned to patient's hospital
     check:
-      - user: user:team_rocket
-        object: record:ash_blood_results
+      - user: account:joy
+        object: medical_record:misty_water_exposure_assessment
         assertions:
           can_view: false
           can_edit: false
 
-  - name: record access denied - other patients
+  - name: access denied - unrelated account
     check:
-      - user: user:ash
-        object: record:dawn_vaccinations
+      - user: account:team_rocket
+        object: medical_record:ash_annual_checkup
         assertions:
           can_view: false
           can_edit: false
-      - user: user:dawn
-        object: record:ash_blood_results
+
+  - name: access denied - other patients
+    check:
+      - user: account:misty
+        object: medical_record:ash_annual_checkup
+        assertions:
+          can_view: false
+          can_edit: false
+          
+      - user: account:ash
+        object: medical_record:misty_water_exposure_assessment
         assertions:
           can_view: false
           can_edit: false

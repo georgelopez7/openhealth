@@ -1,0 +1,86 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-bun:
+    name: Bun Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Bun tests
+        uses: ./.github/actions/test-bun
+
+  lint-bun:
+    name: Biome Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Biome check
+        uses: ./.github/actions/lint-bun
+
+  test-go:
+    name: Go Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Go tests
+        uses: ./.github/actions/test-go
+
+  test-openfga:
+    name: OpenFGA Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run OpenFGA tests
+        uses: openfga/action-openfga-test@v0.1.2
+        with:
+          test_path: _openfga
+
+  build-frontend:
+    name: Build openhealth-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        uses: ./.github/actions/docker-build
+        with:
+          context: ./_frontend
+          file: ./_frontend/Dockerfile
+          image: openhealth-app
+          tags: type=raw,value=pr-${{ github.event.pull_request.number }}
+          push: false
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+
+  build-backend:
+    name: Build openhealth-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./cmd/openhealth-api/Dockerfile
+          image: openhealth-api
+          tags: type=raw,value=pr-${{ github.event.pull_request.number }}
+          push: false
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}

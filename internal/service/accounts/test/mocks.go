@@ -12,6 +12,7 @@ package test
 import (
 	context "context"
 	domain "openhealth/internal/domain"
+	event "openhealth/internal/event"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -55,6 +56,34 @@ func (mr *MockRepositoryMockRecorder) AddAccount(ctx, account any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAccount", reflect.TypeOf((*MockRepository)(nil).AddAccount), ctx, account)
 }
 
+// AddOutboxEvent mocks base method.
+func (m *MockRepository) AddOutboxEvent(ctx context.Context, outboxEvent event.OutboxEvent) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddOutboxEvent", ctx, outboxEvent)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddOutboxEvent indicates an expected call of AddOutboxEvent.
+func (mr *MockRepositoryMockRecorder) AddOutboxEvent(ctx, outboxEvent any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOutboxEvent", reflect.TypeOf((*MockRepository)(nil).AddOutboxEvent), ctx, outboxEvent)
+}
+
+// ArchiveAccount mocks base method.
+func (m *MockRepository) ArchiveAccount(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ArchiveAccount", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ArchiveAccount indicates an expected call of ArchiveAccount.
+func (mr *MockRepositoryMockRecorder) ArchiveAccount(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArchiveAccount", reflect.TypeOf((*MockRepository)(nil).ArchiveAccount), ctx, id)
+}
+
 // GetAccountByID mocks base method.
 func (m *MockRepository) GetAccountByID(ctx context.Context, id string) (*domain.Account, error) {
 	m.ctrl.T.Helper()
@@ -83,6 +112,36 @@ func (m *MockRepository) GetAccounts(ctx context.Context, limit int) ([]domain.A
 func (mr *MockRepositoryMockRecorder) GetAccounts(ctx, limit any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccounts", reflect.TypeOf((*MockRepository)(nil).GetAccounts), ctx, limit)
+}
+
+// GetDoctorIDByAccountID mocks base method.
+func (m *MockRepository) GetDoctorIDByAccountID(ctx context.Context, accountID string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDoctorIDByAccountID", ctx, accountID)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDoctorIDByAccountID indicates an expected call of GetDoctorIDByAccountID.
+func (mr *MockRepositoryMockRecorder) GetDoctorIDByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorIDByAccountID", reflect.TypeOf((*MockRepository)(nil).GetDoctorIDByAccountID), ctx, accountID)
+}
+
+// GetHospitalIDByAccountID mocks base method.
+func (m *MockRepository) GetHospitalIDByAccountID(ctx context.Context, accountID string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHospitalIDByAccountID", ctx, accountID)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHospitalIDByAccountID indicates an expected call of GetHospitalIDByAccountID.
+func (mr *MockRepositoryMockRecorder) GetHospitalIDByAccountID(ctx, accountID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHospitalIDByAccountID", reflect.TypeOf((*MockRepository)(nil).GetHospitalIDByAccountID), ctx, accountID)
 }
 
 // UpdateAccount mocks base method.

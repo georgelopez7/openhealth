@@ -29,6 +29,7 @@ go.work.sum
 .env
 .env*
 !.env.sample
+!.env.production
 
 tmp
 
@@ -36,3 +37,5 @@ tmp
 
 .vscode
 .DS_STORE
+
+TODO.md

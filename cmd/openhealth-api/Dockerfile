@@ -10,5 +10,5 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates curl
 WORKDIR /root/
 COPY --from=builder /openhealth-api .
-# COPY --from=builder /app/_migrations ./_migrations
+HEALTHCHECK --interval=5s --timeout=5s --start-period=5s --retries=10 CMD curl -f http://localhost:8000/api/v1/healthcheck || exit 1
 CMD ["./openhealth-api"]

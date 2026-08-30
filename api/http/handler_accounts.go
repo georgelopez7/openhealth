@@ -14,6 +14,7 @@ func (s *Server) CreateAccountHandler(ctx context.Context, input *CreateAccountI
 		input.Body.LastName,
 		input.Body.Age,
 		input.Body.Email,
+		input.Body.Avatar,
 	)
 
 	err := s.AccountSVC.CreateAccount(ctx, *account)
@@ -29,11 +30,12 @@ func (s *Server) CreateAccountHandler(ctx context.Context, input *CreateAccountI
 
 func (s *Server) UpdateAccountHandler(ctx context.Context, input *UpdateAccountInput) (*UpdateAccountResponse, error) {
 	account := domain.Account{
-		ID:        input.ID,
+		ID:        input.AccountID,
 		FirstName: input.Body.FirstName,
 		LastName:  input.Body.LastName,
 		Age:       input.Body.Age,
 		Email:     input.Body.Email,
+		Avatar:    input.Body.Avatar,
 		UpdatedAt: time.Now().UTC(),
 	}
 
@@ -46,7 +48,7 @@ func (s *Server) UpdateAccountHandler(ctx context.Context, input *UpdateAccountI
 }
 
 func (s *Server) GetAccountByIDHandler(ctx context.Context, input *GetAccountByIDInput) (*GetAccountByIDResponse, error) {
-	account, err := s.AccountSVC.GetAccountByID(ctx, input.ID)
+	account, err := s.AccountSVC.GetAccountByID(ctx, input.AccountID)
 	switch err {
 	case nil:
 		resp := &GetAccountByIDResponse{}
@@ -69,4 +71,13 @@ func (s *Server) ListAccountsHandler(ctx context.Context, input *ListAccountsInp
 	resp.Body.Accounts = accounts
 
 	return resp, nil
+}
+
+func (s *Server) ArchiveAccountHandler(ctx context.Context, input *ArchiveAccountInput) (*ArchiveAccountResponse, error) {
+	err := s.AccountSVC.ArchiveAccount(ctx, input.AccountID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ArchiveAccountResponse{}, nil
 }

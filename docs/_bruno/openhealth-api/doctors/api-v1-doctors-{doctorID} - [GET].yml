@@ -1,0 +1,133 @@
+info:
+  name: /api/v1/doctors/{doctorID} - [GET]
+  type: http
+  seq: 4
+  tags:
+    - doctors
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/api/v1/doctors/:doctorID"
+  params:
+    - name: doctorID
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{BASE_URL}}/api/v1/doctors/:doctorID"
+      method: GET
+      params:
+        - name: doctorID
+          value: ""
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "doctor": {
+              "account_id": "",
+              "created_at": "",
+              "id": "",
+              "status": ""
+            }
+          }
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{BASE_URL}}/api/v1/doctors/:doctorID"
+      method: GET
+      params:
+        - name: doctorID
+          value: ""
+          type: path
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+  - name: 422 Response
+    description: Unprocessable Entity
+    request:
+      url: "{{BASE_URL}}/api/v1/doctors/:doctorID"
+      method: GET
+      params:
+        - name: doctorID
+          value: ""
+          type: path
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+  - name: 500 Response
+    description: Internal Server Error
+    request:
+      url: "{{BASE_URL}}/api/v1/doctors/:doctorID"
+      method: GET
+      params:
+        - name: doctorID
+          value: ""
+          type: path
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+
+docs: Gets a doctor by its ID

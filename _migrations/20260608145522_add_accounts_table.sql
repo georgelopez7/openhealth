@@ -6,6 +6,8 @@ CREATE TABLE accounts (
     last_name TEXT NOT NULL,
     age INTEGER NOT NULL,
     email TEXT NOT NULL,
+    avatar TEXT,
+    status TEXT NOT NULL DEFAULT 'active',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

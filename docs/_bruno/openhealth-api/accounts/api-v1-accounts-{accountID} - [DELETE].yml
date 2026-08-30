@@ -1,0 +1,65 @@
+info:
+  name: /api/v1/accounts/{accountID} - [DELETE]
+  type: http
+  seq: 3
+  tags:
+    - accounts
+
+http:
+  method: DELETE
+  url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+  params:
+    - name: accountID
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+      method: DELETE
+      params:
+        - name: accountID
+          value: ""
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: default Response
+    description: Error
+    request:
+      url: "{{BASE_URL}}/api/v1/accounts/:accountID"
+      method: DELETE
+      params:
+        - name: accountID
+          value: ""
+          type: path
+    response:
+      headers:
+        - name: Content-Type
+          value: application/problem+json
+      body:
+        type: json
+        data: |-
+          {
+            "$schema": "",
+            "detail": "",
+            "errors": "",
+            "instance": "",
+            "status": 0,
+            "title": "",
+            "type": ""
+          }
+
+docs: Archives an existing account

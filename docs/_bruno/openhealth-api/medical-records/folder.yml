@@ -1,0 +1,7 @@
+info:
+  name: medical-records
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
