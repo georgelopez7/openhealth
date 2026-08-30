@@ -13,11 +13,14 @@ if [ -z "${FGA_STORE_ID:-}" ] || [ -z "${FGA_MODEL_ID:-}" ]; then
 fi
 
 # SEED ONLY ONCE - IF ACCOUNTS ALREADY EXIST, EXIT WITHOUT DUPLICATING DATA
-if hurl --variable "API_AUTH_TOKEN=$API_AUTH_TOKEN" /check.hurl >/dev/null 2>&1; then
+if hurl --variable "API_AUTH_TOKEN=$API_AUTH_TOKEN" /check.hurl >/tmp/check.out 2>&1; then
   echo "no accounts found - seeding"
 else
-  echo "accounts already exist - skipping seed"
-  exit 0
+  echo "seed check failed - not seeding (accounts may already exist, or the API check errored)"
+  echo "--- check output ---"
+  cat /tmp/check.out
+  echo "--------------------"
+  exit 1
 fi
 
 # RUN SEED - REWRITE THE LOCALHOST URL TO THE IN-STACK API AND EXECUTE
