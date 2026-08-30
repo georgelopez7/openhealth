@@ -62,7 +62,7 @@ func (r *Repository) GetDoctorByAccountID(ctx context.Context, accountID string)
 
 // GetDoctors - get doctors up to the provided limit
 func (r *Repository) GetDoctors(ctx context.Context, limit int) ([]domain.Doctor, error) {
-	var doctors []domain.Doctor
+	var doctors = make([]domain.Doctor, 0)
 
 	err := r.db.SelectContext(ctx, &doctors, `
 		SELECT id, account_id, status, created_at
@@ -147,7 +147,7 @@ func (r *Repository) GetDoctorAssignmentByID(ctx context.Context, id string) (*d
 
 // GetDoctorAssignments - get doctor assignments up to the provided limit
 func (r *Repository) GetDoctorAssignments(ctx context.Context, limit int) ([]domain.DoctorAssignment, error) {
-	var assignments []domain.DoctorAssignment
+	var assignments = make([]domain.DoctorAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, doctor_id, valid_from, valid_to
@@ -160,7 +160,7 @@ func (r *Repository) GetDoctorAssignments(ctx context.Context, limit int) ([]dom
 
 // GetDoctorAssignmentsByDoctorID - get open doctor assignments for a doctor
 func (r *Repository) GetDoctorAssignmentsByDoctorID(ctx context.Context, doctorID string) ([]domain.DoctorAssignment, error) {
-	var assignments []domain.DoctorAssignment
+	var assignments = make([]domain.DoctorAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, doctor_id, valid_from, valid_to

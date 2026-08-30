@@ -62,7 +62,7 @@ func (r *Repository) GetNurseByAccountID(ctx context.Context, accountID string) 
 
 // GetNurses - get nurses up to the provided limit
 func (r *Repository) GetNurses(ctx context.Context, limit int) ([]domain.Nurse, error) {
-	var nurses []domain.Nurse
+	var nurses = make([]domain.Nurse, 0)
 
 	err := r.db.SelectContext(ctx, &nurses, `
 		SELECT id, account_id, status, created_at
@@ -147,7 +147,7 @@ func (r *Repository) GetNurseToHospitalAssignmentByID(ctx context.Context, id st
 
 // GetNurseToHospitalAssignments - get nurse to hospital assignments up to the provided limit
 func (r *Repository) GetNurseToHospitalAssignments(ctx context.Context, limit int) ([]domain.NurseToHospitalAssignment, error) {
-	var assignments []domain.NurseToHospitalAssignment
+	var assignments = make([]domain.NurseToHospitalAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, nurse_id, hospital_id, valid_from, valid_to
@@ -160,7 +160,7 @@ func (r *Repository) GetNurseToHospitalAssignments(ctx context.Context, limit in
 
 // GetNurseToHospitalAssignmentsByNurseID - get open nurse to hospital assignments for a nurse
 func (r *Repository) GetNurseToHospitalAssignmentsByNurseID(ctx context.Context, nurseID string) ([]domain.NurseToHospitalAssignment, error) {
-	var assignments []domain.NurseToHospitalAssignment
+	var assignments = make([]domain.NurseToHospitalAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, nurse_id, hospital_id, valid_from, valid_to
@@ -197,7 +197,7 @@ func (r *Repository) GetHospitalIDByNurseID(ctx context.Context, nurseID string)
 
 // GetNursesByHospitalID - get open nurse assignments for a hospital
 func (r *Repository) GetNursesByHospitalID(ctx context.Context, hospitalID string) ([]domain.NurseToHospitalAssignment, error) {
-	var assignments []domain.NurseToHospitalAssignment
+	var assignments = make([]domain.NurseToHospitalAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, nurse_id, hospital_id, valid_from, valid_to

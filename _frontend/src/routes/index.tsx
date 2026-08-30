@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
 import GitHubIcon from "#/components/(icons)/github-icon";
-import OpenFGAIcon from "#/components/(icons)/openfga-icon";
 import OpenhealthIcon from "#/components/(icons)/openhealth-icon";
 import { PageLayout } from "#/components/(layouts)/page-layout/page-layout";
 import Spacer from "#/components/(layouts)/spacer/spacer";
+import { EXTERNAL_LINKS } from "#/domain/config";
 import { cn } from "#/lib/utils";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -28,7 +27,7 @@ function Home() {
             Get Started
           </Link>
           <a
-            href="https://github.com"
+            href={EXTERNAL_LINKS["openhealth.github"]}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
@@ -44,7 +43,7 @@ function Home() {
           <span>
             Powered by{" "}
             <a
-              href="https://openfga.dev"
+              href={EXTERNAL_LINKS["openfga.website"]}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold underline-offset-2 transition-colors hover:text-white hover:underline"

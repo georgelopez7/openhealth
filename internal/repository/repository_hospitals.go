@@ -42,7 +42,7 @@ func (r *Repository) GetHospitalByID(ctx context.Context, id string) (*domain.Ho
 
 // GetHospitals - get hospitals up to the provided limit
 func (r *Repository) GetHospitals(ctx context.Context, limit int) ([]domain.Hospital, error) {
-	var hospitals []domain.Hospital
+	var hospitals = make([]domain.Hospital, 0)
 
 	err := r.db.SelectContext(ctx, &hospitals, `
 		SELECT id, name, status, created_at
@@ -135,7 +135,7 @@ func (r *Repository) GetHospitalAssignmentByID(ctx context.Context, id string) (
 
 // GetHospitalAssignments - get hospital assignments up to the provided limit
 func (r *Repository) GetHospitalAssignments(ctx context.Context, limit int) ([]domain.HospitalAssignment, error) {
-	var assignments []domain.HospitalAssignment
+	var assignments = make([]domain.HospitalAssignment, 0)
 
 	err := r.db.SelectContext(ctx, &assignments, `
 		SELECT id, account_id, hospital_id, valid_from, valid_to

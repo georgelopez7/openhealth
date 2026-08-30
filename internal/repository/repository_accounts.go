@@ -42,7 +42,7 @@ func (r *Repository) GetAccountByID(ctx context.Context, id string) (*domain.Acc
 
 // GetAccounts - get accounts up to the provided limit
 func (r *Repository) GetAccounts(ctx context.Context, limit int) ([]domain.Account, error) {
-	var accounts []domain.Account
+	var accounts = make([]domain.Account, 0)
 
 	err := r.db.SelectContext(ctx, &accounts, `
 		SELECT id, first_name, last_name, age, email, avatar, status, created_at, updated_at
