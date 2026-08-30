@@ -47,12 +47,75 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  build-openfga-init:
+    name: Build & Push - openhealth-openfga-init
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./scripts/openfga-init/Dockerfile
+          image: openhealth-openfga-init
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+          push: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-seed-db:
+    name: Build & Push - openhealth-seed-db
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./scripts/seed-db/Dockerfile
+          image: openhealth-seed-db
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+          push: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-migrate-db:
+    name: Build & Push - openhealth-migrate-db
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push
+        uses: ./.github/actions/docker-build
+        with:
+          context: .
+          file: ./scripts/migrate-db/Dockerfile
+          image: openhealth-migrate-db
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+          push: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
   deploy:
     name: Deploy to Dokploy
     runs-on: ubuntu-latest
     needs:
       - build-frontend
       - build-backend
+      - build-openfga-init
+      - build-seed-db
+      - build-migrate-db
     steps:
       - name: Checkout
         uses: actions/checkout@v4

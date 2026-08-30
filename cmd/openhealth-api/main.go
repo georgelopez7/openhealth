@@ -21,7 +21,12 @@ import (
 )
 
 func main() {
+	// CONFIGURATION
 	ctx := context.Background()
+
+	if os.Getenv("FGA_STORE_ID") == "" || os.Getenv("FGA_MODEL_ID") == "" {
+		log.Fatal("Please set FGA_STORE_ID and FGA_MODEL_ID environment variables.")
+	}
 
 	// POSTGRES
 	postgresDB := postgres.NewPostgresDB(os.Getenv("POSTGRES_URI"))

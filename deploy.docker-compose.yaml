@@ -38,6 +38,8 @@ services:
     depends_on:
       openhealth-migrate-db:
         condition: service_completed_successfully
+      openfga-init:
+        condition: service_completed_successfully
       openhealth-postgres:
         condition: service_healthy
       openfga:
@@ -53,13 +55,26 @@ services:
     restart: unless-stopped
 
   openhealth-migrate-db:
-    build:
-      context: .
-      dockerfile: scripts/migrate-db/Dockerfile
+    image: ${DOCKERHUB_USERNAME}/openhealth-migrate-db:latest
+    pull_policy: always
     environment:
       - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
     depends_on:
       openhealth-postgres:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
+
+  openhealth-seed-db:
+    image: ${DOCKERHUB_USERNAME}/openhealth-seed-db:latest
+    pull_policy: always
+    environment:
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - FGA_STORE_ID=${FGA_STORE_ID:-}
+      - FGA_MODEL_ID=${FGA_MODEL_ID:-}
+    depends_on:
+      openhealth-api:
         condition: service_healthy
     networks:
       - dokploy-network
@@ -100,6 +115,20 @@ services:
       timeout: 30s
       retries: 3
     restart: unless-stopped
+
+  openfga-init:
+    image: ${DOCKERHUB_USERNAME}/openhealth-openfga-init:latest
+    pull_policy: always
+    environment:
+      - FGA_API_URL=http://openfga:8080
+      - FGA_STORE_NAME=openhealth
+      - FGA_STORE_ID=${FGA_STORE_ID:-}
+    depends_on:
+      openfga:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+    restart: "no"
 
   openfga-migrate:
     image: openfga/openfga:latest
