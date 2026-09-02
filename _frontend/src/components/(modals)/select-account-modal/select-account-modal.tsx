@@ -52,7 +52,9 @@ const SelectAccountModal = ({
                   avatar={account.avatar}
                   className="mb-2 h-12 w-12"
                 />
-                {getAccountDisplayName(account)}
+                <span className="text-xs sm:text-base">
+                  {getAccountDisplayName(account)}
+                </span>
               </button>
             );
           })}

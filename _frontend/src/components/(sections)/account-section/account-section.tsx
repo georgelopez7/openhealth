@@ -1,7 +1,7 @@
 import { ArrowRightLeft } from "lucide-react";
 import { useState } from "react";
-
 import SelectAccountModal from "#/components/(modals)/select-account-modal/select-account-modal";
+import { Button } from "#/components/ui/button";
 import type { Account } from "#/domain/accounts";
 import { getAccountDisplayName } from "#/domain/accounts";
 import { AccountIcon } from "#/domain/icon";
@@ -24,30 +24,35 @@ const AccountSection = ({ accounts }: IProps) => {
   return (
     <section className="w-full">
       {account ? (
-        <div className="flex w-full items-center justify-between py-2 text-white">
-          <div className="flex h-12 items-center gap-3 rounded-lg border border-white/20 bg-white/5 px-4 py-2.5">
-            <AccountIcon avatar={account.avatar} className="size-8 shrink-0" />
-            <p className="text-sm font-semibold md:text-base">
-              {getAccountDisplayName(account)}
-            </p>
+        <div className="flex w-full justify-center py-2 text-white">
+          <div className="flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-white/20 bg-white/5 px-2 py-2.5 sm:w-auto sm:justify-center sm:gap-10">
+            <div className="flex items-center gap-2">
+              <AccountIcon
+                avatar={account.avatar}
+                className="size-9 shrink-0"
+              />
+              <p className="text-sm font-semibold md:text-lg">
+                {getAccountDisplayName(account)}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Switch account"
+              className="cursor-pointer text-white hover:text-white"
+            >
+              <ArrowRightLeft className="size-5" />
+            </Button>
           </div>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className={cn(
-              "inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 text-sm font-medium text-white transition-colors hover:bg-white/10 md:text-base cursor-pointer",
-            )}
-          >
-            <ArrowRightLeft className="size-6 shrink-0" />
-            <span className="hidden md:inline">Switch</span>
-          </button>
         </div>
       ) : (
         <button
           type="button"
           onClick={() => setOpen(true)}
           className={cn(
-            "inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 text-lg font-medium text-white transition-colors hover:bg-white/10",
+            "inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 text-base font-medium text-white transition-colors hover:bg-white/10 md:text-lg",
           )}
         >
           Select Account

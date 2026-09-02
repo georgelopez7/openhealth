@@ -41,9 +41,10 @@ export const PageLayout = ({ children, navbar = true }: IPageLayoutProps) => {
         <div className="absolute bottom-0 right-0 h-full w-1 bg-white md:w-2" />
       </div>
 
-      <main className="mx-auto flex w-full flex-1 flex-col md:w-[84vw]">
+      <main className="mx-5 flex w-[calc(100%-2.5rem)] flex-1 flex-col md:mx-auto md:w-[84vw]">
         {children}
       </main>
+      <Spacer size="small" />
     </div>
   );
 };

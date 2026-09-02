@@ -20,7 +20,7 @@ const Navbar = ({
     <nav className={cn("w-full", className)}>
       <div
         className={cn(
-          "mx-auto flex w-full items-center justify-between rounded-lg border border-white/20 bg-white/5 px-4 py-2.5 md:w-[84vw]",
+          "mx-5 flex w-[calc(100%-2.5rem)] items-center justify-between rounded-lg border border-white/20 bg-white/5 px-4 py-2.5 md:mx-auto md:w-[84vw]",
         )}
       >
         <Link
@@ -28,7 +28,7 @@ const Navbar = ({
           className="flex items-center gap-2 text-base font-semibold tracking-tight text-white transition-colors hover:underline md:text-lg"
         >
           <OpenhealthIcon className="size-7" />
-          OpenHealth
+          <span className="hidden sm:inline">OpenHealth</span>
         </Link>
         <div className="flex items-center gap-3">
           <a
