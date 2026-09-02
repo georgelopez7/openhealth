@@ -46,7 +46,7 @@ const MedicalRecordCard = ({
     <li className="flex min-h-45 flex-col justify-between rounded-lg border border-white/20 bg-white/5 p-4">
       <div>
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-xl font-bold tracking-tight text-white">
+          <h3 className="text-base font-bold tracking-tight text-white md:text-xl">
             {record.title}
           </h3>
           {owner && (

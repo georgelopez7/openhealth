@@ -1,6 +1,6 @@
 .PHONY: test test-go test-openfga gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
 
-dev: # [ make dev ]
+dev: # [ make dev ] - spin up development stack
 	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
 	@echo
 	@make init-openfga PRINT_ENV=false
@@ -13,37 +13,35 @@ dev: # [ make dev ]
 	@printf "\033[0;35m> Seed DB via [ make seed-db ] \033[0m\n"
 	@echo
 
-# Seed the database with mock data
-seed-db: # [ make seed-db ]
-	@hurl --no-output _hurl/seed.hurl
-	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
-
-# Teardown dev containers and remove volumes
-dev-down: # [ make dev-down ]
+dev-down: # [ make dev-down ] - teardown development stack
 	docker compose -f dev.docker-compose.yaml down -v
 
-# Run All Tests
-test: test-go test-openfga # [ make test ]
+dev-frontend: # [ make dev-frontend ] - spin up frontend with hot reload
+	cd _frontend && bun run dev
 
-# Run Go Tests
-test-go: # [ make test-go ]
+API_AUTH_TOKEN ?= 12345
+
+seed-db: # [ make seed-db ] - seed database with mock data
+	@hurl --no-output --variable "API_AUTH_TOKEN=$(API_AUTH_TOKEN)" _hurl/seed.hurl
+	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
+
+test: test-go test-openfga # [ make test ] - run ALL tests
+
+test-go: # [ make test-go ] - run go tests
 	@echo "\033[0;34m[ Go Tests ]\033[0m"
 	@echo
 	go test ./...
 
-# Run OpenFGA Tests
-test-openfga: # [ make test-openfga ]
+test-openfga: # [ make test-openfga ] - run openfga tests
 	@echo "\033[0;35m[ OpenFGA Tests ]\033[0m"
 	@echo
 	fga model test --tests ${OPENFGA_TESTS}
 	@echo "\033[0;32m✨ Success\033[0m"
 
-# Generate Mocks
-gen-mocks: # [ make gen-mocks ]
+gen-mocks: # [ make gen-mocks ] - generate mocks
 	go generate ./...
 
-# Generate OpenAPI
-gen-openapi: # [ make gen-openapi ]
+gen-openapi: # [ make gen-openapi ] - generate openapi
 	@go run ./scripts/gen-openapi/gen-openapi.go openapi > docs/openapi.yaml
 	@echo "\033[0;34m> OpenAPI Generated\033[0m"
 	@bash ./_bash/bruno-sync.sh
@@ -58,8 +56,7 @@ OPENFGA_MODEL=_openfga/openhealth.fga
 
 PRINT_ENV ?= true
 
-# Init OpenFGA Store & Model & Update Environment Variables
-init-openfga: # [ make init-openfga ]
+init-openfga: # [ make init-openfga ] - init openfga store + model & update .env
 	@make run-openfga
 	@touch .env && \
 	set -a && source .env && set +a && \
@@ -90,19 +87,15 @@ init-openfga: # [ make init-openfga ]
 	printf "\033[0;32m✓ Environment Variables Updated\033[0m\n"
 
 
-# Run OpenFGA Container
-run-openfga: # [ make run-openfga ]
+run-openfga: # [ make run-openfga ] - run openfga container
 	@docker compose -f dev.docker-compose.yaml up -d openfga > /dev/null
 
-# Generate a new OpenFGA store
-gen-openfga-store: # [ make gen-openfga-store NAME=store-name ]
+gen-openfga-store: # [ make gen-openfga-store NAME=store-name ] - generate a new openfga store
 	@if [ -z "${OPENFGA_STORE_NAME}" ]; then echo "> Please provide a OPENFGA_STORE_NAME for the store" && exit 1; fi
 	set -a && source .env && set +a && fga store create --name ${OPENFGA_STORE_NAME}
 
-# Add a new OpenFGA model to a store
-add-openfga-model: # [ make add-openfga-model ]
+add-openfga-model: # [ make add-openfga-model ] - add a new openfga model to a store
 	set -a && source .env && set +a && fga model write --file ${OPENFGA_MODEL}
 
-# List all OpenFGA models
-list-openfga-models: # [ make list-openfga-models ]
+list-openfga-models: # [ make list-openfga-models ] - list all openfga models
 	set -a && source .env && set +a && fga model list

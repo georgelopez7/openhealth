@@ -25,8 +25,6 @@ fi
 
 # RUN SEED - REWRITE THE LOCALHOST URL TO THE IN-STACK API AND EXECUTE
 sed "s|http://localhost:8000|$API_URL|g" /seed.hurl > /tmp/seed.hurl
-hurl --variable "API_AUTH_TOKEN=$API_AUTH_TOKEN" \
-  --header "Authorization: Bearer $API_AUTH_TOKEN" \
-  /tmp/seed.hurl
+hurl --variable "API_AUTH_TOKEN=$API_AUTH_TOKEN" /tmp/seed.hurl
 
 echo "✨ Seed Completed Successfully"

@@ -12,16 +12,18 @@ function Home() {
   return (
     <PageLayout navbar={false}>
       <div className="flex flex-1 flex-col items-center justify-center">
-        <div className="flex items-center gap-6">
-          <OpenhealthIcon className="size-30" />
-          <h1 className="text-6xl font-bold">OpenHealth</h1>
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
+          <OpenhealthIcon className="hidden sm:block size-24 md:size-30" />
+          <h1 className="text-center text-3xl font-bold sm:text-5xl md:text-6xl">
+            OpenHealth
+          </h1>
         </div>
-        <Spacer size="xsmall" />
-        <div className="flex gap-3">
+        <Spacer size="xsmall" className="my-4 sm:my-1" />
+        <div className="flex gap-2">
           <Link
             to="/dashboard"
             className={cn(
-              "inline-flex h-12 items-center justify-center gap-3 rounded-lg border border-white/20 bg-white/5 px-5 text-lg font-medium text-white transition-colors hover:bg-white/10",
+              "inline-flex h-11 items-center justify-center gap-3 rounded-lg border border-white/20 bg-white/5 px-4 text-base font-medium text-white transition-colors hover:bg-white/10",
             )}
           >
             Get Started
@@ -31,11 +33,11 @@ function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "inline-flex size-12 items-center justify-center rounded-lg border border-white/20 bg-white/5 text-white transition-colors hover:bg-white/10",
+              "inline-flex size-11 items-center justify-center rounded-lg border border-white/20 bg-white/5 text-white transition-colors hover:bg-white/10",
             )}
             aria-label="GitHub"
           >
-            <GitHubIcon className="size-6" />
+            <GitHubIcon className="size-5" />
           </a>
         </div>
         <Spacer size="medium" />
@@ -46,12 +48,14 @@ function Home() {
               href={EXTERNAL_LINKS["openfga.website"]}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold underline-offset-2 transition-colors hover:text-white hover:underline"
+              className="font-semibold underline sm:no-underline sm:hover:underline underline-offset-2 transition-colors hover:text-white"
             >
               OpenFGA
             </a>
           </span>
         </div>
+        <Spacer size="medium" />
+        <OpenhealthIcon className="sm:hidden size-32 opacity-70" />
       </div>
     </PageLayout>
   );
