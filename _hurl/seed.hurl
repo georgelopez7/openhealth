@@ -1,5 +1,6 @@
 POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "first_name": "Ash",
   "last_name": "Ketchum",
@@ -15,6 +16,7 @@ ash_id: jsonpath "$.account.id"
 
 POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "first_name": "Misty",
   "last_name": "Waterflower",
@@ -30,6 +32,7 @@ misty_id: jsonpath "$.account.id"
 
 POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "first_name": "Professor",
   "last_name": "Oak",
@@ -45,6 +48,7 @@ oak_id: jsonpath "$.account.id"
 
 POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "first_name": "Nurse",
   "last_name": "Joy",
@@ -60,6 +64,7 @@ joy_id: jsonpath "$.account.id"
 
 POST http://localhost:8000/api/v1/doctors
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{oak_id}}"
 }
@@ -71,6 +76,7 @@ doctor_id: jsonpath "$.doctor.id"
 
 POST http://localhost:8000/api/v1/doctors/assignments
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{ash_id}}",
   "doctor_id": "{{doctor_id}}"
@@ -83,6 +89,7 @@ oak_to_ash_assignment_id: jsonpath "$.assignment.id"
 
 POST http://localhost:8000/api/v1/nurses
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{joy_id}}"
 }
@@ -94,6 +101,7 @@ nurse_id: jsonpath "$.nurse.id"
 
 POST http://localhost:8000/api/v1/hospitals
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "name": "Pokemon Center"
 }
@@ -105,6 +113,7 @@ hospital_id: jsonpath "$.hospital.id"
 
 POST http://localhost:8000/api/v1/nurses/assignments
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "nurse_id": "{{nurse_id}}",
   "hospital_id": "{{hospital_id}}"
@@ -117,6 +126,7 @@ joy_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
 
 POST http://localhost:8000/api/v1/hospitals/assignments
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{ash_id}}",
   "hospital_id": "{{hospital_id}}"
@@ -129,6 +139,7 @@ ash_to_pokemon_center_assignment_id: jsonpath "$.assignment.id"
 
 POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{ash_id}}",
   "title": "Pikachu Thunder Shock Incident",
@@ -142,6 +153,7 @@ ash_medical_record_id: jsonpath "$.medical_record.id"
 
 POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{misty_id}}",
   "title": "Tentacool Beach Sting",
@@ -155,6 +167,7 @@ misty_medical_record_1_id: jsonpath "$.medical_record.id"
 
 POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{misty_id}}",
   "title": "Misty Psyduck Headache Incident",
@@ -168,6 +181,7 @@ misty_medical_record_2_id: jsonpath "$.medical_record.id"
 
 POST http://localhost:8000/api/v1/accounts
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "first_name": "Brock",
   "last_name": "Harrison",
@@ -183,6 +197,7 @@ brock_id: jsonpath "$.account.id"
 
 POST http://localhost:8000/api/v1/doctors/assignments
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{brock_id}}",
   "doctor_id": "{{doctor_id}}"
@@ -195,6 +210,7 @@ oak_to_brock_assignment_id: jsonpath "$.assignment.id"
 
 POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{brock_id}}",
   "title": "Onix Training Injury",
@@ -208,6 +224,7 @@ brock_medical_record_1_id: jsonpath "$.medical_record.id"
 
 POST http://localhost:8000/api/v1/medical-records
 Content-Type: application/json
+Authorization: Bearer {{API_AUTH_TOKEN}}
 {
   "account_id": "{{brock_id}}",
   "title": "Vulpix Flame Mishap",
