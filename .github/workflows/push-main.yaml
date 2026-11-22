@@ -13,17 +13,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate DOMAIN repository variable
+        if: ${{ vars.DOMAIN == '' }}
+        shell: bash
+        run: |
+          echo "::error::Set DOMAIN as a repository Actions variable, not a secret."
+          exit 1
+
       - name: Build and push
         uses: ./.github/actions/docker-build
         with:
-          context: ./_frontend
-          file: ./_frontend/Dockerfile
+          context: ./cmd/openhealth-app
+          file: ./cmd/openhealth-app/Dockerfile
           image: openhealth-app
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
+          username: admin
+          password: ${{ secrets.ZOT_API_KEY }}
 
   build-backend:
     name: Build & Push - openhealth-api
@@ -40,8 +48,9 @@ jobs:
           image: openhealth-api
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
+          username: admin
+          password: ${{ secrets.ZOT_API_KEY }}
 
   build-openfga-init:
     name: Build & Push - openhealth-openfga-init
@@ -58,8 +67,9 @@ jobs:
           image: openhealth-openfga-init
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
+          username: admin
+          password: ${{ secrets.ZOT_API_KEY }}
 
   build-seed-db:
     name: Build & Push - openhealth-seed-db
@@ -76,8 +86,9 @@ jobs:
           image: openhealth-seed-db
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
+          username: admin
+          password: ${{ secrets.ZOT_API_KEY }}
 
   build-migrate-db:
     name: Build & Push - openhealth-migrate-db
@@ -94,5 +105,6 @@ jobs:
           image: openhealth-migrate-db
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
+          username: admin
+          password: ${{ secrets.ZOT_API_KEY }}

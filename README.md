@@ -1,4 +1,4 @@
-![OpenHealth hero](docs/_assets/openhealth-hero.png)
+![OpenHealth hero](docs/assets/openhealth-hero.png)
 
 > A hobby project that showcases **authorization models** and **fine-grained access control** using [OpenFGA](https://openfga.dev).
 
@@ -38,7 +38,7 @@ Below is a high-level overview of the architecture of **OpenHealth**.
 
 We use a **relay** on top of the **outbox pattern** to write tuples to the **OpenFGA store** - to ensure that the tuples are persisted and available for querying.
 
-![OpenHealth architecture](./docs/_assets/openhealth-architecture.svg)
+![OpenHealth architecture](./docs/assets/openhealth-architecture.svg)
 
 ## Authorization model
 
@@ -86,4 +86,4 @@ After the **development stack** is up and running, you can **seed** the database
 make seed-db
 ```
 
-This uses [hurl](https://hurl.dev) to send the requests in [`_hurl/seed.hurl`](./_hurl/seed.hurl).
+This uses [hurl](https://hurl.dev) to send the requests in [`tools/hurl/seed.hurl`](./tools/hurl/seed.hurl).

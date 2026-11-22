@@ -17,12 +17,12 @@ dev-down: # [ make dev-down ] - teardown development stack
 	docker compose -f dev.docker-compose.yaml down -v
 
 dev-frontend: # [ make dev-frontend ] - spin up frontend with hot reload
-	cd _frontend && bun run dev
+	cd cmd/openhealth-app && bun run dev
 
 API_AUTH_TOKEN ?= 12345
 
 seed-db: # [ make seed-db ] - seed database with mock data
-	@hurl --no-output --variable "API_AUTH_TOKEN=$(API_AUTH_TOKEN)" _hurl/seed.hurl
+	@hurl --no-output --variable "API_AUTH_TOKEN=$(API_AUTH_TOKEN)" tools/hurl/seed.hurl
 	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
 
 test: test-go test-openfga # [ make test ] - run ALL tests
@@ -44,7 +44,7 @@ gen-mocks: # [ make gen-mocks ] - generate mocks
 gen-openapi: # [ make gen-openapi ] - generate openapi
 	@go run ./scripts/gen-openapi/gen-openapi.go openapi > docs/openapi.yaml
 	@echo "\033[0;34m> OpenAPI Generated\033[0m"
-	@bash ./_bash/bruno-sync.sh
+	@bash ./tools/bash/bruno-sync.sh
 
 ################
 ## OPENFGA ##

@@ -55,17 +55,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate DOMAIN repository variable
+        if: ${{ vars.DOMAIN == '' }}
+        shell: bash
+        run: |
+          echo "::error::Set DOMAIN as a repository Actions variable, not a secret."
+          exit 1
+
       - name: Build image
         uses: ./.github/actions/docker-build
         with:
-          context: ./_frontend
-          file: ./_frontend/Dockerfile
+          context: ./cmd/openhealth-app
+          file: ./cmd/openhealth-app/Dockerfile
           image: openhealth-app
           tags: type=raw,value=pr-${{ github.event.pull_request.number }}
           push: false
-          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN }}
+          registry: ${{ vars.ZOT_DOMAIN }}
 
   build-backend:
     name: Build openhealth-api
@@ -82,8 +88,7 @@ jobs:
           image: openhealth-api
           tags: type=raw,value=pr-${{ github.event.pull_request.number }}
           push: false
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+          registry: ${{ vars.ZOT_DOMAIN }}
 
   build-openfga-init:
     name: Build openhealth-openfga-init
@@ -100,8 +105,7 @@ jobs:
           image: openhealth-openfga-init
           tags: type=raw,value=pr-${{ github.event.pull_request.number }}
           push: false
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+          registry: ${{ vars.ZOT_DOMAIN }}
 
   build-seed-db:
     name: Build openhealth-seed-db
@@ -118,8 +122,7 @@ jobs:
           image: openhealth-seed-db
           tags: type=raw,value=pr-${{ github.event.pull_request.number }}
           push: false
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+          registry: ${{ vars.ZOT_DOMAIN }}
 
   build-migrate-db:
     name: Build openhealth-migrate-db
@@ -136,5 +139,4 @@ jobs:
           image: openhealth-migrate-db
           tags: type=raw,value=pr-${{ github.event.pull_request.number }}
           push: false
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
+          registry: ${{ vars.ZOT_DOMAIN }}
