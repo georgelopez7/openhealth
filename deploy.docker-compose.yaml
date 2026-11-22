@@ -1,6 +1,6 @@
 services:
   openhealth-app:
-    image: docker.lopez.run/openhealth-app:latest
+    image: ${DOCKERHUB_USERNAME}/openhealth-app:latest
     pull_policy: always
     expose:
       - 3000
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   openhealth-api:
-    image: docker.lopez.run/openhealth-api:latest
+    image: ${DOCKERHUB_USERNAME}/openhealth-api:latest
     pull_policy: always
     environment:
       - PORT=8000
@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
 
   openhealth-migrate-db:
-    image: docker.lopez.run/openhealth-migrate-db:latest
+    image: ${DOCKERHUB_USERNAME}/openhealth-migrate-db:latest
     pull_policy: always
     environment:
       - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
@@ -67,7 +67,7 @@ services:
     restart: "no"
 
   openhealth-seed-db:
-    image: docker.lopez.run/openhealth-seed-db:latest
+    image: ${DOCKERHUB_USERNAME}/openhealth-seed-db:latest
     pull_policy: always
     environment:
       - API_AUTH_TOKEN=${API_AUTH_TOKEN}
@@ -117,7 +117,7 @@ services:
     restart: unless-stopped
 
   openfga-init:
-    image: docker.lopez.run/openhealth-openfga-init:latest
+    image: ${DOCKERHUB_USERNAME}/openhealth-openfga-init:latest
     pull_policy: always
     environment:
       - FGA_API_URL=http://openfga:8080

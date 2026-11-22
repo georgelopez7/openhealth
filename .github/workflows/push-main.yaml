@@ -29,9 +29,8 @@ jobs:
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
           build-args: VITE_SITE_URL=https://${{ vars.DOMAIN }}
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-backend:
     name: Build & Push - openhealth-api
@@ -48,9 +47,8 @@ jobs:
           image: openhealth-api
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-openfga-init:
     name: Build & Push - openhealth-openfga-init
@@ -67,9 +65,8 @@ jobs:
           image: openhealth-openfga-init
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-seed-db:
     name: Build & Push - openhealth-seed-db
@@ -86,9 +83,8 @@ jobs:
           image: openhealth-seed-db
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-migrate-db:
     name: Build & Push - openhealth-migrate-db
@@ -105,6 +101,5 @@ jobs:
           image: openhealth-migrate-db
           tags: type=raw,value=sha-${{ github.sha }}
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}

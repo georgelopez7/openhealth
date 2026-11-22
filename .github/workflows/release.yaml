@@ -31,9 +31,8 @@ jobs:
             type=raw,value=latest
           push: true
           build-args: VITE_SITE_URL=https://${{ vars.DOMAIN }}
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-backend:
     name: Build & Push - openhealth-api
@@ -52,9 +51,8 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=latest
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-openfga-init:
     name: Build & Push - openhealth-openfga-init
@@ -73,9 +71,8 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=latest
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-seed-db:
     name: Build & Push - openhealth-seed-db
@@ -94,9 +91,8 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=latest
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-migrate-db:
     name: Build & Push - openhealth-migrate-db
@@ -115,9 +111,8 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=latest
           push: true
-          registry: ${{ vars.ZOT_DOMAIN }}
-          username: admin
-          password: ${{ secrets.ZOT_API_KEY }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   deploy:
     name: Deploy to Dokploy
