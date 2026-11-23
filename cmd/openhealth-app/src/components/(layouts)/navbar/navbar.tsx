@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 
 import GitHubIcon from "@/components/(icons)/github-icon";
 import OpenFGAIcon from "@/components/(icons)/openfga-icon";
-import OpenhealthIcon from "@/components/(icons)/openhealth-icon";
 import { cn } from "@/lib/utils";
 
 interface IProps {
@@ -27,8 +26,7 @@ const Navbar = ({
           to="/"
           className="flex items-center gap-2 text-base font-semibold tracking-tight text-white transition-colors hover:underline md:text-lg"
         >
-          <OpenhealthIcon className="size-7" />
-          <span className="hidden sm:inline">OpenHealth</span>
+          <span>OpenHealth</span>
         </Link>
         <div className="flex items-center gap-3">
           <a

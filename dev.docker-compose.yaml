@@ -1,20 +1,4 @@
 services:
-  # openhealth-app:
-  #   build:
-  #     context: ./cmd/openhealth-app
-  #     dockerfile: ./Dockerfile
-  #     args:
-  #       VITE_SITE_URL: https://localhost:3000
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - API_URL=http://openhealth-api:8000
-  #     - API_AUTH_TOKEN=12345
-  #   depends_on:
-  #     openhealth-api:
-  #       condition: service_healthy
-  #   restart: unless-stopped
-
   openhealth-api:
     build:
       context: .
@@ -26,8 +10,7 @@ services:
       - API_AUTH_TOKEN=12345
       - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
       - FGA_API_URL=http://openfga:8080
-      - FGA_STORE_ID=${FGA_STORE_ID}
-      - FGA_MODEL_ID=${FGA_MODEL_ID}
+      - FGA_STORE_NAME=${FGA_STORE_NAME:-openhealth}
     ports:
       - "8000:8000"
     healthcheck:
@@ -39,6 +22,8 @@ services:
     depends_on:
       openfga:
         condition: service_healthy
+      openfga-init:
+        condition: service_completed_successfully
       openhealth-postgres:
         condition: service_healthy
       openhealth-migrate-db:
@@ -98,6 +83,18 @@ services:
       interval: 5s
       timeout: 30s
       retries: 3
+
+  openfga-init:
+    build:
+      context: .
+      dockerfile: scripts/openfga-init/Dockerfile
+    environment:
+      - FGA_API_URL=http://openfga:8080
+      - FGA_STORE_NAME=${FGA_STORE_NAME:-openhealth}
+    depends_on:
+      openfga:
+        condition: service_healthy
+    restart: "no"
 
   openfga-postgres:
     image: postgres:17

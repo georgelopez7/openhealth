@@ -21,26 +21,6 @@ export const PageLayout = ({ children, navbar = true }: IPageLayoutProps) => {
       </div>
       <Spacer size="small" />
 
-      <div className="absolute top-4 left-4 h-4 w-4 pointer-events-none md:h-8 md:w-8">
-        <div className="absolute top-0 left-0 h-1 w-full bg-white md:h-2" />
-        <div className="absolute top-0 left-0 h-full w-1 bg-white md:w-2" />
-      </div>
-
-      <div className="absolute top-4 right-4 h-4 w-4 pointer-events-none md:h-8 md:w-8">
-        <div className="absolute top-0 right-0 h-1 w-full bg-white md:h-2" />
-        <div className="absolute top-0 right-0 h-full w-1 bg-white md:w-2" />
-      </div>
-
-      <div className="absolute bottom-4 left-4 h-4 w-4 pointer-events-none md:h-8 md:w-8">
-        <div className="absolute bottom-0 left-0 h-1 w-full bg-white md:h-2" />
-        <div className="absolute bottom-0 left-0 h-full w-1 bg-white md:w-2" />
-      </div>
-
-      <div className="absolute bottom-4 right-4 h-4 w-4 pointer-events-none md:h-8 md:w-8">
-        <div className="absolute bottom-0 right-0 h-1 w-full bg-white md:h-2" />
-        <div className="absolute bottom-0 right-0 h-full w-1 bg-white md:w-2" />
-      </div>
-
       <main className="mx-5 flex w-[calc(100%-2.5rem)] flex-1 flex-col md:mx-auto md:w-[84vw]">
         {children}
       </main>

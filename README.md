@@ -51,7 +51,8 @@ The authorization model is defined in [`_openfga/openhealth.fga`](./_openfga/ope
 
 | Dependency | Description | Link |
 | ---------- | ----------- | ---- |
-| Docker | Required to run the development stack | [docker.com](https://www.docker.com/) |
+| Docker Compose | Required to run the development stack | [docker.com](https://www.docker.com/) |
+| Bun | Runs the OpenHealth App locally | [bun.sh](https://bun.sh/) |
 | Hurl | Used to seed the database | [hurl.dev](https://hurl.dev/) |
 
 #### Clone The Repo
@@ -63,6 +64,14 @@ cd openhealth
 
 #### Spin Up The Development Stack
 
+Install the app dependencies once:
+
+```bash
+cd cmd/openhealth-app && bun install && cd ../..
+```
+
+Then start the development environment:
+
 ```bash
 make dev
 ```
@@ -72,11 +81,11 @@ This command runs the following:
 1. Starts an **OpenFGA** container and creates a **store** & **authorization model.**
 2. Starts the **OpenHealth API Postgres** database and runs the **migrations**.
 3. Builds and runs the **OpenHealth API** at [http://localhost:8000](http://localhost:8000).
-4. Starts the **OpenHealth App** at [http://localhost:3000](http://localhost:3000).
+4. Runs the **OpenHealth App** locally with hot reload at [http://localhost:3000](http://localhost:3000).
 
 <br>
 
-> **NOTE -** When creating the OpenFGA store & model the necessary environment variables are generated and stored in a local .env file.
+> **NOTE -** The OpenFGA store is selected by `FGA_STORE_NAME` (defaults to `openhealth`). The API resolves the latest authorization model from that store at startup; generated IDs do not need to be stored in `.env`.
 
 #### Seed The Database
 

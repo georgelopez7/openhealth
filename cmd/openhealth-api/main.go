@@ -24,8 +24,8 @@ func main() {
 	// CONFIGURATION
 	ctx := context.Background()
 
-	if os.Getenv("FGA_STORE_ID") == "" || os.Getenv("FGA_MODEL_ID") == "" {
-		log.Fatal("Please set FGA_STORE_ID and FGA_MODEL_ID environment variables.")
+	if os.Getenv("FGA_STORE_NAME") == "" {
+		log.Fatal("Please set FGA_STORE_NAME environment variable.")
 	}
 
 	// POSTGRES
@@ -37,9 +37,9 @@ func main() {
 
 	// OPENFGA
 	openfgaClient, err := openfga.NewClient(
+		ctx,
 		os.Getenv("FGA_API_URL"),
-		os.Getenv("FGA_STORE_ID"),
-		os.Getenv("FGA_MODEL_ID"),
+		os.Getenv("FGA_STORE_NAME"),
 	)
 	if err != nil {
 		log.Fatalf("failed to create openfga client: %v", err)
