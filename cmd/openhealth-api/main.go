@@ -38,7 +38,7 @@ func main() {
 	repository := repository.NewRepository(postgresDB.DB)
 
 	// OPENFGA
-	openfgaClient, err := openfga.NewClient(
+	openFGA, err := openfga.NewClient(
 		ctx,
 		os.Getenv("FGA_API_URL"),
 		os.Getenv("FGA_STORE_NAME"),
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	// SERVICES
-	authorizationSVC := authorization.NewService(openfgaClient)
+	authorizationSVC := authorization.NewService(openFGA)
 	accountSVC := accounts.NewService(tx, repository)
 	doctorSVC := doctors.NewService(tx, repository)
 	nurseSVC := nurses.NewService(tx, repository)
@@ -60,6 +60,7 @@ func main() {
 	r := relay.NewRelay(outboxSVC, authorizationSVC, 100, 2*time.Second)
 	go r.Start(ctx)
 
+	// SEED
 	if err := seed.Seed(ctx, seed.NewServices(accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)); err != nil {
 		log.Fatalf("failed to seed database: %v", err)
 	}

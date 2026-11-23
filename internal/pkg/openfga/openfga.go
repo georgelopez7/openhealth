@@ -13,24 +13,23 @@ type Client struct {
 	openfga *openfga.OpenFgaClient
 }
 
-// NewClient resolves the named store and its latest authorization model before
-// creating the OpenFGA client.
 func NewClient(ctx context.Context, uri, storeName string) (*Client, error) {
-	adminClient, err := openfga.NewSdkClient(&openfga.ClientConfiguration{ApiUrl: uri})
+	admin, err := openfga.NewSdkClient(&openfga.ClientConfiguration{ApiUrl: uri})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OpenFGA admin client: %w", err)
 	}
 
-	storeID, err := resolveStoreID(ctx, adminClient, storeName)
+	storeID, err := resolveStoreID(ctx, admin, storeName)
 	if err != nil {
 		return nil, err
 	}
 
 	modelOptions := openfga.ClientReadLatestAuthorizationModelOptions{StoreId: &storeID}
-	latestModel, err := adminClient.ReadLatestAuthorizationModel(ctx).Options(modelOptions).Execute()
+	latestModel, err := admin.ReadLatestAuthorizationModel(ctx).Options(modelOptions).Execute()
 	if err != nil {
 		return nil, fmt.Errorf("failed to read latest authorization model for store %q: %w", storeName, err)
 	}
+
 	if latestModel == nil || latestModel.AuthorizationModel == nil || latestModel.AuthorizationModel.GetId() == "" {
 		return nil, fmt.Errorf("OpenFGA store %q has no authorization model", storeName)
 	}
@@ -40,6 +39,7 @@ func NewClient(ctx context.Context, uri, storeName string) (*Client, error) {
 		StoreId:              storeID,
 		AuthorizationModelId: latestModel.AuthorizationModel.GetId(),
 	})
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OpenFGA client: %w", err)
 	}
@@ -49,6 +49,7 @@ func NewClient(ctx context.Context, uri, storeName string) (*Client, error) {
 	}, nil
 }
 
+// resolveStoreID - resolves the storeID from the store name
 func resolveStoreID(ctx context.Context, client *openfga.OpenFgaClient, storeName string) (string, error) {
 	if storeName == "" {
 		return "", fmt.Errorf("OpenFGA store name is required")
@@ -57,8 +58,7 @@ func resolveStoreID(ctx context.Context, client *openfga.OpenFgaClient, storeNam
 	var continuationToken string
 	var storeID string
 	for {
-		pageSize := int32(100)
-		options := openfga.ClientListStoresOptions{PageSize: &pageSize}
+		options := openfga.ClientListStoresOptions{PageSize: new(int32(100))}
 		if continuationToken != "" {
 			options.ContinuationToken = &continuationToken
 		}
@@ -72,9 +72,11 @@ func resolveStoreID(ctx context.Context, client *openfga.OpenFgaClient, storeNam
 			if store.GetName() != storeName {
 				continue
 			}
+
 			if storeID != "" {
 				return "", fmt.Errorf("multiple OpenFGA stores are named %q", storeName)
 			}
+
 			storeID = store.GetId()
 		}
 
@@ -87,6 +89,7 @@ func resolveStoreID(ctx context.Context, client *openfga.OpenFgaClient, storeNam
 	if storeID == "" {
 		return "", fmt.Errorf("OpenFGA store %q not found", storeName)
 	}
+
 	return storeID, nil
 }
 
