@@ -1,4 +1,4 @@
-.PHONY: dev dev-down test test-go test-openfga gen-mocks gen-openapi openfga-run openfga-stores-create openfga-models-create openfga-models-list seed-db openfga-init
+.PHONY: dev dev-down test test-go test-openfga gen-mocks gen-openapi openfga-run openfga-stores-create openfga-models-create openfga-models-list openfga-init
 
 dev: # [ make dev ] - spin up development stack
 	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
@@ -8,7 +8,7 @@ dev: # [ make dev ] - spin up development stack
 	@echo
 	@printf "\033[0;32mDev environment started!\033[0m\n"
 	@echo
-	@printf "\033[0;35m> Seed DB via [ make seed-db ] \033[0m\n"
+	@printf "\033[0;35m> Demo data is seeded automatically when the API starts (if the DB is empty)\033[0m\n"
 	@echo
 	@cd cmd/openhealth-app && bun --env-file=.env.development --bun run dev
 
@@ -19,10 +19,6 @@ API_AUTH_TOKEN ?= 12345
 FGA_API_URL ?= http://localhost:8080
 FGA_STORE_NAME ?= openhealth
 export FGA_STORE_NAME
-
-seed-db: # [ make seed-db ] - seed database with mock data
-	@hurl --no-output --variable "API_AUTH_TOKEN=$(API_AUTH_TOKEN)" tools/hurl/seed.hurl
-	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
 
 test: test-go test-openfga # [ make test ] - run ALL tests
 

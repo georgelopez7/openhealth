@@ -53,7 +53,6 @@ The authorization model is defined in [`_openfga/openhealth.fga`](./_openfga/ope
 | ---------- | ----------- | ---- |
 | Docker Compose | Required to run the development stack | [docker.com](https://www.docker.com/) |
 | Bun | Runs the OpenHealth App locally | [bun.sh](https://bun.sh/) |
-| Hurl | Used to seed the database | [hurl.dev](https://hurl.dev/) |
 
 #### Clone The Repo
 
@@ -89,10 +88,5 @@ This command runs the following:
 
 #### Seed The Database
 
-After the **development stack** is up and running, you can **seed** the database with mock data using the following command:
-
-```bash
-make seed-db
-```
-
-This uses [hurl](https://hurl.dev) to send the requests in [`tools/hurl/seed.hurl`](./tools/hurl/seed.hurl).
+The API runs its seed method at every startup. It skips seeding when accounts already
+exist; otherwise, it creates the demo dataset.

@@ -9,6 +9,7 @@ import (
 	"openhealth/internal/pkg/postgres"
 	"openhealth/internal/relay"
 	"openhealth/internal/repository"
+	"openhealth/internal/seed"
 	"openhealth/internal/service/accounts"
 	"openhealth/internal/service/authorization"
 	"openhealth/internal/service/doctors"
@@ -58,6 +59,10 @@ func main() {
 	// RELAY
 	r := relay.NewRelay(outboxSVC, authorizationSVC, 100, 2*time.Second)
 	go r.Start(ctx)
+
+	if err := seed.Seed(ctx, seed.NewServices(accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)); err != nil {
+		log.Fatalf("failed to seed database: %v", err)
+	}
 
 	// SERVER
 	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), os.Getenv("API_AUTH_TOKEN"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)

@@ -109,21 +109,3 @@ jobs:
           push: false
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}
-
-  build-seed-db:
-    name: Build openhealth-seed-db
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build image
-        uses: ./.github/actions/docker-build
-        with:
-          context: .
-          file: ./scripts/seed-db/Dockerfile
-          image: openhealth-seed-db
-          tags: type=raw,value=pr-${{ github.event.pull_request.number }}
-          push: false
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME || 'local' }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN || '' }}

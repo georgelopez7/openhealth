@@ -14,11 +14,9 @@ services:
       - dokploy-network
     labels:
       - "traefik.enable=true"
-      # HTTPS
       - "traefik.http.routers.openhealth-app.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.openhealth-app.entrypoints=websecure"
       - "traefik.http.routers.openhealth-app.tls.certresolver=letsencrypt"
-      # HTTP -> HTTPS
       - "traefik.http.routers.openhealth-app-http.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.openhealth-app-http.entrypoints=web"
       - "traefik.http.routers.openhealth-app-http.middlewares=openhealth-app-https-redirect"
@@ -50,18 +48,6 @@ services:
       retries: 5
       start_period: 5s
     restart: unless-stopped
-
-  openhealth-seed-db:
-    image: ${DOCKERHUB_USERNAME}/openhealth-seed-db:latest
-    pull_policy: always
-    environment:
-      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
-    depends_on:
-      openhealth-api:
-        condition: service_healthy
-    networks:
-      - dokploy-network
-    restart: "no"
 
   openhealth-postgres:
     image: postgres:18-alpine
