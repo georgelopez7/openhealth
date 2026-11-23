@@ -15,7 +15,7 @@ import (
 	medicalrecords "openhealth/internal/service/medical-records"
 	"openhealth/internal/service/nurses"
 	"openhealth/internal/service/outbox"
-	"openhealth/pkg/openfga"
+	"openhealth/internal/pkg/openfga"
 	"os"
 	"time"
 )

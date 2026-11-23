@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-BRUNO_DIR="./docs/_bruno"
+BRUNO_DIR="./tools/bruno"
 
 rm -rf "$BRUNO_DIR/_tmp"
 

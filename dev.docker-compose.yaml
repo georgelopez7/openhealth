@@ -1,7 +1,7 @@
 services:
   # openhealth-app:
   #   build:
-  #     context: ./_frontend
+  #     context: ./cmd/openhealth-app
   #     dockerfile: ./Dockerfile
   #     args:
   #       VITE_SITE_URL: https://localhost:3000

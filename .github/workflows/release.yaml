@@ -13,17 +13,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate DOMAIN repository variable
+        if: ${{ vars.DOMAIN == '' }}
+        shell: bash
+        run: |
+          echo "::error::Set DOMAIN as a repository Actions variable, not a secret."
+          exit 1
+
       - name: Build and push
         uses: ./.github/actions/docker-build
         with:
-          context: ./_frontend
-          file: ./_frontend/Dockerfile
+          context: ./cmd/openhealth-app
+          file: ./cmd/openhealth-app/Dockerfile
           image: openhealth-app
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
           push: true
-          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN || 'localhost' }}
+          build-args: VITE_SITE_URL=https://${{ vars.DOMAIN }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 

@@ -11,10 +11,10 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      working-directory: _frontend
+      working-directory: cmd/openhealth-app
       run: bun install
 
     - name: Run tests
       shell: bash
-      working-directory: _frontend
+      working-directory: cmd/openhealth-app
       run: bun run test
