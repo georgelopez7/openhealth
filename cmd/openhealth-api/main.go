@@ -5,6 +5,7 @@ import (
 	"log"
 	"openhealth/api/http"
 	"openhealth/internal/domain"
+	"openhealth/internal/pkg/openfga"
 	"openhealth/internal/pkg/postgres"
 	"openhealth/internal/relay"
 	"openhealth/internal/repository"
@@ -15,7 +16,6 @@ import (
 	medicalrecords "openhealth/internal/service/medical-records"
 	"openhealth/internal/service/nurses"
 	"openhealth/internal/service/outbox"
-	"openhealth/internal/pkg/openfga"
 	"os"
 	"time"
 )
@@ -30,6 +30,7 @@ func main() {
 
 	// POSTGRES
 	postgresDB := postgres.NewPostgresDB(os.Getenv("POSTGRES_URI"))
+	postgresDB.Migrate("_migrations")
 	tx := postgres.NewTxManager(postgresDB.DB)
 
 	// REPOSITORIES

@@ -26,19 +26,6 @@ services:
         condition: service_completed_successfully
       openhealth-postgres:
         condition: service_healthy
-      openhealth-migrate-db:
-        condition: service_completed_successfully
-
-  openhealth-migrate-db:
-    build:
-      context: .
-      dockerfile: scripts/migrate-db/Dockerfile
-    container_name: openhealth-migrate-db
-    environment:
-      - POSTGRES_URI=postgres://postgres-user:postgres-password@openhealth-postgres:5432/postgres?sslmode=disable
-    depends_on:
-      openhealth-postgres:
-        condition: service_healthy
 
   openhealth-postgres:
     image: postgres:18-alpine

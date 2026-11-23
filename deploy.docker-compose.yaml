@@ -35,8 +35,6 @@ services:
       - FGA_API_URL=http://openfga:8080
       - FGA_STORE_NAME=${FGA_STORE_NAME:-openhealth}
     depends_on:
-      openhealth-migrate-db:
-        condition: service_completed_successfully
       openfga-init:
         condition: service_completed_successfully
       openhealth-postgres:
@@ -52,18 +50,6 @@ services:
       retries: 5
       start_period: 5s
     restart: unless-stopped
-
-  openhealth-migrate-db:
-    image: ${DOCKERHUB_USERNAME}/openhealth-migrate-db:latest
-    pull_policy: always
-    environment:
-      - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
-    depends_on:
-      openhealth-postgres:
-        condition: service_healthy
-    networks:
-      - dokploy-network
-    restart: "no"
 
   openhealth-seed-db:
     image: ${DOCKERHUB_USERNAME}/openhealth-seed-db:latest
