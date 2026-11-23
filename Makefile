@@ -1,4 +1,4 @@
-.PHONY: dev dev-down test test-go test-openfga gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db init-openfga
+.PHONY: dev dev-down test test-go test-openfga gen-mocks gen-openapi openfga-run openfga-stores-create openfga-models-create openfga-models-list seed-db openfga-init
 
 dev: # [ make dev ] - spin up development stack
 	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
@@ -45,30 +45,26 @@ gen-openapi: # [ make gen-openapi ] - generate openapi
 	@echo "\033[0;34m> OpenAPI Generated\033[0m"
 	@bash ./tools/bash/bruno-sync.sh
 
-################
-## OPENFGA ##
-################
-
 OPENFGA_TESTS=_openfga/openhealth.fga.yaml
 OPENFGA_STORE_NAME ?= openhealth-openfga-store
 OPENFGA_MODEL=_openfga/openhealth.fga
 
-init-openfga: # [ make init-openfga ] - create or reuse the named store and ensure a model exists
+openfga-init: # [ make openfga-init ] - create or reuse the named store and ensure a model exists
 	@docker compose -f dev.docker-compose.yaml run --build --rm openfga-init
 
-run-openfga: # [ make run-openfga ] - run openfga container
+openfga-run: # [ make openfga-run ] - run openfga container
 	@docker compose -f dev.docker-compose.yaml up -d openfga > /dev/null
 
-gen-openfga-store: # [ make gen-openfga-store NAME=store-name ] - generate a new openfga store
+openfga-stores-create: # [ make openfga-stores-create NAME=store-name ] - generate a new openfga store
 	@if [ -z "${OPENFGA_STORE_NAME}" ]; then echo "> Please provide a OPENFGA_STORE_NAME for the store" && exit 1; fi
 	set -a && source .env && set +a && fga store create --name ${OPENFGA_STORE_NAME}
 
-add-openfga-model: # [ make add-openfga-model ] - add a new openfga model to a store
+openfga-models-create: # [ make openfga-models-create ] - add a new openfga model to a store
 	@STORE_ID=$$(FGA_API_URL="$(FGA_API_URL)" fga store list | jq -r --arg n "$(FGA_STORE_NAME)" '.stores[]? | select(.name == $$n) | .id' | head -n1); \
 	if [ -z "$$STORE_ID" ]; then echo "OpenFGA store '$(FGA_STORE_NAME)' not found" >&2; exit 1; fi; \
 	FGA_API_URL="$(FGA_API_URL)" FGA_STORE_ID="$$STORE_ID" fga model write --file "$(OPENFGA_MODEL)"
 
-list-openfga-models: # [ make list-openfga-models ] - list all openfga models
+openfga-models-list: # [ make openfga-models-list ] - list all openfga models
 	@STORE_ID=$$(FGA_API_URL="$(FGA_API_URL)" fga store list | jq -r --arg n "$(FGA_STORE_NAME)" '.stores[]? | select(.name == $$n) | .id' | head -n1); \
 	if [ -z "$$STORE_ID" ]; then echo "OpenFGA store '$(FGA_STORE_NAME)' not found" >&2; exit 1; fi; \
 	FGA_API_URL="$(FGA_API_URL)" FGA_STORE_ID="$$STORE_ID" fga model list
