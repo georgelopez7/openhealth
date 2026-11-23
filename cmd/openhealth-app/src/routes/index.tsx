@@ -12,11 +12,11 @@ function Home() {
     <PageLayout navbar={false}>
       <div className="flex flex-1 items-center justify-center">
         <div className="flex w-full bg-[#101010] p-3 sm:p-4">
-          <div className="flex w-full flex-col items-center justify-center border border-neutral-700 bg-black px-12 py-14 text-center sm:px-16 sm:py-20">
+          <div className="flex w-full flex-col items-center justify-center border border-neutral-700 bg-black px-12 py-8 text-center sm:px-16 sm:py-12">
             <h1 className="text-center text-3xl font-bold sm:text-5xl md:text-6xl">
               OpenHealth
             </h1>
-            <Spacer size="small" className="my-5 sm:my-3" />
+            <Spacer size="medium" className="my-5 sm:my-3" />
             <div className="flex gap-2">
               <Link
                 to="/dashboard"
@@ -38,8 +38,8 @@ function Home() {
                 <GitHubIcon className="size-5" />
               </a>
             </div>
-            <Spacer size="small" />
-            <div className="inline-flex items-center gap-2 px-4 py-2 text-[10px] text-white/60">
+            <Spacer size="medium" />
+            <div className="inline-flex items-center gap-2 px-4 text-[10px] text-white/60">
               <span>
                 Powered by{" "}
                 <a
