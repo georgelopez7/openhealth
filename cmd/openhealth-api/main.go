@@ -5,9 +5,11 @@ import (
 	"log"
 	"openhealth/api/http"
 	"openhealth/internal/domain"
+	"openhealth/internal/pkg/openfga"
 	"openhealth/internal/pkg/postgres"
 	"openhealth/internal/relay"
 	"openhealth/internal/repository"
+	"openhealth/internal/seed"
 	"openhealth/internal/service/accounts"
 	"openhealth/internal/service/authorization"
 	"openhealth/internal/service/doctors"
@@ -15,7 +17,6 @@ import (
 	medicalrecords "openhealth/internal/service/medical-records"
 	"openhealth/internal/service/nurses"
 	"openhealth/internal/service/outbox"
-	"openhealth/internal/pkg/openfga"
 	"os"
 	"time"
 )
@@ -24,29 +25,30 @@ func main() {
 	// CONFIGURATION
 	ctx := context.Background()
 
-	if os.Getenv("FGA_STORE_ID") == "" || os.Getenv("FGA_MODEL_ID") == "" {
-		log.Fatal("Please set FGA_STORE_ID and FGA_MODEL_ID environment variables.")
+	if os.Getenv("FGA_STORE_NAME") == "" {
+		log.Fatal("Please set FGA_STORE_NAME environment variable.")
 	}
 
 	// POSTGRES
 	postgresDB := postgres.NewPostgresDB(os.Getenv("POSTGRES_URI"))
+	postgresDB.Migrate("_migrations")
 	tx := postgres.NewTxManager(postgresDB.DB)
 
 	// REPOSITORIES
 	repository := repository.NewRepository(postgresDB.DB)
 
 	// OPENFGA
-	openfgaClient, err := openfga.NewClient(
+	openFGA, err := openfga.NewClient(
+		ctx,
 		os.Getenv("FGA_API_URL"),
-		os.Getenv("FGA_STORE_ID"),
-		os.Getenv("FGA_MODEL_ID"),
+		os.Getenv("FGA_STORE_NAME"),
 	)
 	if err != nil {
 		log.Fatalf("failed to create openfga client: %v", err)
 	}
 
 	// SERVICES
-	authorizationSVC := authorization.NewService(openfgaClient)
+	authorizationSVC := authorization.NewService(openFGA)
 	accountSVC := accounts.NewService(tx, repository)
 	doctorSVC := doctors.NewService(tx, repository)
 	nurseSVC := nurses.NewService(tx, repository)
@@ -57,6 +59,11 @@ func main() {
 	// RELAY
 	r := relay.NewRelay(outboxSVC, authorizationSVC, 100, 2*time.Second)
 	go r.Start(ctx)
+
+	// SEED
+	if err := seed.Seed(ctx, seed.NewServices(accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)); err != nil {
+		log.Fatalf("failed to seed database: %v", err)
+	}
 
 	// SERVER
 	server := http.NewServer(domain.APIName, domain.APIVersion, os.Getenv("PORT"), os.Getenv("API_AUTH_TOKEN"), accountSVC, doctorSVC, nurseSVC, hospitalSVC, medicalRecordSVC)

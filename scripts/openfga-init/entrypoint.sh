@@ -7,13 +7,10 @@ FGA_API_URL="${FGA_API_URL:-http://openfga:8080}"
 STORE_NAME="${FGA_STORE_NAME:-openhealth}"
 export FGA_API_URL
 
-# RESOLVE STORE - PREFER FGA_STORE_ID IF PROVIDED, OTHERWISE LOOK UP BY NAME
-STORE_ID="${FGA_STORE_ID:-}"
-if [ -z "$STORE_ID" ]; then
-  STORE_ID=$(fga store list \
-    | jq -r --arg n "$STORE_NAME" '.stores[]? | select(.name == $n) | .id' \
-    | head -n1)
-fi
+# RESOLVE STORE BY NAME
+STORE_ID=$(fga store list \
+  | jq -r --arg n "$STORE_NAME" '.stores[]? | select(.name == $n) | .id' \
+  | head -n1)
 
 # CREATE STORE IF NONE EXISTS - OTHERWISE REUSE THE EXISTING ONE
 if [ -z "$STORE_ID" ]; then

@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
+import { TooltipProvider } from "#/components/ui/tooltip";
 import "../styles.css";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
@@ -87,7 +88,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
         <Scripts />
       </body>
     </html>

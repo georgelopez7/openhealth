@@ -1,29 +1,22 @@
-.PHONY: test test-go test-openfga gen-mocks gen-openapi run-openfga gen-openfga-store add-openfga-model list-openfga-models seed-db
+.PHONY: dev dev-down test test-go test-openfga gen-mocks gen-openapi openfga-run openfga-stores-create openfga-models-create openfga-models-list openfga-init
 
 dev: # [ make dev ] - spin up development stack
 	@printf "\033[0;34mSpinning up Dev Environment...\033[0m\n"
 	@echo
-	@make init-openfga PRINT_ENV=false
-	@echo
 	@printf "\033[0;34mBuilding OpenHealth Services...\033[0m\n"
-	@docker compose -f dev.docker-compose.yaml up --build -d > /dev/null
+	@docker compose -f dev.docker-compose.yaml up --build -d --wait
 	@echo
 	@printf "\033[0;32mDev environment started!\033[0m\n"
 	@echo
-	@printf "\033[0;35m> Seed DB via [ make seed-db ] \033[0m\n"
+	@printf "\033[0;35m> Demo data is seeded automatically when the API starts (if the DB is empty)\033[0m\n"
 	@echo
+	@cd cmd/openhealth-app && bun --env-file=.env.development --bun run dev
 
 dev-down: # [ make dev-down ] - teardown development stack
 	docker compose -f dev.docker-compose.yaml down -v
 
-dev-frontend: # [ make dev-frontend ] - spin up frontend with hot reload
-	cd cmd/openhealth-app && bun run dev
-
-API_AUTH_TOKEN ?= 12345
-
-seed-db: # [ make seed-db ] - seed database with mock data
-	@hurl --no-output --variable "API_AUTH_TOKEN=$(API_AUTH_TOKEN)" tools/hurl/seed.hurl
-	@printf "\033[0;32m✨ Database seeded successfully\033[0m\n"
+FGA_API_URL ?= http://localhost:8080
+FGA_STORE_NAME ?= openhealth
 
 test: test-go test-openfga # [ make test ] - run ALL tests
 
@@ -46,56 +39,26 @@ gen-openapi: # [ make gen-openapi ] - generate openapi
 	@echo "\033[0;34m> OpenAPI Generated\033[0m"
 	@bash ./tools/bash/bruno-sync.sh
 
-################
-## OPENFGA ##
-################
-
 OPENFGA_TESTS=_openfga/openhealth.fga.yaml
 OPENFGA_STORE_NAME ?= openhealth-openfga-store
 OPENFGA_MODEL=_openfga/openhealth.fga
 
-PRINT_ENV ?= true
+openfga-init: # [ make openfga-init ] - create or reuse the named store and ensure a model exists
+	@docker compose -f dev.docker-compose.yaml run --build --rm openfga-init
 
-init-openfga: # [ make init-openfga ] - init openfga store + model & update .env
-	@make run-openfga
-	@touch .env && \
-	set -a && source .env && set +a && \
-	unset FGA_STORE_ID && \
-	STORE=$$(fga store create --name openhealth) && \
-	STORE_ID=$$(echo $$STORE | jq -r '.store.id') && \
-	export FGA_STORE_ID=$$STORE_ID && \
-	echo "" && \
-	printf "\033[0;32m✓ OpenFGA Store Created\033[0m\n" && \
-	MODEL=$$(fga model write --file $(OPENFGA_MODEL)) && \
-	MODEL_ID=$$(echo $$MODEL | jq -r '.authorization_model_id') && \
-	printf "\033[0;32m✓ OpenFGA Model Created & Added To Store\033[0m\n" && \
-	if [ "$(PRINT_ENV)" != "false" ]; then \
-		echo "---" && \
-		echo "FGA_API_URL=http://localhost:8080" && \
-		echo "FGA_STORE_ID=$$STORE_ID" && \
-		echo "FGA_MODEL_ID=$$MODEL_ID" && \
-		echo "---"; \
-	fi && \
-	for pair in \
-		"FGA_API_URL=http://localhost:8080" \
-		"FGA_STORE_ID=$$STORE_ID" \
-		"FGA_MODEL_ID=$$MODEL_ID"; do \
-		key=$${pair%%=*}; \
-		grep -vE "^$${key}=" .env > .env.tmp && mv .env.tmp .env; \
-		echo "$$pair" >> .env; \
-	done && \
-	printf "\033[0;32m✓ Environment Variables Updated\033[0m\n"
-
-
-run-openfga: # [ make run-openfga ] - run openfga container
+openfga-run: # [ make openfga-run ] - run openfga container
 	@docker compose -f dev.docker-compose.yaml up -d openfga > /dev/null
 
-gen-openfga-store: # [ make gen-openfga-store NAME=store-name ] - generate a new openfga store
+openfga-stores-create: # [ make openfga-stores-create NAME=store-name ] - generate a new openfga store
 	@if [ -z "${OPENFGA_STORE_NAME}" ]; then echo "> Please provide a OPENFGA_STORE_NAME for the store" && exit 1; fi
 	set -a && source .env && set +a && fga store create --name ${OPENFGA_STORE_NAME}
 
-add-openfga-model: # [ make add-openfga-model ] - add a new openfga model to a store
-	set -a && source .env && set +a && fga model write --file ${OPENFGA_MODEL}
+openfga-models-create: # [ make openfga-models-create ] - add a new openfga model to a store
+	@STORE_ID=$$(FGA_API_URL="$(FGA_API_URL)" fga store list | jq -r --arg n "$(FGA_STORE_NAME)" '.stores[]? | select(.name == $$n) | .id' | head -n1); \
+	if [ -z "$$STORE_ID" ]; then echo "OpenFGA store '$(FGA_STORE_NAME)' not found" >&2; exit 1; fi; \
+	FGA_API_URL="$(FGA_API_URL)" FGA_STORE_ID="$$STORE_ID" fga model write --file "$(OPENFGA_MODEL)"
 
-list-openfga-models: # [ make list-openfga-models ] - list all openfga models
-	set -a && source .env && set +a && fga model list
+openfga-models-list: # [ make openfga-models-list ] - list all openfga models
+	@STORE_ID=$$(FGA_API_URL="$(FGA_API_URL)" fga store list | jq -r --arg n "$(FGA_STORE_NAME)" '.stores[]? | select(.name == $$n) | .id' | head -n1); \
+	if [ -z "$$STORE_ID" ]; then echo "OpenFGA store '$(FGA_STORE_NAME)' not found" >&2; exit 1; fi; \
+	FGA_API_URL="$(FGA_API_URL)" FGA_STORE_ID="$$STORE_ID" fga model list

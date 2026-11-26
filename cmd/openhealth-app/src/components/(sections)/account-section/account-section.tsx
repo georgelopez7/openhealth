@@ -1,7 +1,4 @@
-import { ArrowRightLeft } from "lucide-react";
-import { useState } from "react";
-import SelectAccountModal from "#/components/(modals)/select-account-modal/select-account-modal";
-import { Button } from "#/components/ui/button";
+import { Check, LoaderCircle } from "lucide-react";
 import type { Account } from "#/domain/accounts";
 import { getAccountDisplayName } from "#/domain/accounts";
 import { AccountIcon } from "#/domain/icon";
@@ -10,61 +7,71 @@ import { useAccount } from "#/stores/account-store/account-store";
 
 interface IProps {
   accounts: Account[];
+  isLoading: boolean;
 }
 
-const AccountSection = ({ accounts }: IProps) => {
-  const [open, setOpen] = useState(false);
+const AccountSection = ({ accounts, isLoading }: IProps) => {
   const { account, setAccount } = useAccount();
 
-  const handleSelect = (selectedAccount: Account) => {
-    setAccount(selectedAccount);
-    setOpen(false);
-  };
-
   return (
-    <section className="w-full">
-      {account ? (
-        <div className="flex w-full justify-center py-2 text-white">
-          <div className="flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-white/20 bg-white/5 px-2 py-2.5 sm:w-auto sm:justify-center sm:gap-10">
-            <div className="flex items-center gap-2">
-              <AccountIcon
-                avatar={account.avatar}
-                className="size-9 shrink-0"
-              />
-              <p className="text-sm font-semibold md:text-lg">
-                {getAccountDisplayName(account)}
-              </p>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-label="Switch account"
-              className="cursor-pointer text-white hover:text-white"
-            >
-              <ArrowRightLeft className="size-5" />
-            </Button>
-          </div>
+    <section className="w-full lg:w-80 lg:shrink-0">
+      <div className="border border-neutral-700 bg-[#101010] p-4 sm:p-5">
+        <div className="mb-4 border-b border-neutral-800 pb-3">
+          <p className="truncate text-xs text-white">
+            {account
+              ? getAccountDisplayName(account)
+              : isLoading
+                ? "Loading characters..."
+                : "Choose an avatar"}
+          </p>
         </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className={cn(
-            "inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 text-base font-medium text-white transition-colors hover:bg-white/10 md:text-lg",
-          )}
-        >
-          Select Account
-        </button>
-      )}
-      <SelectAccountModal
-        accounts={accounts}
-        selectedAccountID={account?.id}
-        open={open}
-        onOpenChange={setOpen}
-        onSelect={handleSelect}
-      />
+
+        {isLoading ? (
+          <div className="flex min-h-24 items-center justify-center text-neutral-500">
+            <LoaderCircle className="size-6 animate-spin" />
+          </div>
+        ) : accounts.length === 0 ? (
+          <p className="py-4 text-center text-xs text-neutral-500">
+            No characters available.
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            {accounts.map((character) => {
+              const isSelected = character.id === account?.id;
+
+              return (
+                <button
+                  key={character.id}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => setAccount(character)}
+                  className={cn(
+                    "relative flex min-h-24 min-w-0 flex-col items-center justify-center gap-2 border p-2 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
+                    isSelected
+                      ? "border-neutral-400 bg-[#242424] text-white"
+                      : "border-neutral-800 bg-black text-neutral-400 hover:border-neutral-600 hover:text-white",
+                  )}
+                >
+                  {isSelected && (
+                    <Check
+                      aria-hidden="true"
+                      className="absolute top-1.5 right-1.5 size-3 text-white"
+                    />
+                  )}
+                  <AccountIcon
+                    avatar={character.avatar}
+                    className="size-10 shrink-0"
+                  />
+                  <span className="flex min-w-0 max-w-full flex-col break-words text-[9px] leading-relaxed">
+                    <span>{character.first_name}</span>
+                    <span>{character.last_name}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </section>
   );
 };
