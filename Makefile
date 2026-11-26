@@ -15,10 +15,8 @@ dev: # [ make dev ] - spin up development stack
 dev-down: # [ make dev-down ] - teardown development stack
 	docker compose -f dev.docker-compose.yaml down -v
 
-API_AUTH_TOKEN ?= 12345
 FGA_API_URL ?= http://localhost:8080
 FGA_STORE_NAME ?= openhealth
-export FGA_STORE_NAME
 
 test: test-go test-openfga # [ make test ] - run ALL tests
 
