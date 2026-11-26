@@ -31,7 +31,7 @@ services:
       - API_AUTH_TOKEN=${API_AUTH_TOKEN}
       - POSTGRES_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@openhealth-postgres:5432/postgres?sslmode=disable
       - FGA_API_URL=http://openfga:8080
-      - FGA_STORE_NAME=${FGA_STORE_NAME:-openhealth}
+      - FGA_STORE_NAME=${FGA_STORE_NAME}
     depends_on:
       openfga-init:
         condition: service_completed_successfully
@@ -90,7 +90,7 @@ services:
     pull_policy: always
     environment:
       - FGA_API_URL=http://openfga:8080
-      - FGA_STORE_NAME=${FGA_STORE_NAME:-openhealth}
+      - FGA_STORE_NAME=${FGA_STORE_NAME}
     depends_on:
       openfga:
         condition: service_healthy
